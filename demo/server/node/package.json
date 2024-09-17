@@ -1,0 +1,31 @@
+{
+  "name": "area",
+  "version": "0.0.1",
+  "description": "backend impl in node",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec tsx sources/main.ts",
+    "lint": "eslint 'sources/**/*.{ts,tsx}'",
+    "lint:fix": "eslint 'sources/**/*.{ts,tsx}' --fix"
+  },
+  "author": {
+    "name": "Javier Rios",
+    "email": "javier.rios-urbano@epitech.eu"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "@typescript-eslint/eslint-plugin": "^8.6.0",
+    "@typescript-eslint/parser": "^8.6.0",
+    "eslint": "^9.10.0",
+    "nodemon": "^3.1.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  },
+  "dependencies": {
+    "fastify": "^4.28.1",
+    "fp-ts": "^2.16.9"
+  },
+  "type": "module"
+}
