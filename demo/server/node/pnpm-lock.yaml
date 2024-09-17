@@ -11,9 +11,6 @@ importers:
       fastify:
         specifier: ^4.28.1
         version: 4.28.1
-      fp-ts:
-        specifier: ^2.16.9
-        version: 2.16.9
     devDependencies:
       '@types/node':
         specifier: ^22.5.5
@@ -557,9 +554,6 @@ packages:
   forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
-
-  fp-ts@2.16.9:
-    resolution: {integrity: sha512-+I2+FnVB+tVaxcYyQkHUq7ZdKScaBlX53A41mxQtpIccsfyv8PzdzP7fzp2AY832T4aoK6UZ5WRX/ebGd8uZuQ==}
 
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
@@ -1468,8 +1462,6 @@ snapshots:
   flatted@3.3.1: {}
 
   forwarded@0.2.0: {}
-
-  fp-ts@2.16.9: {}
 
   fsevents@2.3.3:
     optional: true
