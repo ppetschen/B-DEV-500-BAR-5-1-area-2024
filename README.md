@@ -70,7 +70,7 @@ demo/
 │   ├── angular/
 │   └── vue/
 └── server/
-    ├── node/
+    ├── bun/
     ├── python/
     └── java/
 ```

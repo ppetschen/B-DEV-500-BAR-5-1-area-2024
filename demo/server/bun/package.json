@@ -1,0 +1,25 @@
+{
+  "name": "node",
+  "author": {
+    "name": "Javier R",
+    "email": "javier.rios-urbano@epitech.eu"
+  },
+  "module": "sources/main.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "start": "bun run sources/main.ts"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "fastify": "^4.0.0",
+    "fastify-type-provider-zod": "^2.0.0",
+    "postgres": "^3.4.4",
+    "zod": "^3.23.8"
+  }
+}
