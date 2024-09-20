@@ -19,7 +19,7 @@ router = APIRouter(
 async def list_todo_items():
     todos = await db["todos"].find().to_list(1000)
     for todo in todos:
-        todo["_id"] = str(todo["_id"])
+        todo["id"] = str(todo["_id"])
     return todos
 
 
@@ -27,7 +27,7 @@ async def list_todo_items():
 @router.get("/{id}", response_model=TodoItem)
 async def get_todo_item(id: str):
     if (todo := await db["todos"].find_one({"_id": ObjectId(id)})) is not None:
-        todo["_id"] = str(todo["_id"])
+        todo["id"] = str(todo["_id"])
         return todo
     raise HTTPException(status_code=404, detail="Todo item not found")
 
@@ -38,7 +38,7 @@ async def create_todo_item(todo: TodoItemSchema):
     new_todo = await db["todos"].insert_one(todo.model_dump())
     created_todo = await db["todos"].find_one({"_id": new_todo.inserted_id})
     if created_todo:
-        created_todo["_id"] = str(created_todo["_id"])
+        created_todo["id"] = str(created_todo["_id"])
     return created_todo
 
 
@@ -59,7 +59,7 @@ async def update_todo_item(id: str, todo: TodoItemSchema):
     if update_result.modified_count == 1:
         updated_todo = await db["todos"].find_one({"_id": ObjectId(id)})
         if updated_todo:
-            updated_todo["_id"] = str(updated_todo["_id"])
+            updated_todo["id"] = str(updated_todo["_id"])
         return updated_todo
 
     raise HTTPException(status_code=404, detail="Todo item not found")
@@ -75,7 +75,7 @@ async def patch_todo_item(id: str, todo: UpdateTodoItemSchema):
     if update_result.modified_count == 1:
         updated_todo = await db["todos"].find_one({"_id": ObjectId(id)})
         if updated_todo:
-            updated_todo["_id"] = str(updated_todo["_id"])
+            updated_todo["id"] = str(updated_todo["_id"])
         return updated_todo
 
     raise HTTPException(status_code=404, detail="Todo item not found")
