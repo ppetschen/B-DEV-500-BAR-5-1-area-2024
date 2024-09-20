@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "todo_app"
+version = "0.1.0"
+description = "Simple todo app"
+authors = ["Javier R <javier.rios-urbano@epitech.eu>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.0"
+motor = "^3.6.0"
+uvicorn = "^0.30.6"
+pydantic = "^2.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
