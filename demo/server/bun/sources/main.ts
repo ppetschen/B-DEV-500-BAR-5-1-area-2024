@@ -2,21 +2,23 @@ import fastify from "fastify";
 import chalk from "chalk";
 import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
-import {
-  serializerCompiler,
-  validatorCompiler,
-  type ZodTypeProvider,
-} from "fastify-type-provider-zod";
 import { getVersion, initTable } from "$/database";
+import cors from "@fastify/cors";
 
-export const app = fastify().withTypeProvider<ZodTypeProvider>();
+export const app = fastify();
 export type RouteInfo = Omit<Parameters<typeof app.route>[0], "method">;
 
-app.setValidatorCompiler(validatorCompiler);
-app.setSerializerCompiler(serializerCompiler);
+app.register(cors, { origin: "*" });
 
 const ROUTES_DIR = `${new URL(".", import.meta.url).pathname}routes`;
-const WHITELISTED_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"] as const;
+const WHITELISTED_METHODS = [
+  "GET",
+  "POST",
+  "PUT",
+  "PATCH",
+  "DELETE",
+  "OPTIONS",
+] as const;
 
 const getFilesRecursively = async (dir: string): Promise<string[]> => {
   const dirents = await readdir(dir, { withFileTypes: true });

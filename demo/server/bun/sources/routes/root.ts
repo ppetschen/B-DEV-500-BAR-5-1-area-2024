@@ -8,3 +8,13 @@ export const GET: RouteInfo = {
     });
   },
 };
+
+export const OPTIONS: RouteInfo = {
+  url: "/",
+  handler: async (_request, response) => {
+    response.code(204)
+      .header("access-control-allow-methods", "GET")
+      .header("access-control-allow-origin", "*")
+      .send();
+  },
+};
