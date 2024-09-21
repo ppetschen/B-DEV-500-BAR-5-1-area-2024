@@ -3,12 +3,23 @@
     <b-card title="ToDo List" class="mb-4">
       <b-form @submit.prevent="addTodo">
         <b-form-group>
-          <b-form-input v-model="newTodo.title" placeholder="Add a new task" />
+          <b-form-input
+            v-model="newTodo.title"
+            placeholder="Add a new task"
+            required
+          />
         </b-form-group>
         <b-form-group>
           <b-form-select
             v-model="newTodo.importance"
             :options="importanceOptions"
+            required
+          />
+        </b-form-group>
+        <b-form-group>
+          <b-form-textarea
+            v-model="newTodo.description"
+            placeholder="Add an optional description"
           />
         </b-form-group>
         <b-button type="submit" variant="primary">Add</b-button>
@@ -19,29 +30,34 @@
           v-for="(todo, index) in todos"
           :key="index"
           class="d-flex justify-content-between align-items-center"
-          :class="`bg-${todo.importance.toLowerCase()}`"
         >
-          <!-- Task title and importance -->
+          <!-- View mode -->
           <div v-if="!todo.isEditing" @click="editTodo(index)" class="task-title">
             <div :class="{ 'line-through text-gray-500': todo.done }">
-              <strong>{{ todo.title }}</strong>
-              <br />
+              <strong>{{ todo.title }}</strong><br />
               <small>Importance: {{ todo.importance }}</small>
+              <p v-if="todo.description">{{ todo.description }}</p>
             </div>
           </div>
 
-          <!-- to edit mode for task title and importance -->
+          <!-- Edit mode -->
           <div v-else>
             <b-form-input
               v-model="todo.title"
               @blur="saveTodo(index)"
               @keyup.enter="saveTodo(index)"
               placeholder="Edit task title"
+              required
             />
             <b-form-select
               v-model="todo.importance"
               :options="importanceOptions"
               @blur="saveTodo(index)"
+            />
+            <b-form-textarea
+              v-model="todo.description"
+              @blur="saveTodo(index)"
+              placeholder="Edit description"
             />
           </div>
 
@@ -63,6 +79,8 @@
 </template>
 
 <script>
+import { getTodoItems, createTodo, deleteTodo, updateTodo, patchTodo } from "../connection";
+
 export default {
   data() {
     return {
@@ -70,6 +88,7 @@ export default {
         title: "",
         importance: "Select",
         done: false,
+        description: "",
       },
       todos: [],
       importanceOptions: [
@@ -80,26 +99,67 @@ export default {
       ],
     };
   },
+  created() {
+    this.loadTodos();
+  },
   methods: {
-    addTodo() {
+    // Load todos with isEditing field
+    async loadTodos() {
+      const response = await getTodoItems();
+      const todoItems = response.data;
+
+     console.log(todoItems); // {data: []}
+      this.todos = todoItems.map(todo => ({ ...todo, isEditing: false }));
+    },
+
+    async addTodo() {
       if (this.newTodo.title.trim() && this.newTodo.importance !== "Select") {
-        this.todos.push({ ...this.newTodo, isEditing: false });
-        this.newTodo.title = "";
-        this.newTodo.importance = "Select";
-        this.newTodo.done = false;
+        const createdTodo = await createTodo(this.newTodo);
+        if (createdTodo) {
+          this.todos.push({ ...createdTodo, isEditing: false });
+          this.newTodo = { title: "", importance: "Select", description: "", done: false };
+        }
+        this.loadTodos();
+      } else {
+        alert("Please enter a valid title and select an importance level.");
       }
     },
-    removeTodo(index) {
-      this.todos.splice(index, 1);
+
+    async removeTodo(index) {
+      const todoId = this.todos[index].id;
+      const deletedTodo = await deleteTodo(todoId);
+      if (deletedTodo) {
+        this.todos.splice(index, 1);
+      }
     },
-    toggleTodo(index) {
-      this.todos[index].done = !this.todos[index].done;
+
+    // Toggle done status and update server via patchTodo
+    async toggleTodo(index) {
+      const todo = this.todos[index];
+      todo.done = !todo.done;
+      const updatedTodo = await patchTodo(todo.id);
+      if (!updatedTodo) {
+        todo.done = !todo.done; // Revert if error
+      }
     },
+
     editTodo(index) {
-      this.todos[index].isEditing = true; // Enable the edit mode
+      this.todos.forEach((todo, i) => {
+        if (i !== index) todo.isEditing = false; // Cancel editing on other items
+      });
+      this.todos[index].isEditing = true;
     },
-    saveTodo(index) {
-      this.todos[index].isEditing = false; // Disable edit mode, saving changes
+
+    async saveTodo(index) {
+      const todo = this.todos[index];
+      if (todo.title.trim()) {
+        const updatedTodo = await updateTodo(todo.id, todo);
+        if (updatedTodo) {
+          this.todos[index].isEditing = false;
+        }
+      } else {
+        alert("Title cannot be empty.");
+      }
     },
   },
 };
@@ -112,15 +172,15 @@ export default {
 }
 
 .bg-low {
-  background-color: #96a621;
+  border-color: #96a621;
 }
 
 .bg-medium {
-  background-color: #f2b705;
+  border-color: #f2b705;
 }
 
 .bg-high {
-  background-color: #fe5b48;
+  border-color: #fe5b48;
 }
 
 .line-through {
