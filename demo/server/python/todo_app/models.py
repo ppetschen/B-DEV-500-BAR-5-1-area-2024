@@ -39,7 +39,7 @@ class PyObjectId(ObjectId):
 
 
 class TodoItem(BaseModel):
-    id: str = Field(default_factory=lambda: str(ObjectId()), alias="_id")
+    id: str = Field(default_factory=lambda: str(ObjectId()), alias="id")
     title: str
     description: Optional[str] = None
     completed: bool = False

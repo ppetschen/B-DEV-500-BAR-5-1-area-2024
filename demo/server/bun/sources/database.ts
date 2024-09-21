@@ -1,7 +1,7 @@
 import { type TodoItem } from "@internal/area";
 import postgres from "postgres";
 
-export const TABLE_NAME = "todos";
+const TABLE_NAME = `todos`;
 
 const sql = postgres({
   host: process.env.POSTGRES_HOST,
@@ -16,64 +16,73 @@ export const getVersion = async () => {
 };
 
 export const initTable = async () => {
-  await sql`
-    CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      title TEXT NOT NULL,
-      description TEXT NOT NULL,
-      completed BOOLEAN NOT NULL
-    )
+  const allTables = await sql<{ table_name: string }[]>`
+    SELECT table_name
+    FROM information_schema.tables
+    WHERE table_schema = 'public'
   `;
+
+  const exists = allTables.some(({ table_name }) => table_name === TABLE_NAME);
+  if (!exists) {
+    await sql`
+      CREATE TABLE ${sql(TABLE_NAME)} (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        completed BOOLEAN NOT NULL
+      )
+    `;
+  }
 };
 
-export const getAllTodos = async () => {
-  return sql<{
+export const getAllTodos = async () =>
+  await sql<{
     id: string;
     title: string;
     description: string;
     completed: boolean;
-  }[]>`SELECT * FROM ${TABLE_NAME}`;
-};
+  }[]>`SELECT * FROM ${sql(TABLE_NAME)}`;
 
 export const createNewTodo = async ({
   id,
   title,
   description,
   completed,
-}: TodoItem) => {
-  return sql<{
+}: TodoItem) =>
+  await sql<{
     id: string;
     title: string;
     description: string;
     completed: boolean;
   }[]>`
-    INSERT INTO ${TABLE_NAME} (id, title, description, completed)
+    INSERT INTO ${sql(TABLE_NAME)} (id, title, description, completed)
     VALUES (${id}, ${title}, ${description}, ${completed})
   `;
-};
 
-export const getTodoById = async (id: string) => {
-  return sql<{
+export const getTodoById = async (id: string) =>
+  await sql<{
     id: string;
     title: string;
     description: string;
     completed: boolean;
-  }[]>`SELECT * FROM ${TABLE_NAME} WHERE id = ${id}`;
-};
+  }[]>`SELECT * FROM ${sql(TABLE_NAME)} WHERE id = ${id} LIMIT 1`;
 
-export const deleteTodoById = async (id: string) => {
-  return sql`DELETE FROM ${TABLE_NAME} WHERE id = ${id}`;
-};
+export const deleteTodoById = async (id: string) =>
+  await sql`DELETE FROM ${sql(TABLE_NAME)} WHERE id = ${id}`;
 
 export const updateTodoById = async (id: string, data: Partial<TodoItem>) => {
-  return sql<{
-    id: string;
-    title: string;
-    description: string;
-    completed: boolean;
-  }[]>`
-    UPDATE ${TABLE_NAME}
-    SET ${Object.entries(data).map(([key, value]) => `${key} = ${value}`)}
+  const [old] = await getTodoById(id);
+  if (!old) {
+    throw new Error(`Todo with ID ${id} not found`);
+  }
+
+  const updated = { ...old, ...data };
+
+  await sql`
+    UPDATE ${sql(TABLE_NAME)}
+    SET title = ${updated.title},
+        description = ${updated.description},
+        completed = ${updated.completed}
     WHERE id = ${id}
   `;
 };

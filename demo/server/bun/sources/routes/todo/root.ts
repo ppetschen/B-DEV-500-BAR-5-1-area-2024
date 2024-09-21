@@ -1,6 +1,5 @@
 import { type RouteInfo } from "$/main";
 import { createNewTodo, getAllTodos } from "$/database";
-import { z } from "zod";
 
 // Retrieves all todo objects available
 export const GET: RouteInfo = {
@@ -9,9 +8,11 @@ export const GET: RouteInfo = {
     try {
       const data = await getAllTodos();
       response.send({ data });
-    } catch {
+    } catch (error) {
       response.status(500).send({
-        error: "An error occurred while retrieving all todos",
+        error: error instanceof Error
+          ? error.message
+          : `Unknown error occurred, please try again later`,
       });
     }
   },
@@ -21,13 +22,6 @@ export const GET: RouteInfo = {
 // ID should be automatically generated in backend or in the db.
 export const POST: RouteInfo = {
   url: "/todo",
-  schema: {
-    body: z.object({
-      title: z.string().min(1).max(100),
-      description: z.string().max(500),
-      completed: z.boolean(),
-    }),
-  },
   handler: async (request, response) => {
     try {
       const data = await createNewTodo({
@@ -38,10 +32,22 @@ export const POST: RouteInfo = {
         ...request.body,
       });
       response.send({ data });
-    } catch {
+    } catch (error) {
       response.status(500).send({
-        error: "An error occurred while creating a new todo",
+        error: error instanceof Error
+          ? error.message
+          : `Unknown error occurred, please try again later`,
       });
     }
+  },
+};
+
+export const OPTIONS: RouteInfo = {
+  url: "/todo",
+  handler: async (_request, response) => {
+    response.code(204)
+      .header("access-control-allow-methods", "GET, POST")
+      .header("access-control-allow-origin", "*")
+      .send();
   },
 };

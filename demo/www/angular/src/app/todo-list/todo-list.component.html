@@ -1,0 +1,41 @@
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-3xl font-bold">TODO List</h1>
+  <a
+    routerLink="/new"
+    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+    >New Todo</a
+  >
+</div>
+
+<div *ngFor="let todo of todos" class="bg-white shadow-md rounded-lg p-4 mb-4">
+  <h2 class="text-xl font-semibold" [class.line-through]="todo.completed">
+    {{ todo.title }}
+  </h2>
+
+  <div class="text-gray-600" [class.line-through]="todo.completed">
+    <div [innerHTML]="renderMarkdown(todo.description)" class="prose"></div>
+  </div>
+
+  <div class="mt-4 flex items-center">
+    <label class="mr-2">Completed:</label>
+    <input
+      type="checkbox"
+      [(ngModel)]="todo.completed"
+      (change)="toggleCompleted(todo)"
+    />
+  </div>
+
+  <div class="mt-4 flex justify-between">
+    <a
+      [routerLink]="['/edit', todo.id]"
+      class="text-blue-500 hover:text-blue-700"
+      >Edit</a
+    >
+    <button
+      (click)="deleteTodo(todo.id)"
+      class="text-red-500 hover:text-red-700"
+    >
+      Delete
+    </button>
+  </div>
+</div>
