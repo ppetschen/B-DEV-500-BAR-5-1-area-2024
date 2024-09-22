@@ -2,7 +2,7 @@ import axios from "axios";
 
 const getTodoItems = async () => {
   try {
-    const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/todo`);
+    const response = await axios.get(`http://127.0.0.1:3000/todo`);
     return response.status === 200 ? response.data : [];
   } catch (error) {
     console.error("Error fetching todos:", error);
@@ -12,7 +12,7 @@ const getTodoItems = async () => {
 
 const createTodo = async (newTodo) => {
   try {
-    const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/todo`, newTodo);
+    const response = await axios.post(`http://127.0.0.1:3000/todo`, newTodo);
     return response.status === 200 ? response.data : null;
   } catch (error) {
     console.error("Error creating todo:", error);
@@ -22,7 +22,7 @@ const createTodo = async (newTodo) => {
 
 const deleteTodo = async (todoId) => {
   try {
-    const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/todo/${todoId}`);
+    const response = await axios.delete(`http://127.0.0.1:3000/todo/${todoId}`);
     return response.status === 200 ? response.data : null;
   } catch (error) {
     console.error("Error deleting todo:", error);
@@ -32,7 +32,7 @@ const deleteTodo = async (todoId) => {
 
 const updateTodo = async (todoId, updatedTodo) => {
   try {
-    const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/todo/${todoId}`, updatedTodo);
+    const response = await axios.put(`http://127.0.0.1:3000/todo/${todoId}`, updatedTodo);
     return response.status === 200 ? response.data : null;
   } catch (error) {
     console.error("Error updating todo:", error);
@@ -42,7 +42,7 @@ const updateTodo = async (todoId, updatedTodo) => {
 
 const patchTodo = async (todoID) => {
     try {
-        const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/todo/${todoID}`);
+        const response = await axios.patch(`http://127.0.0.1:3000/todo/${todoID}`);
         if (response.status === 200) {
             return response.data;
         } else {
