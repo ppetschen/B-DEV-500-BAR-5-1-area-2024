@@ -10,17 +10,17 @@ public class TodoItem {
     @NotBlank
     private String title;
     private String description;
-    private Boolean done;
+    private Boolean completed;
 
     public TodoItem() {
         this.id = UUID.randomUUID();
     }
 
-    public TodoItem(String title, String description, Boolean done) {
+    public TodoItem(String title, String description) {
         this.id = UUID.randomUUID();
         this.title = title;
         this.description = description;
-        this.done = done;
+        this.completed = false;
     }
 
     public UUID getId() {
@@ -47,12 +47,12 @@ public class TodoItem {
         this.description = description;
     }
 
-    public Boolean getDone() {
-        return done;
+    public Boolean getCompleted() {
+        return completed;
     }
 
-    public void setDone(Boolean done) {
-        this.done = done;
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 }
 
