@@ -10,7 +10,7 @@ import { Stack } from "expo-router";
 export default function TabsLayout() {
   return (
     <Stack>
-      <Stack.Screen name="Tabs" />
+      <Stack.Screen name="workflows-dashboard" />
     </Stack>
   );
 }
