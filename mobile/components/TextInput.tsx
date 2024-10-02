@@ -5,32 +5,32 @@
  ** TextInput component
  */
 
-
 import React from "react";
-import { TextInput as RNTextInput, TextInputProps } from "react-native";
+import { View, TextInput as RNTextInput, TextInputProps } from "react-native";
 import { styled } from "nativewind";
 
+import ErrorMessage from "./ErrorMessage";
+
 const StyledTextInput = styled(RNTextInput);
+const StyledView = styled(View);
 
 interface Props extends TextInputProps {
-    value: string;
-    onChangeText: (text: string) => void;
-    placeholder: string;
+    error?: string | null;
 }
 
-export const TextInput: React.FC<Props> = ({
-    value,
-    onChangeText,
-    placeholder,
-    ...props
-}) => {
+export const TextInput: React.FC<Props> = ({ error, ...props }) => {
     return (
-        <StyledTextInput
-            value={value}
-            onChangeText={onChangeText}
-            placeholder={placeholder}
-            className="w-80 h-12 px-4 mb-4 border border-gray-300 rounded-lg"
-            {...props}
-        />
+        <StyledView>
+            {error && <ErrorMessage message={error} />}
+
+            <StyledTextInput
+                value={props.value}
+                placeholder={props.placeholder}
+                className={`w-80 h-12 px-4 mb-4 rounded-lg border ${
+                    error ? "border-error" : "border-gray-300"
+                }`}
+                {...props}
+            />
+        </StyledView>
     );
 };
