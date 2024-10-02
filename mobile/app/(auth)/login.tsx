@@ -12,7 +12,6 @@ import { useRouter } from "expo-router";
 
 import { TextInput } from "@components/TextInput";
 import { BasicButton } from "@components/BasicButton";
-import { ErrorMessage } from "@components/ErrorMessage";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);

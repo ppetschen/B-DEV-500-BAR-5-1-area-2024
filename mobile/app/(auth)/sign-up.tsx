@@ -12,7 +12,6 @@ import { useRouter } from "expo-router";
 
 import { TextInput } from "@components/TextInput";
 import { BasicButton } from "@components/BasicButton";
-import { ErrorMessage } from "@components/ErrorMessage";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -21,7 +20,6 @@ export default function SignUpPage() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
-    // const [error, setError] = useState<string | null>(null);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const [confirmPasswordError, setConfirmPasswordError] = useState<
@@ -92,11 +90,8 @@ export default function SignUpPage() {
                     error={confirmPasswordError}
                 />
             </StyledView>
-            
 
-            {/* <StyledView className="flex-2 pt-5"> */}
-                <BasicButton title="Sign Up" onPress={handleSignUp} />
-            {/* </StyledView> */}
+            <BasicButton title="Sign Up" onPress={handleSignUp} />
         </StyledView>
     );
 }
