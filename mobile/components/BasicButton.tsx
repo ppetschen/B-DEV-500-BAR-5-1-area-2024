@@ -6,7 +6,7 @@
  */
 
 import React from "react";
-import { TouchableOpacity, GestureResponderEvent, Text } from "react-native";
+import { TouchableOpacity, GestureResponderEvent, Text, View } from "react-native";
 import { styled } from "nativewind";
 
 const StyledButton = styled(TouchableOpacity);
@@ -17,12 +17,15 @@ interface Props {
     onPress: (event: GestureResponderEvent) => void;
 }
 
-export const Button: React.FC<Props> = ({ title, onPress }) => {
+/**
+ *  Component - Button with title
+*/
+export const BasicButton: React.FC<Props> = ({ title, onPress }) => {
     return (
         <StyledButton
             onPress={onPress}
             className="w-auto bg-blue-500 text-white p-3 rounded"
-        >
+            >
             <StyledText className="min-w-fit text-white">{title}</StyledText>
         </StyledButton>
     );
