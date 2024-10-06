@@ -1,0 +1,131 @@
+x-kong-config: &kong-env
+  KONG_DATABASE: postgres
+  KONG_PG_DATABASE: ${POSTGRES_DB}
+  KONG_PG_HOST: kong-database
+  KONG_PG_USER: ${POSTGRES_USER}
+  KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
+
+services:
+  kong-migrations:
+    image: kong/kong-gateway
+    command: kong migrations bootstrap
+    depends_on:
+      - kong-database
+    environment:
+      <<: *kong-env
+    networks:
+      - kong-net
+    restart: on-failure
+    env_file:
+      - ./.env
+
+  kong-migrations-up:
+    image: kong/kong-gateway
+    command: kong migrations up && kong migrations finish
+    depends_on:
+      - kong-database
+    environment:
+      <<: *kong-env
+    networks:
+      - kong-net
+    restart: on-failure
+    env_file:
+      - ./.env
+
+  kong-config:
+    image: kong/kong-gateway
+    command: kong config db_import /usr/local/kong/declarative/kong.yaml
+    depends_on:
+      - kong-database
+    environment:
+      <<: *kong-env
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yaml
+    networks:
+      - kong-net
+    restart: on-failure
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/kong.yaml:/usr/local/kong/declarative/kong.yaml
+
+  kong-gateway:
+    image: kong/kong-gateway
+    user: "${KONG_USER:-kong}"
+    networks:
+      - kong-net
+    environment:
+      <<: *kong-env
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:${KONG_ADMIN_PORT:-8001}
+      KONG_PROXY_LISTEN: 0.0.0.0:${KONG_PROXY_PORT:-8000}
+      KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yaml
+    ports:
+      - "${KONG_PROXY_PORT:-8000}:8000"
+      - "${KONG_ADMIN_PORT:-8001}:8001"
+    depends_on:
+      - kong-database
+      - kong-config
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: on-failure:5
+    env_file:
+      - ./.env
+    volumes:
+      - ./config/kong.yaml:/usr/local/kong/declarative/kong.yaml
+
+  kong-database:
+    image: postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - kong-net
+    env_file:
+      - ./.env
+
+  database-service:
+    build:
+      context: ../database
+      dockerfile: Dockerfile
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      GATEWAY_HOST: kong-gateway:8001
+      KONG_DELAY_MS: 10000
+    networks:
+      - kong-net
+    depends_on:
+      - kong-gateway
+      - kong-database
+    env_file:
+      - ../database/.env
+    restart: on-failure:10
+
+  user-management-service:
+    build:
+      context: ../user-management
+      dockerfile: Dockerfile
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      DATABASE_HOST: database-service:3000
+      GATEWAY_HOST: kong-gateway:8001
+      JWT_CONSUMER_NAME: jwt-consumer
+      KONG_DELAY_MS: 10000
+    networks:
+      - kong-net
+    depends_on:
+      - kong-gateway
+      - database-service
+    restart: on-failure:10
+
+networks:
+  kong-net:
+    driver: bridge
