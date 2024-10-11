@@ -5,6 +5,9 @@ x-kong-config: &kong-env
   KONG_PG_USER: ${POSTGRES_USER}
   KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
 
+  MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+  MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+
 services:
   kong-migrations:
     image: kong/kong-gateway
@@ -90,6 +93,13 @@ services:
     env_file:
       - ./.env
 
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+
   database-service:
     build:
       context: ../database
@@ -126,6 +136,24 @@ services:
       - database-service
     restart: on-failure:10
 
+  service-management-service:
+    build: 
+      context: ../service-management
+      dockerfile: Dockerfile
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      DATABASE_HOST: database-service:3000
+      GATEWAY_HOST: kong-gateway:8001
+      JWT_CONSUMER_NAME: jwt-consumer
+      KONG_DELAY_MS: 10000
+    networks:
+      - kong-net
+    depends_on:
+      - kong-gateway
+      - database-service
+    restart: on-failure:10
+    
 networks:
   kong-net:
     driver: bridge

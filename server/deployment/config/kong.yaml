@@ -7,3 +7,10 @@ services:
       - name: user-management-route
         paths:
           - /user-management
+
+  - name: service-management-service
+    url: http://service-management-service:3000
+    routes:
+      - name: service-management-service
+        paths:
+          - /service-management

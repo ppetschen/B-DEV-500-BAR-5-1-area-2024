@@ -53,7 +53,6 @@ export const createJWT = async (): Promise<JWTResponse> => {
   if (!response.ok) {
     throw new Error("Failed to create JWT");
   }
-
   return await response.json();
 };
 
