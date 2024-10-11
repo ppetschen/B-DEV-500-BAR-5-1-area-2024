@@ -2,6 +2,7 @@ import * as oauth from 'oauth4webapi';
 import type { Route } from "../../types";
 import { util, z } from "zod";
 import { getServiceSubscription, getSession, host, storeServiceSubscription, updateServiceSubscription } from "../../utils";
+import { getUserByEmail } from '../../controllers/userController';
 
 const schema = z.object({});
 
@@ -50,7 +51,26 @@ const route: Route<typeof schema> = {
     const result = await oauth.processAuthorizationCodeResponse(as, client, response)
 
     /** Retrieve user based of result fields, maybe by email sent back?? Then set user_id from the db */
-    const user_id = 1;
+    const userinfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${result.access_token}`,
+      },
+    });
+    let userinfo = await userinfoResponse.json();
+
+    if(!userinfo) {
+      console.log("Failed to retrieve user info");
+      return new Response(JSON.stringify({ error: "Failed to retrieve user info" }), { status: 500 });
+    }
+    userinfo = await getUserByEmail(userinfo.email);
+
+    if(!userinfo.ok) {
+      console.log("No user with that email found");
+      return new Response(JSON.stringify({ error: "No user with that email found" }), { status: 404 }); 
+    }
+    let user = await userinfo.json();
+    const user_id = user.id;
 
     let serviceSubscription = await getServiceSubscription("google", user_id);
     let storeStatus;

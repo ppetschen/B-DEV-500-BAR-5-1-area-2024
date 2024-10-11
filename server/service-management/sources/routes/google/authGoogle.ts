@@ -44,7 +44,7 @@ const route: Route<typeof schema> = {
     authorizationUrl.searchParams.set('response_type', 'code')
     authorizationUrl.searchParams.set('access_type', 'offline')
     authorizationUrl.searchParams.set('prompt', 'consent')
-    authorizationUrl.searchParams.set('scope', 'https://www.googleapis.com/auth/userinfo.profile')
+    authorizationUrl.searchParams.set('scope','https://www.googleapis.com/auth/userinfo.profile email')
     authorizationUrl.searchParams.set('code_challenge', code_challenge)
     authorizationUrl.searchParams.set('code_challenge_method', code_challenge_method)
     authorizationUrl.searchParams.set('state', state)
