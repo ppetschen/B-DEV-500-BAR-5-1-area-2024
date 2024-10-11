@@ -1,0 +1,10 @@
+# visual studio code
+.vscode
+
+# tool versions file for asdf
+.tool-versions
+
+# node_modules
+node_modules
+
+
