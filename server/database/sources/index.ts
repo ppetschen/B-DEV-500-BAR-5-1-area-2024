@@ -20,8 +20,6 @@ export const client = new Client({
 
 await client.connect();
 
-await initTables();
-
 const glob = new Glob("routes/**/*.ts");
 const result = glob.scan({
   cwd: new URL(".", import.meta.url).pathname,
@@ -50,7 +48,7 @@ const infoRoute: Route = {
       },
     );
   },
-  schema: z.never(),
+  schema: z.any(),
 };
 
 routes.push(infoRoute);

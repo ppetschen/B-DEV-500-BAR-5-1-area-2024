@@ -34,7 +34,7 @@ const infoRoute: Route = {
       },
     );
   },
-  schema: z.never(),
+  schema: z.any(),
 };
 
 routes.push(infoRoute);

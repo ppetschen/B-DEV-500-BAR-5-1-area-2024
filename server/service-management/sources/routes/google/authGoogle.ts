@@ -3,7 +3,7 @@ import type { Route } from "../../types";
 import { z } from "zod";
 import { host } from "../../utils";
 
-const schema = z.never();
+const schema = z.any();
 
 // Prerequisites for OAuth
 let issuer = new URL(process.env.GOOGLE_ISSUER!); // Set your issuer URL here

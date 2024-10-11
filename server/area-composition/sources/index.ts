@@ -3,7 +3,6 @@ import type { Route } from "./types.ts";
 import { Glob } from "bun";
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
-import { setupConsumer } from "./utils.ts";
 
 if (process.env["KONG_DELAY_MS"]) {
   await new Promise((resolve) =>
@@ -75,7 +74,6 @@ const serve = async (request: Request, server: Server): Promise<Response> => {
 };
 
 if (import.meta.main) {
-  await setupConsumer();
   const port = process.env["PORT"] || 8080;
   console.log(`Listening on :${port}`);
   Bun.serve({ fetch: serve, port });

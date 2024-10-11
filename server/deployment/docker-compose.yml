@@ -88,6 +88,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ../database/sources/models:/docker-entrypoint-initdb.d/
     networks:
       - kong-net
     env_file:
@@ -137,9 +139,11 @@ services:
     restart: on-failure:10
 
   service-management-service:
-    build: 
+    build:
       context: ../service-management
       dockerfile: Dockerfile
+    env_file:
+      - ../service-management/.env
     environment:
       <<: *kong-env
       PORT: 3000
@@ -153,7 +157,57 @@ services:
       - kong-gateway
       - database-service
     restart: on-failure:10
-    
+
+  action-service:
+    build:
+      context: ../action
+      dockerfile: Dockerfile
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      DATABASE_HOST: database-service:3000
+      KONG_DELAY_MS: 10000
+    networks:
+      - kong-net
+    depends_on:
+      - kong-gateway
+      - database-service
+    restart: on-failure:10
+
+  reaction-service:
+    build:
+      context: ../reaction
+      dockerfile: Dockerfile
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      DATABASE_HOST: database-service:3000
+      KONG_DELAY_MS: 10000
+    networks:
+      - kong-net
+    depends_on:
+      - kong-gateway
+      - database-service
+    restart: on-failure:10
+
+  area-composition-service:
+    build:
+      context: ../area-composition
+      dockerfile: Dockerfile
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      DATABASE_HOST: database-service:3000
+      ACTION_HOST: action-service:3000
+      REACTION_HOST: reaction-service:3000
+      KONG_DELAY_MS: 10000
+    networks:
+      - kong-net
+    depends_on:
+      - kong-gateway
+      - database-service
+    restart: on-failure:10
+
 networks:
   kong-net:
     driver: bridge

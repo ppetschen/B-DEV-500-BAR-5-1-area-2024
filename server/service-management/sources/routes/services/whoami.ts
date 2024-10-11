@@ -3,7 +3,7 @@ import { z } from "zod";
 import { host } from "../../utils";
 import jwt from "jsonwebtoken";
 
-const schema = z.never();
+const schema = z.any();
 
 const route: Route<typeof schema> = {
   path: "/whoami",
