@@ -13,6 +13,7 @@ import Dashboard from "./page/DashboardPage";
 import CreateAreaPage from "./page/AutomationPage";
 import ServicesPage from "./page/servicesPage";
 import "../src/style/styles.css";
+import MenuPage from "./page/MenuPage";
 
 const ProtectedRoute: React.FC = () => {
   const isAuthenticated = !!localStorage.getItem("currentUser");
@@ -23,6 +24,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<MenuPage/>}/>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 
