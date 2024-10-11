@@ -16,15 +16,39 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function SignupPage({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+  const [confirmPassword, setConfirmPassword] = React.useState<string>("");
   const navigate = useNavigate();
 
-  async function onSubmit(event: React.SyntheticEvent) {
+  async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
       setIsLoading(false);
-    }, 3000);
+      return;
+    }
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+      // Save user to localStorage
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const newUser = { email, password };
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert("Account created successfully!");
+      navigate("/login");
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("An error occurred during signup");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -48,6 +72,8 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
               autoCorrect="off"
               disabled={isLoading}
               className="text-white placeholder-gray-400 bg-gray-700"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-1 pt-6">
@@ -59,30 +85,35 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
               placeholder="password"
               type="password"
               autoCapitalize="none"
-              autoComplete="password"
-              autoCorrect="off"
+              autoComplete="new-password"
               disabled={isLoading}
-              className="text-white placeholder-gray-400 bg-gray-700 "
+              className="text-white placeholder-gray-400 bg-gray-700"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="grid gap-1 pt-5">
-            <Label className="text-gray-300" htmlFor="password">
+            <Label className="text-gray-300" htmlFor="confirm-password">
               Confirm Password
             </Label>
             <Input
-              id="password"
+              id="confirm-password"
               placeholder="confirm password"
               type="password"
               autoCapitalize="none"
-              autoComplete="password"
-              autoCorrect="off"
+              autoComplete="new-password"
               disabled={isLoading}
-              className="text-white placeholder-gray-400 bg-gray-700 "
+              className="text-white placeholder-gray-400 bg-gray-700"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          <Button disabled={isLoading} className="transition-colors bg-blue-600 hover:bg-blue-500">
-            {isLoading && <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />}
-            Sign Up with Email
+          <Button type="submit" disabled={isLoading} className="transition-colors bg-blue-600 hover:bg-blue-500">
+            {isLoading ? (
+              <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              "Sign Up with Email"
+            )}
           </Button>
         </div>
         <div className="relative">
