@@ -2,6 +2,7 @@ import { Glob, type Server } from "bun";
 import type { Route } from "./types";
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
+import process from "node:process";
 
 if (process.env["KONG_DELAY_MS"]) {
   await new Promise((resolve) =>
@@ -24,14 +25,16 @@ const routes = (await Array.fromAsync(
 const infoRoute: Route = {
   path: "/info",
   method: "GET",
-  handler: async () => {
-    return new Response(
-      JSON.stringify({ routes: routes.map((route) => route.path) }),
-      {
-        headers: {
-          "Content-Type": "application/json",
+  handler: () => {
+    return Promise.resolve(
+      new Response(
+        JSON.stringify({ routes: routes.map((route) => route.path) }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      },
+      ),
     );
   },
   schema: z.any(),

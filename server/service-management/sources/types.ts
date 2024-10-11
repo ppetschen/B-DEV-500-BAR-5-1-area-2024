@@ -30,3 +30,18 @@ export type JWTResponse = {
   secret: string;
   tags: null;
 };
+
+export interface UserInfo {
+  email: string;
+  primary: boolean;
+  verified: boolean;
+  visibility: string;
+}
+
+export interface ServiceSubscription {
+  access_token: string | undefined;
+  refresh_token: string | undefined;
+  expires_in: number | undefined;
+  user_id: number | undefined;
+  service: string | undefined;
+}

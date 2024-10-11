@@ -1,11 +1,6 @@
 import type { Route } from "../../types";
 import { z } from "zod";
-import {
-  deleteServiceSubscription,
-  getServiceSubscription,
-  host,
-} from "../../utils";
-import jwt from "jsonwebtoken";
+import { deleteServiceSubscription } from "../../controllers/serviceController";
 
 const schema = z.object({
   service: z.string(),

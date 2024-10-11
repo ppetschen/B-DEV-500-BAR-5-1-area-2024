@@ -1,6 +1,6 @@
 import type { Route } from "../../types";
 import { z } from "zod";
-import { getServiceSubscription, host } from "../../utils";
+import { getServiceSubscription } from "../../controllers/serviceController";
 
 const schema = z.object(
   {

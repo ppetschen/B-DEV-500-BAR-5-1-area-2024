@@ -1,40 +1,41 @@
 import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
-import { util, z } from "zod";
+import { z } from "zod";
+import { getSession } from "../../controllers/sessionController";
+import { getUserByEmail } from "../../controllers/userController";
 import {
   getServiceSubscription,
-  getSession,
-  host,
   storeServiceSubscription,
   updateServiceSubscription,
-} from "../../utils";
+} from "../../controllers/serviceController";
+import process from "node:process";
 
 const schema = z.object({});
 
-// Prerequisites for OAuth
-let issuer = new URL(process.env.GOOGLE_ISSUER!);
-let client_id = process.env.GOOGLE_CLIENT_ID!;
-let client_secret = process.env.GOOGLE_CLIENT_SECRET!;
-let redirect_uri = process.env.GOOGLE_REDIRECT_URI!;
-
-// Discovery Request
-const as = await oauth
-  .discoveryRequest(issuer, { algorithm: "oidc" })
-  .then((response) => oauth.processDiscoveryResponse(issuer, response));
-
-// OAuth2 Client Configuration
-const client: oauth.Client = { client_id };
-const clientAuth = oauth.ClientSecretPost(client_secret);
+const service = "google";
 
 // one eternity later, the user lands back on the redirect_uri
 // Authorization Code Grant Request & Response
-let access_token: string;
 // Define the route for handling the OAuth callback
 const route: Route<typeof schema> = {
   path: "/auth/google/callback",
   method: "GET",
   schema,
   handler: async (request, _server) => {
+    // Prerequisites for OAuth
+    const issuer = new URL(process.env.GOOGLE_ISSUER!);
+    const redirect_uri = process.env.GOOGLE_REDIRECT_URI!;
+
+    // Discovery Request
+    const as = await oauth
+      .discoveryRequest(issuer, { algorithm: "oidc" })
+      .then((response) => oauth.processDiscoveryResponse(issuer, response));
+
+    // OAuth2 Client Configuration
+    const client: oauth.Client = { client_id: process.env.GOOGLE_CLIENT_ID! };
+    const clientAuth = oauth.ClientSecretPost(
+      process.env.GOOGLE_CLIENT_SECRET!,
+    );
     const currentUrl = new URL(request.url);
     const session = await getSession();
 
@@ -90,22 +91,25 @@ const route: Route<typeof schema> = {
         { status: 404 },
       );
     }
-    let user = await userinfo.json();
-    const user_id = user.id;
+    const user = await userinfo.json();
 
-    let serviceSubscription = await getServiceSubscription("google", user_id);
+    const serviceSubscription = await getServiceSubscription(service, user.id);
     let storeStatus;
     if (serviceSubscription) {
       storeStatus = await updateServiceSubscription({
-        user_id,
-        ...result,
-        service: "google",
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+        expires_in: result.expires_in,
+        user_id: user.id,
+        service,
       });
     } else {
       storeStatus = await storeServiceSubscription({
-        user_id,
-        ...result,
-        service: "google",
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+        expires_in: result.expires_in,
+        user_id: user.id,
+        service,
       });
     }
     if (!storeStatus.ok) {

@@ -1,41 +1,42 @@
 import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
-import { util, z } from "zod";
+import { z } from "zod";
+import { getSession } from "../../controllers/sessionController";
+import type { UserInfo } from "../../types";
+import { getUserByEmail } from "../../controllers/userController";
 import {
   getServiceSubscription,
-  getSession,
-  host,
   storeServiceSubscription,
   updateServiceSubscription,
-} from "../../utils";
-import { getUserByEmail } from "../../controllers/userController";
+} from "../../controllers/serviceController";
+import process from "node:process";
 
 const schema = z.object({});
 
-// Prerequisites for OAuth
-let client_id = process.env.GITHUB_CLIENT_ID!;
-let client_secret = process.env.GITHUB_CLIENT_SECRET!;
-let redirect_uri = process.env.GITHUB_REDIRECT_URI!;
-
-const as: oauth.AuthorizationServer = {
-  issuer: process.env.GITHUB_ISSUER!, // Add the issuer field
-  authorization_endpoint: "https://github.com/login/oauth/authorize",
-  token_endpoint: "https://github.com/login/oauth/access_token",
-};
-
-// OAuth2 Client Configuration
-const client: oauth.Client = { client_id };
-const clientAuth = oauth.ClientSecretPost(client_secret);
+const service = "github";
 
 // one eternity later, the user lands back on the redirect_uri
 // Authorization Code Grant Request & Response
-let access_token: string;
 // Define the route for handling the OAuth callback
 const route: Route<typeof schema> = {
   path: "/auth/github/callback",
   method: "GET",
   schema,
   handler: async (request, _server) => {
+    // Prerequisites for OAuth
+    const client_id = process.env.GITHUB_CLIENT_ID!;
+    const client_secret = process.env.GITHUB_CLIENT_SECRET!;
+    const redirect_uri = process.env.GITHUB_REDIRECT_URI!;
+
+    const as: oauth.AuthorizationServer = {
+      issuer: process.env.GITHUB_ISSUER!, // Add the issuer field
+      authorization_endpoint: "https://github.com/login/oauth/authorize",
+      token_endpoint: "https://github.com/login/oauth/access_token",
+    };
+
+    // OAuth2 Client Configuration
+    const client: oauth.Client = { client_id };
+    const clientAuth = oauth.ClientSecretPost(client_secret);
     const currentUrl = new URL(request.url);
     const session = await getSession();
 
@@ -79,7 +80,7 @@ const route: Route<typeof schema> = {
         { status: 500 },
       );
     }
-    userinfo = userinfo.find((info: any) => info.primary === true);
+    userinfo = userinfo.find((info: UserInfo) => info.primary === true);
     userinfo = await getUserByEmail(userinfo.email);
 
     if (!userinfo.ok) {
@@ -89,22 +90,25 @@ const route: Route<typeof schema> = {
         { status: 404 },
       );
     }
-    let user = await userinfo.json();
-    const user_id = user.id;
+    const user = await userinfo.json();
 
-    let serviceSubscription = await getServiceSubscription("github", user_id);
+    const serviceSubscription = await getServiceSubscription(service, user.id);
     let storeStatus;
     if (serviceSubscription) {
       storeStatus = await updateServiceSubscription({
-        user_id,
-        ...result,
-        service: "github",
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+        expires_in: result.expires_in,
+        user_id: user.id,
+        service,
       });
     } else {
       storeStatus = await storeServiceSubscription({
-        user_id,
-        ...result,
-        service: "github",
+        access_token: result.access_token,
+        refresh_token: result.refresh_token,
+        expires_in: result.expires_in,
+        user_id: user.id,
+        service,
       });
     }
     if (!storeStatus.ok) {
