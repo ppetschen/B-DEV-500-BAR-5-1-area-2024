@@ -7,9 +7,9 @@ export const host = (key: keyof typeof HOSTS, path: string) =>
   `http://${HOSTS[key]}${path}`;
 
 /**
-* Recover the code_verifier and state from the end-user session. This is necessary to complete the
-* Authorization Code Grant Request.
-*/
+ * Recover the code_verifier and state from the end-user session. This is necessary to complete the
+ * Authorization Code Grant Request.
+ */
 export const getSession = async () => {
   const id = 1;
   const response = await fetch(
@@ -32,9 +32,9 @@ export const getSession = async () => {
 
   const { code_verifier, state } = await response.json();
   return { code_verifier, state };
-}
+};
 
-/** 
+/**
  * Store the access_token, refresh_token, and expires_in in the database.
  */
 export const storeServiceSubscription = async (serviceInformation: any) => {
@@ -53,12 +53,15 @@ export const storeServiceSubscription = async (serviceInformation: any) => {
     );
     return response;
   }
-}
+};
 
 /**
  * Get the service subscription from the database.
  */
-export const getServiceSubscription = async (service: string, user_id: number) => {
+export const getServiceSubscription = async (
+  service: string,
+  user_id: number,
+) => {
   const response = await fetch(
     host("DATABASE", "/service-management/get-service-subscription"),
     {
@@ -72,11 +75,13 @@ export const getServiceSubscription = async (service: string, user_id: number) =
       }),
     },
   );
-  if(!response.ok) {
-    console.log("Failed to retrieve service subscription: ", await response.text());
-    return undefined
-  }
-  else {
+  if (!response.ok) {
+    console.log(
+      "Failed to retrieve service subscription: ",
+      await response.text(),
+    );
+    return undefined;
+  } else {
     return await response.json();
   }
 };
@@ -98,12 +103,15 @@ export const updateServiceSubscription = async (serviceInformation: any) => {
     },
   );
   return response;
-}
+};
 
 /**
  * Delete the service subscription from the database.
  */
-export const deleteServiceSubscription = async (service: string, user_id: number) => {
+export const deleteServiceSubscription = async (
+  service: string,
+  user_id: number,
+) => {
   const response = await fetch(
     host("DATABASE", "/service-management/delete-service-subscription"),
     {
@@ -118,4 +126,4 @@ export const deleteServiceSubscription = async (service: string, user_id: number
     },
   );
   return response;
-}
+};

@@ -1,4 +1,4 @@
-import * as oauth from 'oauth4webapi';
+import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
 import { z } from "zod";
 import { host } from "../../utils";
@@ -10,7 +10,7 @@ let issuer = new URL(process.env.GOOGLE_ISSUER!); // Set your issuer URL here
 let client_id = process.env.GOOGLE_CLIENT_ID!;
 let client_secret = process.env.GOOGLE_CLIENT_SECRET!;
 let redirect_uri = process.env.GOOGLE_REDIRECT_URI!;
-let algorithm: 'oauth2' | 'oidc' | undefined = 'oidc'; // Default to 'oidc'
+let algorithm: "oauth2" | "oidc" | undefined = "oidc"; // Default to 'oidc'
 
 // Discovery Request
 const as = await oauth
@@ -21,15 +21,15 @@ const as = await oauth
 const client: oauth.Client = { client_id };
 const clientAuth = oauth.ClientSecretPost(client_secret);
 
-const code_challenge_method = 'S256'
+const code_challenge_method = "S256";
 /**
  * The following MUST be generated for every redirect to the authorization_endpoint. You must store
  * the code_verifier and nonce in the end-user session such that it can be recovered as the user
  * gets redirected from the authorization server back to your application.
  */
-const code_verifier = oauth.generateRandomCodeVerifier()
-const code_challenge = await oauth.calculatePKCECodeChallenge(code_verifier)
-let state = oauth.generateRandomState()
+const code_verifier = oauth.generateRandomCodeVerifier();
+const code_challenge = await oauth.calculatePKCECodeChallenge(code_verifier);
+let state = oauth.generateRandomState();
 
 // Define the route for Google authentication redirection
 const route: Route<typeof schema> = {
@@ -38,25 +38,31 @@ const route: Route<typeof schema> = {
   schema,
   handler: async (request, server) => {
     // redirect user to as.authorization_endpoint
-    const authorizationUrl = new URL(as.authorization_endpoint!)
-    authorizationUrl.searchParams.set('client_id', client.client_id)
-    authorizationUrl.searchParams.set('redirect_uri', redirect_uri)
-    authorizationUrl.searchParams.set('response_type', 'code')
-    authorizationUrl.searchParams.set('access_type', 'offline')
-    authorizationUrl.searchParams.set('prompt', 'consent')
-    authorizationUrl.searchParams.set('scope','https://www.googleapis.com/auth/userinfo.profile email https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/drive.file')
-    authorizationUrl.searchParams.set('code_challenge', code_challenge)
-    authorizationUrl.searchParams.set('code_challenge_method', code_challenge_method)
-    authorizationUrl.searchParams.set('state', state)
+    const authorizationUrl = new URL(as.authorization_endpoint!);
+    authorizationUrl.searchParams.set("client_id", client.client_id);
+    authorizationUrl.searchParams.set("redirect_uri", redirect_uri);
+    authorizationUrl.searchParams.set("response_type", "code");
+    authorizationUrl.searchParams.set("access_type", "offline");
+    authorizationUrl.searchParams.set("prompt", "consent");
+    authorizationUrl.searchParams.set(
+      "scope",
+      "https://www.googleapis.com/auth/userinfo.profile",
+    );
+    authorizationUrl.searchParams.set("code_challenge", code_challenge);
+    authorizationUrl.searchParams.set(
+      "code_challenge_method",
+      code_challenge_method,
+    );
+    authorizationUrl.searchParams.set("state", state);
 
     /**
-   * We cannot be sure the AS supports PKCE so we're going to use state too. Use of PKCE is
-   * backwards compatible even if the AS doesn't support it which is why we're using it regardless.
-   */
-  //   if (as.code_challenge_methods_supported?.includes('S256') !== true) {
-  //     state = oauth.generateRandomState()
-  //     authorizationUrl.searchParams.set('state', state)
-  //   }
+     * We cannot be sure the AS supports PKCE so we're going to use state too. Use of PKCE is
+     * backwards compatible even if the AS doesn't support it which is why we're using it regardless.
+     */
+    //   if (as.code_challenge_methods_supported?.includes('S256') !== true) {
+    //     state = oauth.generateRandomState()
+    //     authorizationUrl.searchParams.set('state', state)
+    //   }
     /**
      * Store the code_verifier and state in the end-user session such that it can be recovered as the user
      * we will do this in the database postgresql
@@ -80,8 +86,7 @@ const route: Route<typeof schema> = {
       return new Response(await response.text(), { status: 500 });
     }
     return Response.redirect(authorizationUrl.href);
-  }
+  },
 };
-
 
 export default route;

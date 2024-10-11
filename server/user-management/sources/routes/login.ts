@@ -47,7 +47,7 @@ const route: Route<typeof schema> = {
     return new Response(
       JSON.stringify({
         ...user,
-        token: craftJWTFromResponse("USER", jwt),
+        token: craftJWTFromResponse("USER", jwt, user.id),
       }),
       {
         headers: {

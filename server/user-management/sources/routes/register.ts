@@ -48,12 +48,13 @@ const route: Route<typeof schema> = {
     }
 
     const result = await resultRequest.json();
+
     const jwt = await createJWT();
 
     return new Response(
       JSON.stringify({
         ...result,
-        token: craftJWTFromResponse("USER", jwt),
+        token: craftJWTFromResponse("USER", jwt, result.id),
       }),
       {
         headers: {

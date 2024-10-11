@@ -3,7 +3,7 @@ import type { Route } from "../../types";
 import { client } from "../..";
 
 const schema = z.object({
-    id: z.number(),
+  id: z.number(),
 });
 
 const route: Route<typeof schema> = {

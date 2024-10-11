@@ -3,7 +3,6 @@ import type { Route } from "./types";
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
 
-
 if (process.env["KONG_DELAY_MS"]) {
   await new Promise((resolve) =>
     setTimeout(resolve, Number(process.env["KONG_DELAY_MS"]))

@@ -79,7 +79,8 @@ export const getJWTsForConsumer = async (id: string): Promise<
 
 export const craftJWTFromResponse = (
   realm: "USER" | "SERVICE",
-  { key, consumer: { id } }: JWTResponse,
+  { key }: JWTResponse,
+  id: string,
 ) => {
   return jwt.sign(
     {

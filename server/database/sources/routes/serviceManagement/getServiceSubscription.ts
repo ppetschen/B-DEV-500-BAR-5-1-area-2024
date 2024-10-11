@@ -16,15 +16,17 @@ const route: Route<typeof schema> = {
     const { rows: [result] } = await client.query(
       "SELECT * FROM service_subscriptions WHERE user_id = $1 AND service = $2",
       [user_id, service],
-    )
+    );
 
     if (!result) {
-      return new Response(JSON.stringify({ error: "Service subscription not found" }), { status: 404 });
-    }
-    else {
+      return new Response(
+        JSON.stringify({ error: "Service subscription not found" }),
+        { status: 404 },
+      );
+    } else {
       return new Response(JSON.stringify(result));
     }
-  }
+  },
 };
 
 export default route;
