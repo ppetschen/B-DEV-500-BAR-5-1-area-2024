@@ -2,9 +2,10 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Github } from "lucide-react";
-import { FcGoogle } from "react-icons/fc"; 
-import { useNavigate } from "react-router-dom"; 
+import { Github, Loader2 } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
+import { register } from "../../services/user";
 
 export const Icons = {
   spinner: Loader2,
@@ -32,20 +33,15 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
     }
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const user = await register({ email, password });
 
-      // Save user to localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const newUser = { email, password };
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-
-      alert("Account created successfully!");
-      navigate("/login");
+      if (user) {
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        alert("Registration successful");
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error("Signup error:", error);
-      alert("An error occurred during signup");
+      alert("User already exists");
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +52,10 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
       className={`flex justify-center items-center h-screen bg-gradient-to-br from-blue-900 to-purple-900 ${className}`}
       {...props}
     >
-      <form onSubmit={onSubmit} className="p-8 space-y-4 bg-gray-800 border border-gray-700 rounded-lg shadow-lg w-96">
+      <form
+        onSubmit={onSubmit}
+        className="p-8 space-y-4 bg-gray-800 border border-gray-700 rounded-lg shadow-lg w-96"
+      >
         <h2 className="mb-4 text-2xl text-center text-white">Welcome!</h2>
         <div className="grid gap-2">
           <div className="grid gap-1">
@@ -108,12 +107,16 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
-          <Button type="submit" disabled={isLoading} className="transition-colors bg-blue-600 hover:bg-blue-500">
-            {isLoading ? (
-              <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              "Sign Up with Email"
-            )}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="transition-colors bg-blue-600 hover:bg-blue-500"
+          >
+            {isLoading
+              ? <Icons.spinner className="w-4 h-4 mr-2 animate-spin" />
+              : (
+                "Sign Up with Email"
+              )}
           </Button>
         </div>
         <div className="relative">
@@ -121,7 +124,9 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
             <span className="w-full border-t border-gray-600" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="px-2 text-gray-400 bg-gray-800">Or continue with</span>
+            <span className="px-2 text-gray-400 bg-gray-800">
+              Or continue with
+            </span>
           </div>
         </div>
         <div className="flex justify-center space-x-10">
@@ -131,9 +136,7 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
             disabled={isLoading}
             className="flex items-center justify-center text-gray-400 transition-colors border border-gray-600 hover:bg-gray-700"
           >
-            {isLoading ? (
-              <Icons.spinner className="w-4 h-4 animate-spin" />
-            ) : (
+            {isLoading ? <Icons.spinner className="w-4 h-4 animate-spin" /> : (
               <>
                 <Icons.gitHub className="w-4 h-4" />
                 <span>GitHub</span>
@@ -147,9 +150,7 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
             disabled={isLoading}
             className="flex items-center justify-center space-x-2 text-gray-400 transition-colors border border-gray-600 hover:bg-gray-700"
           >
-            {isLoading ? (
-              <Icons.spinner className="w-4 h-4 animate-spin" />
-            ) : (
+            {isLoading ? <Icons.spinner className="w-4 h-4 animate-spin" /> : (
               <>
                 <Icons.google className="w-5 h-5" />
                 <span>Google</span>
@@ -159,7 +160,7 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
         </div>
         <div className="relative flex justify-center mt-4 text-xs">
           <span className="px-2 text-gray-400 bg-gray-800">
-            Already have an account? {" "}
+            Already have an account?{"  "}
             <a
               onClick={() => navigate("/login")}
               className="text-blue-500 cursor-pointer hover:text-blue-400"
