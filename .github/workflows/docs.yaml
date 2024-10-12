@@ -17,10 +17,10 @@ jobs:
       - name: Setup Bun
         run: |
           curl -sSL https://bun.sh/install | bash
-          export PATH="$HOME/.bun/bin:$PATH"
 
       - name: Install Dependencies
         run: |
+          export PATH="$HOME/.bun/bin:$PATH"
           bun install --cwd server/action
           bun install --cwd server/area-composition
           bun install --cwd server/database
@@ -31,6 +31,7 @@ jobs:
 
       - name: Generate Docs
         run: |
+          export PATH="$HOME/.bun/bin:$PATH"
           bun run --cwd server/docs index.ts
 
       - name: Commit and Push Changes
