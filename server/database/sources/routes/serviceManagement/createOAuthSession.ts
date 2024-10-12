@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Route } from "../../types";
-import { client } from "../..";
+import { client } from "../../utils";
 
 const schema = z.object({
   code_verifier: z.string(),

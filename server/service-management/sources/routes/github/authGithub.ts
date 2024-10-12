@@ -4,7 +4,7 @@ import { z } from "zod";
 import process from "node:process";
 import { saveSession } from "../../controllers/sessionController";
 
-const schema = z.never();
+const schema = z.any();
 
 const route: Route<typeof schema> = {
   path: "/auth/github",

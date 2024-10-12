@@ -1,20 +1,17 @@
-import { Glob } from "bun";
-import { client } from ".";
+import { Client } from "pg";
 
-export const initTables = async () => {
-  const glob = new Glob("models/*.sql");
-  const result = glob.scan({
-    cwd: new URL(".", import.meta.url).pathname,
-    absolute: true,
-    onlyFiles: true,
-  });
-  const tables = await Array.fromAsync(result, (file) => Bun.file(file));
-  const contents = await Promise.all(tables.map((table) => table.text()));
+export const client = new Client({
+  host: process.env["KONG_PG_HOST"],
+  database: process.env["KONG_PG_DATABASE"],
+  user: process.env["KONG_PG_USER"],
+  password: process.env["KONG_PG_PASSWORD"],
+});
 
-  for (const content of contents) {
-    await client.query(content);
-  }
-};
+try {
+  await client.connect();
+} catch (error) {
+  console.error("Failed to connect to database", error);
+}
 
 const HOSTS = {
   GATEWAY: process.env["GATEWAY_HOST"],

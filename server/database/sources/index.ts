@@ -1,24 +1,14 @@
 import { Glob, type Server } from "bun";
-import { Client } from "pg";
 import type { Route } from "./types";
-import { initTables } from "./utils";
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
+import { client } from "./utils";
 
 if (process.env["KONG_DELAY_MS"]) {
   await new Promise((resolve) =>
     setTimeout(resolve, Number(process.env["KONG_DELAY_MS"]))
   );
 }
-
-export const client = new Client({
-  host: process.env["KONG_PG_HOST"],
-  database: process.env["KONG_PG_DATABASE"],
-  user: process.env["KONG_PG_USER"],
-  password: process.env["KONG_PG_PASSWORD"],
-});
-
-await client.connect();
 
 const glob = new Glob("routes/**/*.ts");
 const result = glob.scan({
