@@ -16,13 +16,8 @@ const route: Route<typeof schema> = {
       const { code_verifier, state } = await request.json();
 
       const { rows: [result] } = await client.query(
-        `INSERT INTO oauth_sessions (id, code_verifier, state) 
-                 VALUES (1, $1, $2)
-                 ON CONFLICT (id) 
-                 DO UPDATE SET 
-                   code_verifier = EXCLUDED.code_verifier, 
-                   state = EXCLUDED.state, 
-                   updated_at = NOW()
+        `INSERT INTO oauth_sessions (code_verifier, state) 
+                 VALUES ($1, $2)
                  RETURNING *`,
         [code_verifier, state],
       );

@@ -1,7 +1,7 @@
 import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
 import { z } from "zod";
-import { getSession } from "../../controllers/sessionController";
+import { getAndDeleteSession } from "../../controllers/sessionController";
 import type { UserInfo } from "../../types";
 import { getUserByEmail } from "../../controllers/userController";
 import {
@@ -29,7 +29,7 @@ const route: Route<typeof schema> = {
     const redirect_uri = process.env.GITHUB_REDIRECT_URI!;
 
     const as: oauth.AuthorizationServer = {
-      issuer: process.env.GITHUB_ISSUER!, // Add the issuer field
+      issuer: process.env.GITHUB_ISSUER!,
       authorization_endpoint: "https://github.com/login/oauth/authorize",
       token_endpoint: "https://github.com/login/oauth/access_token",
     };
@@ -38,17 +38,15 @@ const route: Route<typeof schema> = {
     const client: oauth.Client = { client_id };
     const clientAuth = oauth.ClientSecretPost(client_secret);
     const currentUrl = new URL(request.url);
-    const session = await getSession();
-
-    if (!session) {
-      console.log("Session not found");
+    const state = currentUrl.searchParams.get("state");
+    if (!state) {
+      console.log("State not found");
       return new Response(
-        JSON.stringify({ error: "There was an error with the session" }),
+        JSON.stringify({ error: "State not found" }),
         { status: 500 },
       );
     }
-
-    const { code_verifier, state } = session;
+    const code_verifier = await getAndDeleteSession(state);
     const params = oauth.validateAuthResponse(as, client, currentUrl, state);
     const response = await oauth.authorizationCodeGrantRequest(
       as,

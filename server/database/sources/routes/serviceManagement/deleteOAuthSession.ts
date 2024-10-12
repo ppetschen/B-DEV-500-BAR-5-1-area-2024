@@ -3,19 +3,19 @@ import type { Route } from "../../types";
 import { client } from "../..";
 
 const schema = z.object({
-  id: z.number(),
+  state: z.string(),
 });
 
 const route: Route<typeof schema> = {
-  path: "/service-management/get-oauth-session",
-  method: "POST",
+  path: "/service-management/delete-oauth-session",
+  method: "DELETE",
   schema,
   handler: async (request, _server) => {
-    const { id } = await request.json();
+    const { state } = await request.json();
 
     const { rows: [result] } = await client.query(
-      "SELECT * FROM oauth_sessions WHERE id = $1",
-      [id],
+      "DELETE FROM oauth_sessions WHERE state = $1 RETURNING *",
+      [state],
     );
 
     if (!result) {

@@ -1,8 +1,8 @@
 import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
 import { z } from "zod";
-import { host } from "../../utils";
 import process from "node:process";
+import { saveSession } from "../../controllers/sessionController";
 
 const schema = z.any();
 
@@ -12,13 +12,13 @@ const route: Route<typeof schema> = {
   schema,
   handler: async (_request, _server) => {
     const issuer = new URL(process.env.GOOGLE_ISSUER!);
-
     const as = await oauth
       .discoveryRequest(issuer, { algorithm: "oidc" })
       .then((response) => oauth.processDiscoveryResponse(issuer, response));
     /**
-     * The following MUST be generated for every redirect to the authorization_endpoint. You must store
-     * the code_verifier and nonce in the end-user session such that it can be recovered as the user
+     * The following MUST be generated for every redirect to the authorization_endpoint.
+     * You must store the code_verifier and nonce in the end-user session such that it
+     * can be recovered as the user
      * gets redirected from the authorization server back to your application.
      */
     const code_verifier = oauth.generateRandomCodeVerifier();
@@ -45,23 +45,9 @@ const route: Route<typeof schema> = {
     authorizationUrl.searchParams.set("code_challenge", code_challenge);
     authorizationUrl.searchParams.set("code_challenge_method", "S256");
     authorizationUrl.searchParams.set("state", state);
-
-    const response = await fetch(
-      host("DATABASE", "/service-management/create-oauth-session"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code_verifier,
-          state,
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      return new Response(await response.text(), { status: 500 });
+    const response = await saveSession(code_verifier, state);
+    if (!response) {
+      return new Response("Failed to save session", { status: 500 });
     }
     return Response.redirect(authorizationUrl.href);
   },

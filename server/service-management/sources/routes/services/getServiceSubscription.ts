@@ -14,7 +14,6 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const token = request.headers.get("authorization")?.split("Bearer ")[1];
     const { service, user_id } = await request.json();
 
     const response = await getServiceSubscription(service, user_id);

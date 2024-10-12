@@ -12,7 +12,6 @@ const route: Route<typeof schema> = {
   method: "DELETE",
   schema,
   handler: async (request, _server) => {
-    const token = request.headers.get("authorization")?.split("Bearer ")[1];
     const { service, user_id } = await request.json();
 
     const response = await deleteServiceSubscription(service, user_id);

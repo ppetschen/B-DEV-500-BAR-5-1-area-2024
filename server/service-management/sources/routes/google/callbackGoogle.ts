@@ -1,7 +1,7 @@
 import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
 import { z } from "zod";
-import { getSession } from "../../controllers/sessionController";
+import { getAndDeleteSession } from "../../controllers/sessionController";
 import { getUserByEmail } from "../../controllers/userController";
 import {
   getServiceSubscription,
@@ -22,32 +22,27 @@ const route: Route<typeof schema> = {
   method: "GET",
   schema,
   handler: async (request, _server) => {
-    // Prerequisites for OAuth
     const issuer = new URL(process.env.GOOGLE_ISSUER!);
     const redirect_uri = process.env.GOOGLE_REDIRECT_URI!;
 
-    // Discovery Request
     const as = await oauth
       .discoveryRequest(issuer, { algorithm: "oidc" })
       .then((response) => oauth.processDiscoveryResponse(issuer, response));
 
-    // OAuth2 Client Configuration
     const client: oauth.Client = { client_id: process.env.GOOGLE_CLIENT_ID! };
     const clientAuth = oauth.ClientSecretPost(
       process.env.GOOGLE_CLIENT_SECRET!,
     );
     const currentUrl = new URL(request.url);
-    const session = await getSession();
-
-    if (!session) {
-      console.log("Session not found");
+    const state = currentUrl.searchParams.get("state");
+    if (!state) {
+      console.log("State not found");
       return new Response(
-        JSON.stringify({ error: "There was an error with the session" }),
+        JSON.stringify({ error: "State not found" }),
         { status: 500 },
       );
     }
-
-    const { code_verifier, state } = session;
+    const code_verifier = await getAndDeleteSession(state);
     const params = oauth.validateAuthResponse(as, client, currentUrl, state);
     const response = await oauth.authorizationCodeGrantRequest(
       as,

@@ -1,8 +1,8 @@
 import * as oauth from "oauth4webapi";
 import type { Route } from "../../types";
 import { z } from "zod";
-import { host } from "../../utils";
 import process from "node:process";
+import { saveSession } from "../../controllers/sessionController";
 
 const schema = z.never();
 
@@ -32,22 +32,10 @@ const route: Route<typeof schema> = {
     authorizationUrl.searchParams.set("code_challenge_method", "S256");
     authorizationUrl.searchParams.set("state", state);
 
-    const response = await fetch(
-      host("DATABASE", "/service-management/create-oauth-session"),
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code_verifier,
-          state,
-        }),
-      },
-    );
+    const response = await saveSession(code_verifier, state);
 
-    if (!response.ok) {
-      return new Response(await response.text(), { status: 500 });
+    if (!response) {
+      return new Response("Failed to save session", { status: 500 });
     }
     return Response.redirect(authorizationUrl.href);
   },
