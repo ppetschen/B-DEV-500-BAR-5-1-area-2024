@@ -1,12 +1,9 @@
 x-kong-config: &kong-env
   KONG_DATABASE: postgres
-  KONG_PG_DATABASE: ${POSTGRES_DB}
+  KONG_PG_DATABASE: kong
   KONG_PG_HOST: kong-database
-  KONG_PG_USER: ${POSTGRES_USER}
-  KONG_PG_PASSWORD: ${POSTGRES_PASSWORD}
-
-  MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-  MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+  KONG_PG_USER: kong
+  KONG_PG_PASSWORD: kongpass
 
 services:
   kong-migrations:
@@ -19,8 +16,6 @@ services:
     networks:
       - kong-net
     restart: on-failure
-    env_file:
-      - ./.env
 
   kong-migrations-up:
     image: kong/kong-gateway
@@ -32,8 +27,6 @@ services:
     networks:
       - kong-net
     restart: on-failure
-    env_file:
-      - ./.env
 
   kong-config:
     image: kong/kong-gateway
@@ -46,8 +39,6 @@ services:
     networks:
       - kong-net
     restart: on-failure
-    env_file:
-      - ./.env
     volumes:
       - ./config/kong.yaml:/usr/local/kong/declarative/kong.yaml
 
@@ -77,30 +68,20 @@ services:
       timeout: 10s
       retries: 10
     restart: on-failure:5
-    env_file:
-      - ./.env
     volumes:
       - ./config/kong.yaml:/usr/local/kong/declarative/kong.yaml
 
   kong-database:
     image: postgres
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      <<: *kong-env
+      POSTGRES_DB: kong
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kongpass
     volumes:
       - ../database/sources/models:/docker-entrypoint-initdb.d/
     networks:
       - kong-net
-    env_file:
-      - ./.env
-
-  mongo:
-    image: mongo
-    restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
 
   database-service:
     build:
@@ -116,8 +97,6 @@ services:
     depends_on:
       - kong-gateway
       - kong-database
-    env_file:
-      - ../database/.env
     restart: on-failure:10
 
   user-management-service:
@@ -142,8 +121,6 @@ services:
     build:
       context: ../service-management
       dockerfile: Dockerfile
-    env_file:
-      - ../service-management/.env
     environment:
       <<: *kong-env
       PORT: 3000

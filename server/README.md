@@ -3,6 +3,8 @@
 > [!WARNING]
 > This is a work in progress, expect breaking changes without notice.
 
+![architecture](./deployment/assets/area-arch.png)
+
 ## architecture
 
 This project follows a Microservices architecture, where each service is a

@@ -29,8 +29,21 @@ services:
       - name: example-route
         paths:
           - /example
-        methods:
-          - GET
+```
+
+If the server needs `JWT` authentication, you can add the `plugins` field to the
+service.
+
+```yaml
+services:
+  # ... other services
+  - name: example-service
+    # ... other fields
+    plugins:
+      - name: jwt
+        config:
+          uri_param_names:
+            - paramName_2.2.x
 ```
 
 Next, add the service to the `services` section of the `docker-compose.yaml`
@@ -49,8 +62,10 @@ services:
     build:
       context: ../example
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    environment:
+      <<: *kong-env
+      PORT: 3000
+      # ... other environment variables
     networks:
       - kong-net
     depends_on:
@@ -68,3 +83,12 @@ Admin API. To access the API, you can use the following command:
 ```sh
 curl http://localhost:8001/routes |jq
 ```
+
+If you are unsure of the exposed routes for each service, you can use the
+following command:
+
+```sh
+curl http://localhost:8000/my-service/info |jq
+```
+
+This will return the service's information, including the available routes.

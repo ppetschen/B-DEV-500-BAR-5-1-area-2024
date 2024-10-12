@@ -14,20 +14,11 @@ services:
       - name: service-management-service
         paths:
           - /service-management
-
-  - name: action-service
-    url: http://action-service:3000
-    routes:
-      - name: action-service
-        paths:
-          - /action
-
-  - name: reaction-service
-    url: http://reaction-service:3000
-    routes:
-      - name: reaction-service
-        paths:
-          - /reaction
+    plugins:
+      - name: jwt
+        config:
+          uri_param_names:
+            - paramName_2.2.x
 
   - name: area-composition-service
     url: http://area-composition-service:3000
@@ -35,3 +26,8 @@ services:
       - name: area-composition-service
         paths:
           - /area-composition
+    plugins:
+      - name: jwt
+        config:
+          uri_param_names:
+            - paramName_2.2.x
