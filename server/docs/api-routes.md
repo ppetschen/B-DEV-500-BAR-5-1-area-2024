@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.30` on
-> GitHub actions, commit hash `ee6b7a42424aa38dc1a99f9832387e9a3c640df2`.
+> GitHub actions, commit hash `be84afc9fbef163c04613455011280898f56e971`.
 
 ## action
 
@@ -38,6 +38,16 @@ POST /create
 
 
 ## database
+
+```http
+POST /area-composition/list-areas
+```
+```ts
+// This route is internal, won't be exposed
+{
+    userId: number;
+}
+```
 
 ```http
 POST /area-composition/update-state
@@ -270,6 +280,14 @@ GET /service-management/auth/discord/callback
 
 
 ## area-composition
+
+```http
+GET /area-composition/list
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
+```
 
 ```http
 POST /area-composition/execute
