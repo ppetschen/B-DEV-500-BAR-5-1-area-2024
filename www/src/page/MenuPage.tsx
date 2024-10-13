@@ -31,7 +31,7 @@ const MenuPage: React.FC = () => {
             variant="h5"
             sx={{ mb: 4, color: "#F2F2F2", fontWeight: "bold" }}
           >
-            You're all-on-in automation solution
+            You're an all-in-one automation solution
           </Typography>
           <Button
             variant="outlined"

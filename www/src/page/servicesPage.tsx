@@ -1,27 +1,42 @@
-import React from "react";
-import { FaEnvelope, FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
+import React, {useState} from "react";
+import {Box, Grid, Card, Typography, IconButton, Chip} from '@mui/material';
+import { FaFacebook, FaGithub, FaGoogle, FaDiscord } from "react-icons/fa";
+import { SiMicrosoftoutlook } from 'react-icons/si';
+import Tooltip from '@mui/material/Tooltip';
 
 const ServicesPage: React.FC = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
   const services = [
     {
       name: "Google",
       description: "Google is a search engine",
       icon: FaGoogle,
+      category: 'Productivity',
     },
     {
       name: "GitHub",
       description: "GitHub is a code hosting platform",
       icon: FaGithub,
+      category: 'Developer Tools',
     },
     {
       name: "Facebook",
       description: "Facebook is a social media platform",
       icon: FaFacebook,
+      category: 'Advertising',
     },
     {
       name: "Outlook",
       description: "Outlook is an email service",
-      icon: FaEnvelope,
+      icon: SiMicrosoftoutlook,
+      category: 'Productivity',
+    },
+    {
+      name: "Discord",
+      description: "Discord is a communication platform",
+      icon: FaDiscord,
+      category: 'Communication',
     },
   ];
 
@@ -32,27 +47,74 @@ const ServicesPage: React.FC = () => {
       `${import.meta.env.VITE_API_BASE_URL}/service-management/auth/${service}`;
   };
 
+  const filteredServices = selectedCategory ? services.filter(service => service.category === selectedCategory) : services;
+
   return (
-    <div className="p-8 rounded-lg glass-effect">
-      <h1 className="mb-6 text-3xl font-bold text-[#5A6ACF]">Services</h1>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {services.map((service, index) => (
-          <button
-            key={index}
-            className="p-4 bg-[#5A6ACF] border rounded-lg transition-shadow duration-200 hover:shadow-lg focus:outline-none w-full h-full"
-            onClick={() => handleServiceClick(service.name)}
-          >
-            <div className="flex items-center mb-2">
-              <service.icon className="w-6 h-6 mr-3 text-white" />
-              <h2 className="text-xl font-semibold text-white">
-                {service.name}
-              </h2>
-            </div>
-            <p className="text-gray-300">{service.description}</p>
-          </button>
+    <Box sx={{ p: 4, bgcolor: '#F7F7F9', minHeight: '100vh' }}>
+      < Typography variant="h4" sx={{fontWeight: 'bold', color: '#5A6ACF', mb: 6}}>
+        SERVICES
+      </Typography>
+
+      <Box sx={{mb: 2}}>
+        {['All', 'Advertising', 'Productivity', 'Communication', 'Developer Tools'].map((category) => (
+          <Chip
+            key={category}
+            label={category}
+            variant={selectedCategory === category ? 'filled': 'outlined'}
+            onClick={() => setSelectedCategory(category === 'All' ? null: category)}
+            sx={{
+              mr: 1,
+              transition: 'background-color 0.3s, color 0.3s',
+              cursor: 'pointer',
+              bgcolor: selectedCategory === category ? '#5A6ACF' : 'transparent',
+              color: selectedCategory === category ? '#fff' : '#5A6ACF', '&:hover' : {
+                bgcolor: selectedCategory !== category ? '#E0E7FF' : '#5A6ACF',
+                color: selectedCategory !== category ? '#5A6ACF' : '#fff',
+              },
+            }}
+          />
         ))}
-      </div>
-    </div>
+      </Box>
+
+      <Grid container spacing={3}>
+        {filteredServices.map((service, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card
+              sx={{
+                p: 3,
+                borderRadius: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                backgroundColor: '#fff',
+                boxShadow: 3,
+                transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out', '&:hover': {
+                  transform: 'scale(1.05)',
+                  boxShadow: 6,
+                },
+              }}
+            >
+              <Tooltip title={service.name} arrow>
+                <IconButton
+                  sx={{ bgcolor: '#5A6ACF', color: '#fff', p: 2, mb: 2}}
+                  onClick={() => handleServiceClick(service.name)}
+                >
+                  {React.createElement(service.icon, { size: 32})}
+                </IconButton>
+              </Tooltip>
+
+              <Typography variant="h6" sx={{color: '#273240', fontWeight: 'bold', mb: 1}}>
+                {service.name}
+              </Typography>
+              <Typography variant="body2" sx={{ color: '#555', mb: 2}}>
+                {service.description}
+              </Typography>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 

@@ -12,11 +12,9 @@ dist
 dist-ssr
 *.local
 *.env
-<<<<<<< HEAD
+
 *package-lock.json
 *yarn.lock
-=======
->>>>>>> 107f852 (fix: added .env in gitignore file)
 
 # Editor directories and files
 .vscode/*
