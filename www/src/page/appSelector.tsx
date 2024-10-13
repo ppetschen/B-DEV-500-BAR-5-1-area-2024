@@ -3,16 +3,20 @@ import { Box, Typography, Card, Grid, Stepper, Step, StepLabel, Button } from '@
 import { FaGithub, FaGoogle, FaFacebook, FaMicrosoft } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
 import { isUserSubscribedToService } from '@/services/serviceManagement';
+import { IconType } from 'react-icons/lib';
 
 interface AppSelectorProps {
-  onComplete: (action: { app: string, trigger: string }, reaction: { app: string, trigger: string }) => void;
+  title: string;
+  onSelectApp: (app: string) => void;
+  onSelectTrigger: (trigger: string) => void;
+  onComplete?: (action: { app: string, trigger: string }, reaction: { app: string, trigger: string }) => void;
 }
 
 // Define a type for the valid keys of the iconMap and apps objects
 type AppNames = 'GitHub' | 'Gmail' | 'Google' | 'Facebook' | 'Outlook';
 
 // Create a mapping of icons for each app
-const iconMap: Record<AppNames, React.FC<any>> = {
+const iconMap: Record<AppNames, IconType> = {
   GitHub: FaGithub,
   Gmail: SiGmail,
   Google: FaGoogle,
@@ -40,7 +44,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ onComplete }) => {
 
   const handleAppClick = async (appName: AppNames) => {
     const service = appName.toLowerCase();
-    let response = await isUserSubscribedToService(service);
+    const response = await isUserSubscribedToService(service);
     if (!response) {
       alert("You need to subscribe to this service first, go to the services page to subscribe.");
     }
@@ -52,7 +56,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ onComplete }) => {
         setSelectedReactionApp(appName);
         setActiveStep(3);
       }
-      else { "An error occured" };
+      else { alert("An error occured") };
     }
   };
 
@@ -166,7 +170,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ onComplete }) => {
         <Button
           variant="contained"
           sx={{ backgroundColor: 'white', color: '#5A6ACF', '&:hover': { backgroundColor: '#F7F7F9' } }}
-          onClick={() => onComplete(
+          onClick={() => onComplete && onComplete(
             { app: selectedActionApp!, trigger: selectedActionTrigger! },
             { app: selectedReactionApp!, trigger: selectedReactionTrigger! }
           )}

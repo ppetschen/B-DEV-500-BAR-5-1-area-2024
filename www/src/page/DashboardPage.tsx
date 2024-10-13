@@ -13,7 +13,7 @@ import {
 import { SiGmail } from "react-icons/si";
 
 const Dashboard: React.FC = () => {
-  const [selectedAutomation, setSelectedAutomation] = useState<string | null>(
+  const [, setSelectedAutomation] = useState<string | null>(
     null
   );
 
@@ -71,11 +71,12 @@ const Dashboard: React.FC = () => {
     },
   ];
 
-  const statusIcons = {
-    Completed: <FaCheckCircle color="#4CAF50" />,
-    Pending: <FaHourglassHalf color="#FFC107" />,
-    Failed: <FaTimesCircle color="#F44336" />,
-  };
+  // // Uncomment this when you want to use icons for status
+  // const statusIcons = {
+  //   Completed: <FaCheckCircle color="#4CAF50" />,
+  //   Pending: <FaHourglassHalf color="#FFC107" />,
+  //   Failed: <FaTimesCircle color="#F44336" />,
+  // };
 
   const statusColors: {
     [key in "Completed" | "Pending" | "Failed"]:
