@@ -1,5 +1,10 @@
 # deployment
 
+> [!WARNING]
+> Please fill in the service-management
+> [`.env`](../service-management/.env.example) file with the correct OAuth2 and
+> JWT secrets.
+
 ```sh
 docker compose up
 ```

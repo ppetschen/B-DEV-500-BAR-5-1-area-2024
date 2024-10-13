@@ -135,6 +135,8 @@ services:
       - kong-gateway
       - database-service
     restart: on-failure:10
+    env_file:
+      - ../service-management/.env
 
   action-service:
     build:
