@@ -30,6 +30,7 @@ services:
           - /area-composition
     plugins:
       - name: jwt
+        enabled: false
         config:
           uri_param_names:
             - paramName_2.2.x

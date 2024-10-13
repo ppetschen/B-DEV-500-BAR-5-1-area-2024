@@ -14,7 +14,7 @@ const route: Route<typeof schema> = {
   handler: async (request, _server) => {
     const { id, status } = await request.json();
     const { rows: [result] } = await client.query(
-      `UPDATE area_compositions SET status = $2 WHERE id = $1 RETURNING *`,
+      `UPDATE reactions SET status = $2 WHERE id = $1 RETURNING *`,
       [id, status],
     );
 

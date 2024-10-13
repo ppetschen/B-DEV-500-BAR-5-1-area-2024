@@ -1,27 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import AppSelector from "./appSelector";
+import { setupArea } from "@/services/areaComposition";
+
+type One = Parameters<Parameters<typeof AppSelector>[0]["onComplete"]>;
+
+const createArea = async (...[action, reaction]: One) => {
+  const payload = {
+    from_service_name: action.app.toUpperCase(),
+    from_event_type: action.event_type.split(" ").join("_").toUpperCase(),
+    from_payload: typeof action.payload === "string"
+      ? JSON.parse(action.payload)
+      : action.payload,
+    to_service_name: reaction.app.toUpperCase(),
+    to_execution_endpoint: reaction.webhookUrl,
+  };
+
+  const data = await setupArea(payload);
+  if (!data) {
+    console.error("Failed to create area");
+    return;
+  }
+};
 
 const AutomationPage: React.FC = () => {
-  const [selectedApp, setSelectedApp] = useState<string | null>(null);
-  const [selectedTrigger, setSelectedTrigger] = useState<string | null>(null);
-
   return (
     <div className="p-6">
       <div>
         <AppSelector
           title="Action:"
-          onSelectApp={setSelectedApp}
-          onSelectTrigger={setSelectedTrigger}
+          onComplete={createArea}
         />
-        {selectedApp && selectedTrigger && (
-          <AppSelector
-            title="Reaction:"
-            onSelectApp={(app) => console.log(`Action app selected: ${app}`)}
-            onSelectTrigger={(trigger) =>
-              console.log(`Action trigger selected: ${trigger}`)
-            }
-          />
-        )}
       </div>
     </div>
   );

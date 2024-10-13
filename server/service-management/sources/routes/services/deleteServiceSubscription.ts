@@ -5,7 +5,7 @@ import { getConsumerFromJWT } from "../../controllers/jwtController";
 import { getUserById } from "../../controllers/userController";
 
 const schema = z.object({
-  service: z.string()
+  service: z.string(),
 });
 
 const route: Route<typeof schema> = {

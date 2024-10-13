@@ -3,12 +3,14 @@ import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
 import {
   FaChartBar,
   FaCheckCircle,
+  FaDiscord,
+  FaGithub,
   FaGoogle,
   FaHourglassHalf,
   FaSpinner,
   FaTimesCircle,
 } from "react-icons/fa";
-import { SiGmail } from "react-icons/si";
+import { API_BASE_URL } from "@/services/api";
 import { listAreas } from "@/services/areaComposition";
 
 type ActivityElement = {
@@ -16,6 +18,7 @@ type ActivityElement = {
   services: JSX.Element[];
   status: string;
   date: string;
+  url: string;
 };
 
 type MetricElement = {
@@ -23,6 +26,21 @@ type MetricElement = {
   value: number;
   icon: React.ComponentType<{ size: number; color: string }>;
   color: string;
+};
+
+const IconMap = {
+  GITHUB: <FaGithub />,
+  GOOGLE: <FaGoogle />,
+  DISCORD: <FaDiscord />,
+};
+
+const testArea = (url: string) => {
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+
+  alert("Test area executed!");
 };
 
 const Dashboard: React.FC = () => {
@@ -36,9 +54,10 @@ const Dashboard: React.FC = () => {
       .then((areas) =>
         areas.map((area) => ({
           name: area.service_name,
-          services: [<SiGmail />, <FaGoogle />], // Placeholder, replace with actual icons
+          services: [IconMap[area.service_name as keyof typeof IconMap]],
           status: area.event_type,
           date: area.created_at,
+          url: `${API_BASE_URL}/area-composition/execute?id=${area.id}`,
         }))
       )
       .then((areaData) => {
@@ -215,7 +234,17 @@ const Dashboard: React.FC = () => {
                   <Typography variant="body2" color="textSecondary">
                     {activity.date}
                   </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {activity.url}
+                  </Typography>
                 </Box>
+                <Chip
+                  label="Test Area"
+                  color={"primary"}
+                  variant="outlined"
+                  sx={{ fontWeight: "bold", mr: 2 }}
+                  onClick={() => testArea(activity.url)}
+                />
                 <Chip
                   label={activity.status}
                   color={statusColors[

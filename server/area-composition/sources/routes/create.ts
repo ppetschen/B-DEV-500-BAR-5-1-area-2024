@@ -1,6 +1,7 @@
 import type { Route } from "../types";
 import { z } from "zod";
 import { host } from "../utils";
+import jwt from "jsonwebtoken";
 
 const schema = z.object({
   from_service_name: z.string().max(255),
@@ -23,6 +24,21 @@ const route: Route<typeof schema> = {
       to_execution_endpoint,
     } = await request.json();
 
+    const authHeader = request.headers.get("Authorization") ?? "";
+    const [_, token] = authHeader.split("Bearer ");
+
+    if (!token) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    const decoded = jwt.decode(token);
+
+    if (!(decoded instanceof Object)) {
+      return new Response("Unauthorized", { status: 401 });
+    }
+
+    const { consumer } = decoded;
+
     const actionRequest = await fetch(
       host("ACTION", "/create"),
       {
@@ -34,6 +50,7 @@ const route: Route<typeof schema> = {
           service_name: from_service_name,
           event_type: from_event_type,
           payload: from_payload,
+          owner_id: consumer,
         }),
       },
     );

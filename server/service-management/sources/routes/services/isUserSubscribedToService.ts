@@ -24,10 +24,13 @@ const route: Route<typeof schema> = {
 
     const response = await getServiceSubscription(service, user_id);
     if (!response) {
-      return new Response(JSON.stringify("User not subscribed to ${service}"), { status: 404 });
-    }
-    else {
-      return new Response(JSON.stringify("User is subscribed to ${service}"), { status: 200 });
+      return new Response(JSON.stringify("User not subscribed to ${service}"), {
+        status: 404,
+      });
+    } else {
+      return new Response(JSON.stringify("User is subscribed to ${service}"), {
+        status: 200,
+      });
     }
   },
 };

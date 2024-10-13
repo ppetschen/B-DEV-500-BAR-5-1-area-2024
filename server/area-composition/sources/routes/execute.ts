@@ -30,8 +30,26 @@ const route: Route<typeof schema> = {
       return new Response(await getReactionRequest.text(), { status: 500 });
     }
 
-    const { execution_endpoint, execution_payload } = await getReactionRequest
-      .json();
+    const { execution_endpoint, action_id } = await getReactionRequest.json();
+
+    const getActionRequest = await fetch(
+      host("DATABASE", `/action/resolve`),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: action_id }),
+      },
+    );
+
+    if (!getActionRequest.ok) {
+      return new Response(await getActionRequest.text(), { status: 500 });
+    }
+
+    const { payload: execution_payload } = await getActionRequest.json();
+
+    console.log({ execution_endpoint, execution_payload });
 
     const executeRequest = await fetch(
       execution_endpoint,

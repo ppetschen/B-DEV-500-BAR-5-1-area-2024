@@ -6,6 +6,7 @@ const schema = z.object({
   service_name: z.string().max(255),
   event_type: z.string().max(255),
   payload: z.record(z.unknown()),
+  owner_id: z.number(),
 });
 
 const route: Route<typeof schema> = {
@@ -13,7 +14,8 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const { service_name, event_type, payload } = await request.json();
+    const { service_name, event_type, payload, owner_id } = await request
+      .json();
 
     const insertRequest = await fetch(
       host("DATABASE", "/action/create"),
@@ -22,7 +24,7 @@ const route: Route<typeof schema> = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ service_name, event_type, payload }),
+        body: JSON.stringify({ service_name, event_type, payload, owner_id }),
       },
     );
 
