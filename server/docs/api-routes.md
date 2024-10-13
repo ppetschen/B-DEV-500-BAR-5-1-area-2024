@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.30` on
-> GitHub actions, commit hash `496076afa358417f6f77b0377f6fdb210b241d02`.
+> GitHub actions, commit hash `1ab8f4609daf0ab59c393ed1cad632ff621fc061`.
 
 ## action
 
@@ -199,13 +199,22 @@ GET /service-management/auth/github/callback
 ```
 
 ```http
+POST /service-management/auth/is_user_subscribed
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    service: string;
+}
+```
+
+```http
 POST /service-management/auth/get-service-token
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
 {
     service: string;
-    user_id: number;
 }
 ```
 
@@ -224,7 +233,6 @@ DELETE /service-management/auth/delete-service-subscription
 // Authorization: Bearer $AUTH_TOKEN
 {
     service: string;
-    user_id: number;
 }
 ```
 
