@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Github, Loader2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../services/user";
+import { register } from "../../services/userManagement";
 
 export const Icons = {
   spinner: Loader2,

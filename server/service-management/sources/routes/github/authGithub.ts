@@ -11,6 +11,7 @@ const route: Route<typeof schema> = {
   method: "GET",
   schema,
   handler: async (_request, _server) => {
+    console.log("Authenticating to GitHub");
     const code_verifier = oauth.generateRandomCodeVerifier();
     const code_challenge = await oauth.calculatePKCECodeChallenge(
       code_verifier,

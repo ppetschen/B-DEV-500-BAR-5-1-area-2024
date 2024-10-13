@@ -117,7 +117,8 @@ const route: Route<typeof schema> = {
         { status: 500 },
       );
     }
-    return Response.redirect("/service-management/info", 302);
+    const frontendRedirectUrl = process.env.FRONT_REDIRECT_SERVICES_URI!;
+    return Response.redirect(frontendRedirectUrl);
   },
 };
 

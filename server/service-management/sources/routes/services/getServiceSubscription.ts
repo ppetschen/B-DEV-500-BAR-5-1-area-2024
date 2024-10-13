@@ -1,11 +1,12 @@
 import type { Route } from "../../types";
 import { z } from "zod";
 import { getServiceSubscription } from "../../controllers/serviceController";
+import { getConsumerFromJWT } from "../../controllers/jwtController";
+import { getUserById } from "../../controllers/userController";
 
 const schema = z.object(
   {
     service: z.string(),
-    user_id: z.number(),
   },
 );
 
@@ -14,7 +15,12 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const { service, user_id } = await request.json();
+    const token = request.headers.get("authorization")?.split("Bearer ")[1];
+    let user = await getConsumerFromJWT(token!);
+    user = await getUserById(user);
+    user = await user.json();
+    const user_id = user.id;
+    const { service } = await request.json();
 
     const response = await getServiceSubscription(service, user_id);
     if (!response) {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Typography, Card, Grid, Stepper, Step, StepLabel, Button } from '@mui/material';
 import { FaGithub, FaGoogle, FaFacebook, FaMicrosoft } from 'react-icons/fa';
 import { SiGmail } from 'react-icons/si';
+import { isUserSubscribedToService } from '@/services/serviceManagement';
 
 interface AppSelectorProps {
   onComplete: (action: { app: string, trigger: string }, reaction: { app: string, trigger: string }) => void;
@@ -37,13 +38,21 @@ const AppSelector: React.FC<AppSelectorProps> = ({ onComplete }) => {
   const [selectedReactionApp, setSelectedReactionApp] = useState<AppNames | null>(null);
   const [selectedReactionTrigger, setSelectedReactionTrigger] = useState<string | null>(null);
 
-  const handleAppClick = (appName: AppNames) => {
-    if (activeStep === 0) {
-      setSelectedActionApp(appName);
-      setActiveStep(1);
-    } else if (activeStep === 2) {
-      setSelectedReactionApp(appName);
-      setActiveStep(3);
+  const handleAppClick = async (appName: AppNames) => {
+    const service = appName.toLowerCase();
+    let response = await isUserSubscribedToService(service);
+    if (!response) {
+      alert("You need to subscribe to this service first, go to the services page to subscribe.");
+    }
+    else {
+      if (activeStep === 0) {
+        setSelectedActionApp(appName);
+        setActiveStep(1);
+      } else if (activeStep === 2) {
+        setSelectedReactionApp(appName);
+        setActiveStep(3);
+      }
+      else { "An error occured" };
     }
   };
 
