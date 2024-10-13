@@ -16,6 +16,7 @@ services:
           - /service-management
     plugins:
       - name: jwt
+        enabled: false
         config:
           uri_param_names:
             - paramName_2.2.x
@@ -36,20 +37,22 @@ plugins:
   - name: cors
     config:
       origins:
-      - http://localhost:5173
+        - http://localhost:5173
       methods:
         - GET
         - POST
+        - DELETE
+        - PUT
+        - PATCH
+        - OPTIONS
       headers:
-        - Accept
-        - Accept-Version
-        - Content-Length
-        - Content-MD5
         - Content-Type
-        - Date
         - Authorization
+        - Accept
+        - X-Requested-With
       exposed_headers:
         - Authorization
       credentials: true
       max_age: 3600
+
 
