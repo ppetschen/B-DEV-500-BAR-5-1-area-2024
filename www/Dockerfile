@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS build
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -10,10 +10,6 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:stable-alpine
+EXPOSE 4173
 
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "preview"]
