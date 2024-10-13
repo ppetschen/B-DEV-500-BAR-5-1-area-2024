@@ -6,8 +6,8 @@ const AutomationPage: React.FC = () => {
   const [selectedTrigger, setSelectedTrigger] = useState<string | null>(null);
 
   return (
-    <div className="p-6 automation-page">
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="p-6">
+      <div>
         <AppSelector
           title="Action:"
           onSelectApp={setSelectedApp}

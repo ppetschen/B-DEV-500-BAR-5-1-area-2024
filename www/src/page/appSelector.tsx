@@ -181,15 +181,14 @@ const AppSelector: React.FC<AppSelectorProps> = ({ onComplete }) => {
     </Box>
   );
 
-
   return (
     <Box sx={{ p: 4, backgroundColor: '#F7F7F9', borderRadius: 2, width: '100%' }}>
-      <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#5A6ACF', mb: 2 }}>
+      <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#5A6ACF', mb: 10 }}>
         Automation Setup
       </Typography>
 
       {/* Stepper for visual progress */}
-      <Stepper activeStep={activeStep} sx={{ mb: 4 }} alternativeLabel>
+      <Stepper activeStep={activeStep} sx={{ mb: 8 }} alternativeLabel>
         {steps.map((label, index) => (
           <Step key={label} onClick={() => handleStepClick(index)} sx={{ cursor: 'pointer' }}>
             <StepLabel>{label}</StepLabel>

@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import LoginPage from "./page/auth/LoginPage";
 import SignupPage from "./page/auth/SignupPage";
-import Layout from "./components/layout/layout/layout";
+import Layout from "./components/layout/Layout";
 import Dashboard from "./page/DashboardPage";
 import CreateAreaPage from "./page/AutomationPage";
 import ServicesPage from "./page/servicesPage";

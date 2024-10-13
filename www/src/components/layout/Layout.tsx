@@ -1,7 +1,7 @@
 // src/components/Layout.tsx
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import Sidebar from "./sidebar";
+import Sidebar from "./Sidebar";
 import Header from "./Header";
 
 const Layout: React.FC = () => {

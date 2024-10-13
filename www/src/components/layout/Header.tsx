@@ -6,11 +6,13 @@ import {
   Box,
   Menu,
   MenuItem,
+  InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import SearchIcon from "@mui/icons-material/Search";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
@@ -49,7 +51,14 @@ const Header: React.FC = () => {
         placeholder="Search..."
         variant="outlined"
         size="small"
-        sx={{ width: "300px", backgroundColor: "#F7F9FC", borderRadius: 1 }}
+        sx={{ width: "600px", backgroundColor: "#F7F9FC", borderRadius: 1 }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon/>
+            </InputAdornment>
+          ),
+        }}
       />
       <div>
         <IconButton onClick={handleOpenMenu}>
