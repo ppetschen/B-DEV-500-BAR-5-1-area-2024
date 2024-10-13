@@ -7,15 +7,13 @@ import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../services/userManagement";
 
-export const Icons = {
+const Icons = {
   spinner: Loader2,
   gitHub: Github,
   google: FcGoogle,
 };
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
-export default function SignupPage({ className, ...props }: UserAuthFormProps) {
+export default function SignupPage({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -40,7 +38,7 @@ export default function SignupPage({ className, ...props }: UserAuthFormProps) {
         alert("Registration successful");
         navigate("/dashboard");
       }
-    } catch (error) {
+    } catch {
       alert("User already exists");
     } finally {
       setIsLoading(false);

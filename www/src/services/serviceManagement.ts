@@ -7,7 +7,7 @@ export const deleteService = async (service: string) => {
 };
 
 export const authenticateToService = async (service: string) => {
-    window.location.href = `http://localhost:8000/service-management/auth/${service}`;
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/service-management/auth/${service}`;
 };
 
 export const isUserSubscribedToService = async (service: string) => {
