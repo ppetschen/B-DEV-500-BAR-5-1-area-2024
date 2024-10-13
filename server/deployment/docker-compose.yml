@@ -109,6 +109,7 @@ services:
       DATABASE_HOST: database-service:3000
       GATEWAY_HOST: kong-gateway:8001
       JWT_CONSUMER_NAME: jwt-consumer
+      JWT_CONSUMER_SECRET: ${JWT_CONSUMER_SECRET:-jwtsecret}
       KONG_DELAY_MS: 10000
     networks:
       - kong-net

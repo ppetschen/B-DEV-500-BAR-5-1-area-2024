@@ -1,5 +1,11 @@
 import { Client } from "pg";
 
+if (process.env["KONG_DELAY_MS"]) {
+  await new Promise((resolve) =>
+    setTimeout(resolve, Number(process.env["KONG_DELAY_MS"]))
+  );
+}
+
 export const client = new Client({
   host: process.env["KONG_PG_HOST"],
   database: process.env["KONG_PG_DATABASE"],

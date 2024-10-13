@@ -16,10 +16,10 @@ services:
           - /service-management
     plugins:
       - name: jwt
-        enabled: false
         config:
           uri_param_names:
             - paramName_2.2.x
+          secret_is_base64: false
 
   - name: area-composition-service
     url: http://area-composition-service:3000
@@ -32,6 +32,7 @@ services:
         config:
           uri_param_names:
             - paramName_2.2.x
+          secret_is_base64: false
 
 plugins:
   - name: cors
@@ -54,5 +55,4 @@ plugins:
         - Authorization
       credentials: true
       max_age: 3600
-
 

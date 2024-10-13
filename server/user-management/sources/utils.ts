@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import type { JWTResponse } from "./types";
 import jwt from "jsonwebtoken";
 
@@ -16,11 +15,29 @@ export const createConsumer = async (id: string) => {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: `username=${id}&custom_id=${randomUUID()}`,
+    body: `username=${id}`,
   });
 
   if (!response.ok) {
     throw new Error("Failed to create consumer");
+  }
+
+  return await response.json();
+};
+
+export const initConsumer = async (id: string) => {
+  const secret = process.env["JWT_CONSUMER_SECRET"]!;
+
+  const response = await fetch(host("GATEWAY", `/consumers/${id}/jwt`), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: `algorithm=HS256&secret=${secret}`,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to init consumer");
   }
 
   return await response.json();
@@ -79,7 +96,7 @@ export const getJWTsForConsumer = async (id: string): Promise<
 
 export const craftJWTFromResponse = (
   realm: "USER" | "SERVICE",
-  { key }: JWTResponse,
+  { key, secret }: JWTResponse,
   id: string,
 ) => {
   return jwt.sign(
@@ -87,10 +104,11 @@ export const craftJWTFromResponse = (
       consumer: id,
       realm,
     },
-    key,
+    secret,
     {
       algorithm: "HS256",
       expiresIn: "1h",
+      issuer: key,
     },
   );
 };
@@ -101,6 +119,7 @@ export const setupConsumer = async () => {
     await getConsumer(id);
   } catch (error) {
     await createConsumer(id);
+    await initConsumer(id);
   }
 
   try {

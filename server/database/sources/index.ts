@@ -4,12 +4,6 @@ import { z } from "zod";
 import { fromError } from "zod-validation-error";
 import { client } from "./utils";
 
-if (process.env["KONG_DELAY_MS"]) {
-  await new Promise((resolve) =>
-    setTimeout(resolve, Number(process.env["KONG_DELAY_MS"]))
-  );
-}
-
 const glob = new Glob("routes/**/*.ts");
 const result = glob.scan({
   cwd: new URL(".", import.meta.url).pathname,
