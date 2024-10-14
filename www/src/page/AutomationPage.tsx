@@ -8,11 +8,18 @@ const createArea = async (...[action, reaction]: One) => {
   const payload = {
     from_service_name: action.app.toUpperCase(),
     from_event_type: action.event_type.split(" ").join("_").toUpperCase(),
-    from_payload: typeof action.payload === "string"
-      ? JSON.parse(action.payload)
-      : action.payload,
+    from_payload: reaction.app === "Google"
+      ? {
+        name: reaction.file_name,
+        content: reaction.file_content,
+      }
+      : {
+        content: action.payload,
+      },
     to_service_name: reaction.app.toUpperCase(),
-    to_execution_endpoint: reaction.webhookUrl,
+    to_execution_endpoint: reaction.app === "Discord"
+      ? reaction.webhook_url
+      : reaction.file_name,
   };
 
   const data = await setupArea(payload);
@@ -20,6 +27,10 @@ const createArea = async (...[action, reaction]: One) => {
     console.error("Failed to create area");
     return;
   }
+
+  alert(`Area created successfully!`);
+
+  window.location.href = `/dashboard`;
 };
 
 const AutomationPage: React.FC = () => {

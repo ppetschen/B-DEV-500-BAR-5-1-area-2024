@@ -7,6 +7,7 @@ import {
   FaGithub,
   FaGoogle,
   FaHourglassHalf,
+  FaJira,
   FaSpinner,
   FaTimesCircle,
 } from "react-icons/fa";
@@ -32,6 +33,7 @@ const IconMap = {
   GITHUB: <FaGithub />,
   GOOGLE: <FaGoogle />,
   DISCORD: <FaDiscord />,
+  JIRA: <FaJira />,
 };
 
 const testArea = (url: string) => {

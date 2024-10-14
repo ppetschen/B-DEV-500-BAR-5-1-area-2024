@@ -30,7 +30,8 @@ const route: Route<typeof schema> = {
       return new Response(await getReactionRequest.text(), { status: 500 });
     }
 
-    const { execution_endpoint, action_id } = await getReactionRequest.json();
+    const { execution_endpoint, service_name, action_id } =
+      await getReactionRequest.json();
 
     const getActionRequest = await fetch(
       host("DATABASE", `/action/resolve`),
@@ -47,20 +48,42 @@ const route: Route<typeof schema> = {
       return new Response(await getActionRequest.text(), { status: 500 });
     }
 
-    const { payload: execution_payload } = await getActionRequest.json();
+    const { payload: execution_payload, owner_id } = await getActionRequest
+      .json();
 
-    console.log({ execution_endpoint, execution_payload });
+    let executeRequest;
 
-    const executeRequest = await fetch(
-      execution_endpoint,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(execution_payload),
-      },
-    );
+    switch (service_name) {
+      case "GOOGLE": {
+        executeRequest = await fetch(
+          host("REACTION", "/google/upload-to-drive"),
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              user_id: owner_id,
+              payload: execution_payload,
+            }),
+          },
+        );
+        break;
+      }
+      default: {
+        executeRequest = await fetch(
+          execution_endpoint,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(execution_payload),
+          },
+        );
+        break;
+      }
+    }
 
     let status: "success" | "failure" = executeRequest.ok
       ? "success"

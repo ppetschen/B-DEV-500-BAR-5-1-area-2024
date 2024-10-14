@@ -47,6 +47,6 @@ export const setupArea = async (area: AreaInput) => {
     const { actionId } = response.data;
 
     return {
-        endpoint: `${API_BASE_URL}/area-composition/execute?id=${actionId}`
-    }
+        endpoint: `${API_BASE_URL}/area-composition/execute?id=${actionId}`,
+    };
 };

@@ -15,12 +15,24 @@ import {
   Typography,
 } from "@mui/material";
 
+type Reaction =
+  | {
+    app: "Discord";
+    trigger: string;
+    message_content: string;
+    webhook_url: string;
+  }
+  | { app: "Google"; trigger: string; file_name: string; file_content: string };
+
+interface Action {
+  app: string;
+  event_type: string;
+  payload: unknown;
+}
+
 interface AppSelectorProps {
   title: string;
-  onComplete: (
-    action: { app: string; event_type: string; payload: unknown },
-    reaction: { app: string; trigger: string; webhookUrl: string },
-  ) => void;
+  onComplete: (action: Action, reaction: Reaction) => void;
 }
 
 const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
@@ -31,6 +43,8 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
   const [reactionKind, setReactionKind] = useState<string>("");
   const [reactionPayload, setReactionPayload] = useState<string>("");
   const [webhookUrl, setWebhookUrl] = useState<string>("");
+  const [fileName, setFileName] = useState<string>("");
+  const [fileContent, setFileContent] = useState<string>("");
 
   const steps = ["Select Action", "Configure Reaction"];
 
@@ -38,13 +52,28 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
     Google: ["Sheet Created", "File Uploaded", "Calendar Event"],
     Github: ["Issue Created", "Pull Request Created", "Commit Added"],
     Outlook: ["Email Dispatched"],
+    Jira: ["Issue Created", "Issue Updated", "Issue Deleted"],
   };
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
-      onComplete?.(
+      const reactionData: Reaction = reactionDestination === "Discord"
+        ? {
+          app: "Discord",
+          trigger: reactionKind,
+          message_content: reactionPayload,
+          webhook_url: webhookUrl,
+        }
+        : {
+          app: "Google",
+          trigger: reactionKind,
+          file_name: fileName,
+          file_content: fileContent,
+        };
+
+      onComplete(
         { app: actionSource, event_type: actionKind, payload: reactionPayload },
-        { app: reactionDestination, trigger: reactionKind, webhookUrl },
+        reactionData,
       );
     } else {
       setActiveStep((prevStep) => prevStep + 1);
@@ -80,12 +109,13 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
                   label="Action Source"
                   onChange={(e) => {
                     setActionSource(e.target.value as string);
-                    setActionKind(""); // Reset action kind when source changes
+                    setActionKind("");
                   }}
                 >
                   <MenuItem value="Google">Google</MenuItem>
                   <MenuItem value="Github">Github</MenuItem>
                   <MenuItem value="Outlook">Outlook</MenuItem>
+                  <MenuItem value="Jira">Jira</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -101,11 +131,13 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
                 >
                   {actionSource &&
                     actionOptions[actionSource as keyof typeof actionOptions]
-                      .map((action) => (
-                        <MenuItem key={action} value={action}>
-                          {action}
-                        </MenuItem>
-                      ))}
+                      .map(
+                        (action) => (
+                          <MenuItem key={action} value={action}>
+                            {action}
+                          </MenuItem>
+                        ),
+                      )}
                 </Select>
               </FormControl>
             </Grid>
@@ -124,7 +156,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
                   label="Reaction Destination"
                   onChange={(e) => {
                     setReactionDestination(e.target.value as string);
-                    setReactionKind(""); // Reset reaction kind when destination changes
+                    setReactionKind("");
                   }}
                 >
                   <MenuItem value="Discord">Discord</MenuItem>
@@ -152,26 +184,53 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12}>
-              <TextField
-                label="Reaction Payload (JSON)"
-                multiline
-                fullWidth
-                value={reactionPayload}
-                onChange={(e) => setReactionPayload(e.target.value)}
-                placeholder='{"key": "value"}'
-              />
-            </Grid>
+            {reactionDestination === "Discord" && (
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Message Content"
+                    multiline
+                    fullWidth
+                    value={reactionPayload}
+                    onChange={(e) => setReactionPayload(e.target.value)}
+                    placeholder="Enter message content for Discord"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Webhook URL"
+                    fullWidth
+                    value={webhookUrl}
+                    onChange={(e) => setWebhookUrl(e.target.value)}
+                    placeholder="https://discord.com/api/webhooks/..."
+                  />
+                </Grid>
+              </>
+            )}
 
-            <Grid item xs={12}>
-              <TextField
-                label="Webhook URL"
-                fullWidth
-                value={webhookUrl}
-                onChange={(e) => setWebhookUrl(e.target.value)}
-                placeholder="https://discord.com/api/webhooks/..."
-              />
-            </Grid>
+            {reactionDestination === "Google" && (
+              <>
+                <Grid item xs={12}>
+                  <TextField
+                    label="File Name"
+                    fullWidth
+                    value={fileName}
+                    onChange={(e) => setFileName(e.target.value)}
+                    placeholder="Enter the file name for Google Drive"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="File Content"
+                    multiline
+                    fullWidth
+                    value={fileContent}
+                    onChange={(e) => setFileContent(e.target.value)}
+                    placeholder="Enter the file content for Google Drive"
+                  />
+                </Grid>
+              </>
+            )}
           </Grid>
         </Box>
       )}
