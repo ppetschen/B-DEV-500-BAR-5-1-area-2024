@@ -1,0 +1,60 @@
+_format_version: "3.0"
+
+services:
+  - name: user-management-service
+    url: http://user-management-service:3000
+    routes:
+      - name: user-management-route
+        paths:
+          - /user-management
+
+  - name: service-management-service
+    url: http://service-management-service:3000
+    routes:
+      - name: service-management-service
+        paths:
+          - /service-management
+    plugins:
+      - name: jwt
+        enabled: false
+        config:
+          uri_param_names:
+            - paramName_2.2.x
+          secret_is_base64: false
+
+  - name: area-composition-service
+    url: http://area-composition-service:3000
+    routes:
+      - name: area-composition-service
+        paths:
+          - /area-composition
+    plugins:
+      - name: jwt
+        enabled: false
+        config:
+          uri_param_names:
+            - paramName_2.2.x
+          secret_is_base64: false
+
+plugins:
+  - name: cors
+    config:
+      origins:
+        - http://localhost:5173
+      methods:
+        - GET
+        - POST
+        - DELETE
+        - PUT
+        - PATCH
+        - OPTIONS
+      headers:
+        - Content-Type
+        - Authorization
+        - Accept
+        - X-Requested-With
+      exposed_headers:
+        - Authorization
+      credentials: true
+      max_age: 3600
+

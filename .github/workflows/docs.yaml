@@ -1,0 +1,45 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  generate-docs:
+    name: Generate Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        run: |
+          curl -sSL https://bun.sh/install | bash
+
+      - name: Install Dependencies
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun install --cwd server/action
+          bun install --cwd server/area-composition
+          bun install --cwd server/database
+          bun install --cwd server/docs
+          bun install --cwd server/reaction
+          bun install --cwd server/service-management
+          bun install --cwd server/user-management
+
+      - name: Generate Docs
+        run: |
+          export PATH="$HOME/.bun/bin:$PATH"
+          bun run --cwd server/docs index.ts
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "github-actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add server/docs/api-routes.md
+          git commit -m "add: auto-generated docs from GitHub Actions"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
