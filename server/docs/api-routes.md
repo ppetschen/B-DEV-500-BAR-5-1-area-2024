@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.30` on
-> GitHub actions, commit hash `f34b9ea267d6818f1cd051158f62ac576dfa33e3`.
+> GitHub actions, commit hash `eeb859c90f0b0f229e9d93070c0b9de9896f1e3a`.
 
 ## action
 
@@ -34,6 +34,20 @@ POST /create
     service_name: string;
     execution_endpoint: string;
     status: "pending" | "failure" | "success";
+}
+```
+
+```http
+POST /google/upload-to-drive
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+    payload: {
+        name: string;
+        content: string;
+    };
 }
 ```
 
@@ -305,6 +319,14 @@ GET /service-management/auth/discord/callback
 
 ```http
 GET /area-composition/list
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
+```
+
+```http
+POST /area-composition/test/google-drive
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
