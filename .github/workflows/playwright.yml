@@ -45,17 +45,17 @@ jobs:
       run: docker compose -f www/docker-compose.yml up --build -d
     #Playwright Tests
     - name: Install dependencies
-      working-directory: tests
+      working-directory: e2e-testing
       run: npm ci
     - name: Install Playwright Browsers
-      working-directory: tests
+      working-directory: e2e-testing
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      working-directory: tests
+      working-directory: e2e-testing
       run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
-        path: tests/playwright-report/
+        path: e2e-testing/playwright-report/
         retention-days: 30
