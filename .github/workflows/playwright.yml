@@ -4,6 +4,7 @@ on:
     branches: [ main, staging, feat/testing/e2e ]
   pull_request:
     branches: [ main, staging, feat/testing/e2e ]
+  workflow_dispatch: # for manual trigger at any branch
 jobs:
   Test-e2e:
     timeout-minutes: 60

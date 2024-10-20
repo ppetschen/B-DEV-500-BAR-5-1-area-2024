@@ -1,4 +1,4 @@
-# demo
+# AREA
 
 The aim of this project is to create a platform that allows users to create
 automations between different services. The user can create a service that
