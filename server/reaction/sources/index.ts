@@ -3,6 +3,7 @@ import type { Route } from "./types.ts";
 import { Glob } from "bun";
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
+import process from "node:process";
 
 if (process.env["KONG_DELAY_MS"]) {
   await new Promise((resolve) =>

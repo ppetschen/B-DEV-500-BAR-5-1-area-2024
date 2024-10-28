@@ -1,5 +1,6 @@
 import type { JWTResponse } from "./types";
 import jwt from "jsonwebtoken";
+import process from "node:process";
 
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],

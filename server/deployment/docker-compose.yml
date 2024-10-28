@@ -162,6 +162,7 @@ services:
       <<: *kong-env
       PORT: 3000
       DATABASE_HOST: database-service:3000
+      SERVICE_MANAGEMENT_HOST: service-management-service:3000
       KONG_DELAY_MS: 10000
     networks:
       - kong-net

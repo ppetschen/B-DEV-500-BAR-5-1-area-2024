@@ -19,12 +19,16 @@ const route: Route<typeof schema> = {
                 },
                 body: JSON.stringify({
                     user_id,
-                    file_name,
-                    file_content,
+                    payload: {
+                        name: file_name,
+                        content: file_content,
+                    }
                 }),
             },
         );
         if (!response.ok) {
+            console.error("Failed to upload to Google Drive", response);
+            console.error(await response.text());
             return new Response(JSON.stringify({ success: false }), { status: 500 });
         }
         else {

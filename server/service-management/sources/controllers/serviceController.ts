@@ -97,3 +97,17 @@ export const deleteServiceSubscription = async (
   );
   return response;
 };
+
+/**
+ * Determines if the access token is still valid based on its expiration date.
+ * @param serviceSubscription - The subscription object containing the token information
+ * @returns {boolean} - Returns true if the access token is still valid, otherwise false
+ */
+export const isAccessTokenValid = (
+  serviceSubscription: ServiceSubscription,
+): boolean => {
+  const currentTime = Date.now();
+  const tokenExpirationTime = new Date(serviceSubscription.expires_in!)
+    .getTime();
+  return currentTime < tokenExpirationTime;
+};

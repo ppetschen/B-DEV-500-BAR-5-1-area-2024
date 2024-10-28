@@ -3,6 +3,7 @@ import {Box, Grid, Card, Typography, IconButton, Chip} from '@mui/material';
 import { FaFacebook, FaGithub, FaGoogle, FaDiscord } from "react-icons/fa";
 import { SiMicrosoftoutlook } from 'react-icons/si';
 import Tooltip from '@mui/material/Tooltip';
+import { authenticateToService } from "@/services/serviceManagement";
 
 const ServicesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -41,10 +42,8 @@ const ServicesPage: React.FC = () => {
   ];
 
   const handleServiceClick = (serviceName: string) => {
-    console.log(`Clicked on ${serviceName}`);
     const service = serviceName.toLowerCase();
-    window.location.href =
-      `${import.meta.env.VITE_API_BASE_URL}/service-management/auth/${service}`;
+    authenticateToService(service);
   };
 
   const filteredServices = selectedCategory ? services.filter(service => service.category === selectedCategory) : services;

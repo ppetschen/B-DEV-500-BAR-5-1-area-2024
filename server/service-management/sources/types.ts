@@ -33,6 +33,7 @@ export type JWTResponse = {
 
 export interface UserInfo {
   email: string;
+  id: number;
   primary: boolean;
   verified: boolean;
   visibility: string;
@@ -41,7 +42,18 @@ export interface UserInfo {
 export interface ServiceSubscription {
   access_token: string | undefined;
   refresh_token: string | undefined;
-  expires_in: number | undefined;
+  expires_in: string | undefined;
   user_id: number | undefined;
-  service: string | undefined;
+  service: string;
+}
+
+export interface Strategy {
+  issuer: URL;
+  redirect_uri: string;
+  algorithm: "oidc" | "oauth2";
+  client_id: string;
+  client_secret: string;
+  scope: string;
+  userinfo_endpoint: string;
+  token_endpoint: string;
 }

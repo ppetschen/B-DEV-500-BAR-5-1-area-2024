@@ -3,6 +3,7 @@ import type { Route } from "./types";
 import { z } from "zod";
 import { fromError } from "zod-validation-error";
 import { client } from "./utils";
+import process from "node:process";
 
 const glob = new Glob("routes/**/*.ts");
 const result = glob.scan({

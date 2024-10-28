@@ -17,12 +17,13 @@ export const getAndDeleteSession = async (state: string) => {
     },
   );
   const session = await response.json();
-  return session.code_verifier;
+  return session;
 };
 
 export const saveSession = async (
   code_verifier: string,
   state: string,
+  user_email: string,
 ) => {
   const response = await fetch(
     host("DATABASE", "/service-management/create-oauth-session"),
@@ -34,6 +35,7 @@ export const saveSession = async (
       body: JSON.stringify({
         code_verifier,
         state,
+        user_email,
       }),
     },
   );

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS service_subscriptions (
     service VARCHAR(255) NOT NULL,
     access_token TEXT NOT NULL,
     refresh_token TEXT NOT NULL,
-    expires_in INT NOT NULL,
+    expires_in TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()  
 );

@@ -1,4 +1,5 @@
 import { Client } from "pg";
+import process from "node:process";
 
 if (process.env["KONG_DELAY_MS"]) {
   await new Promise((resolve) =>

@@ -1,36 +1,52 @@
 import type { Route } from "../../types";
 import { z } from "zod";
-import { getServiceSubscription } from "../../controllers/serviceController";
-import { getConsumerFromJWT } from "../../controllers/jwtController";
-import { getUserById } from "../../controllers/userController";
+import {
+  getServiceSubscription,
+  isAccessTokenValid,
+} from "../../controllers/serviceController";
+import { oauthRefreshAccessToken } from "../../controllers/oAuth4WebApiRefreshTokenController";
 
 const schema = z.object(
   {
     service: z.string(),
+    user_id: z.number(),
   },
 );
 
 const route: Route<typeof schema> = {
-  path: "/auth/get-service-token",
+  path: "/auth/get-service-subscription",
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const token = request.headers.get("authorization")?.split("Bearer ")[1];
-    let user = await getConsumerFromJWT(token!);
-    user = await getUserById(user);
-    user = await user.json();
-    const user_id = user.id;
-    const { service } = await request.json();
-
+    const { user_id, service } = await request.json();
     const response = await getServiceSubscription(service, user_id);
     if (!response) {
       return new Response(
-        JSON.stringify({ error: "Service subscription not found" }),
+        JSON.stringify({
+          error:
+            "Service subscription not found, user needs to subscribe to ${service}.",
+        }),
         { status: 404 },
       );
     } else {
+      let serviceSubscription = response;
+      const isTokenValid = isAccessTokenValid(serviceSubscription);
+      if (!isTokenValid) {
+        serviceSubscription = await oauthRefreshAccessToken(
+          serviceSubscription,
+        );
+      }
       return new Response(
-        JSON.stringify({ data: { access_token: response.access_token } }),
+        JSON.stringify({
+          data: {
+            ...serviceSubscription,
+          },
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
       );
     }
   },

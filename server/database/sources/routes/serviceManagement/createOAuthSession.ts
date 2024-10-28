@@ -5,6 +5,7 @@ import { client } from "../../utils";
 const schema = z.object({
   code_verifier: z.string(),
   state: z.string(),
+  user_email: z.string(),
 });
 
 const route: Route<typeof schema> = {
@@ -13,13 +14,13 @@ const route: Route<typeof schema> = {
   schema,
   handler: async (request, _server) => {
     try {
-      const { code_verifier, state } = await request.json();
+      const { code_verifier, state, user_email } = await request.json();
 
       const { rows: [result] } = await client.query(
-        `INSERT INTO oauth_sessions (code_verifier, state) 
-                 VALUES ($1, $2)
+        `INSERT INTO oauth_sessions (code_verifier, state, user_email) 
+                 VALUES ($1, $2, $3)
                  RETURNING *`,
-        [code_verifier, state],
+        [code_verifier, state, user_email],
       );
       return new Response(JSON.stringify(result), {
         headers: {

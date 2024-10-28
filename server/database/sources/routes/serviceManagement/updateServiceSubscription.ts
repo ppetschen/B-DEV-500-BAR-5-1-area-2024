@@ -7,7 +7,7 @@ const schema = z.object({
   service: z.string(),
   access_token: z.string(),
   refresh_token: z.string(),
-  expires_in: z.number(),
+  expires_in: z.any(),
 });
 
 const route: Route<typeof schema> = {

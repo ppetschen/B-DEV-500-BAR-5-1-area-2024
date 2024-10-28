@@ -1,3 +1,4 @@
+import process from "node:process";
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
 };

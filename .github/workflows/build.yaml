@@ -13,9 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.1.0
+        with: 
+          node-version: 18
+            
       - name: Install Dependencies
         run: npm install --prefix www
 

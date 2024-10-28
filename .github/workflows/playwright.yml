@@ -1,0 +1,67 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main, staging, feat/testing/e2e, fix/actions/playwrightTests ]
+  pull_request:
+    branches: [ main, staging, feat/testing/e2e, fix/actions/playwrightTests ]
+  workflow_dispatch:
+jobs:
+  Test-e2e:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Set up frontend environment variables
+      run: |
+        echo "VITE_API_BASE_URL=http://localhost:8000" >> www/.env
+    - name: Set up backend environment variables
+      run: |
+        echo "GOOGLE_CLIENT_ID=912325369773-88888jt55qu1n41besga7nu5b6tr8o45.apps.googleusercontent.com" >> server/service-management/.env
+        echo "GOOGLE_CLIENT_SECRET=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" >> server/service-management/.env
+        echo "GOOGLE_REDIRECT_URI=http://localhost:8000/service-management/auth/google/callback" >> server/service-management/.env
+        echo "GOOGLE_ISSUER=https://accounts.google.com" >> server/service-management/.env
+        echo "GITHUB_CLIENT_ID=Iv23liodT93zMYLUK208" >> server/service-management/.env
+        echo "GITHUB_CLIENT_SECRET=0ec0d5f3bb444d250297caca2ca9cbebd5152a15" >> server/service-management/.env
+        echo "GITHUB_REDIRECT_URI=http://localhost:8000/service-management/auth/github/callback" >> server/service-management/.env
+        echo "GITHUB_ISSUER=https://github.com/login/oauth/authorize" >> server/service-management/.env
+        echo "DISCORD_CLIENT_ID=1291763084595040438" >> server/service-management/.env
+        echo "DISCORD_CLIENT_SECRET=lG-Oh0zBLLPHjynQbsy_ybPsgruYGcZO" >> server/service-management/.env
+        echo "DISCORD_REDIRECT_URI=http://localhost:8000/service-management/auth/discord/callback" >> server/service-management/.env
+        echo "DISCORD_ISSUER=https://discord.com/api/oauth2/authorize" >> server/service-management/.env
+        echo "FACEBOOK_CLIENT_ID=" >> server/service-management/.env
+        echo "FACEBOOK_CLIENT_SECRET=" >> server/service-management/.env
+        echo "FRONT_REDIRECT_CURRENT_AREA_URI=http://localhost:5173/current-area" >> server/service-management/.env
+        echo "FRONT_REDIRECT_SERVICES_URI=http://localhost:5173/services" >> server/service-management/.env
+        echo "PORT=3000" >> server/service-management/.env
+
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    # Start Backend Service
+    - name: Start Backend with Docker Compose
+      run: docker-compose -f server/deployment/docker-compose.yml up --build -d
+    
+    # Start Frontend Service
+    - name: Start Frontend with Docker Compose
+      run: docker-compose -f www/docker-compose.yml up --build -d
+    #Playwright Tests
+    - name: Install dependencies
+      working-directory: e2e-testing
+      run: npm ci
+    - name: Install Playwright Browsers
+      working-directory: e2e-testing
+      run: npx playwright install --with-deps
+    - name: Run Playwright tests
+      working-directory: e2e-testing
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: e2e-testing/playwright-report/
+        retention-days: 30
