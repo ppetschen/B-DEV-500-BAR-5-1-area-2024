@@ -42,6 +42,15 @@ export default function TabsLayout() {
                     ),
                 }}
             />
+            <Tabs.Screen
+                name="services"
+                options={{
+                    title: "Services",
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="widgets" size={28} color={color} />
+                    ),
+                }}
+            />
         </Tabs>
     );
 }
