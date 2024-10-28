@@ -4,18 +4,162 @@
  ** File description:
  ** profile
  */
-import { Text, View } from "react-native";
-import React from "react";
-import { styled } from "nativewind";
 
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  FlatList,
+  Pressable,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { styled } from "nativewind";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
 
 export default function ServicesPage() {
-    return (
-        <StyledView className="flex-1 justify-center items-center bg-white px-6">
-            <StyledText className="text-3xl">HELLO WORLD</StyledText>
-        </StyledView>
-    );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const services = [
+    {
+      name: "Google",
+      description: "Google is a search engine",
+      icon: "google",
+      category: "Productivity",
+    },
+    {
+      name: "GitHub",
+      description: "GitHub is a code hosting platform",
+      icon: "github",
+      category: "Developer Tools",
+    },
+    {
+      name: "Facebook",
+      description: "Facebook is a social media platform",
+      icon: "facebook",
+      category: "Advertising",
+    },
+    {
+      name: "Outlook",
+      description: "Outlook is an email service",
+      icon: "envelope",
+      category: "Productivity",
+    },
+    {
+      name: "Discord",
+      description: "Discord is a communication platform",
+      icon: "discord",
+      category: "Communication",
+    },
+  ];
+
+  const filteredServices = selectedCategory
+    ? services.filter((service) => service.category === selectedCategory)
+    : services;
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: "#F7F7F9" }}>
+      <StyledView className="p-6">
+        <StyledText className="text-3xl font-bold text-[#5A6ACF] mb-6 text-center">
+          SERVICES
+        </StyledText>
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16 }}
+        >
+          {[
+            "All",
+            "Advertising",
+            "Productivity",
+            "Communication",
+            "Developer Tools",
+          ].map((category) => (
+            <Pressable
+              key={category}
+              onPress={() =>
+                setSelectedCategory(category === "All" ? null : category)
+              }
+              style={{
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 20,
+                marginRight: 8,
+                backgroundColor:
+                  selectedCategory === category ||
+                  (category === "All" && selectedCategory === null)
+                    ? "#5A6ACF"
+                    : "transparent",
+              }}
+            >
+              <StyledText
+                style={{
+                  fontSize: 14,
+                  color:
+                    selectedCategory === category ||
+                    (category === "All" && selectedCategory === null)
+                      ? "#fff"
+                      : "#5A6ACF",
+                }}
+              >
+                {category}
+              </StyledText>
+            </Pressable>
+          ))}
+        </ScrollView>
+
+        <FlatList
+          data={filteredServices}
+          keyExtractor={(item) => item.name}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+          renderItem={({ item }) => (
+            <StyledView
+              style={{
+                backgroundColor: "white",
+                padding: 16,
+                borderRadius: 15,
+                margin: 8,
+                width: 160,
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 4,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => console.log(`Authenticate to ${item.name}`)}
+                style={{
+                  backgroundColor: "#5A6ACF",
+                  borderRadius: 100,
+                  padding: 12,
+                  marginBottom: 8,
+                  width: 60,
+                  height: 60,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name={item.icon} size={32} color="#fff" />
+              </TouchableOpacity>
+
+              <StyledText className="text-lg font-bold text-[#273240] mb-1">
+                {item.name}
+              </StyledText>
+              <StyledText className="text-sm text-gray-600 text-center">
+                {item.description}
+              </StyledText>
+            </StyledView>
+          )}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      </StyledView>
+    </ScrollView>
+  );
 }

@@ -27,18 +27,9 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="dashboard"
                 options={{
-                    title: "Workflows",
+                    title: "Dashboard",
                     tabBarIcon: ({ color }) => (
                         <Icon name="extension" size={28} color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="profile"
-                options={{
-                    title: "Profile",
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="person" size={28} color={color} />
                     ),
                 }}
             />
@@ -48,6 +39,24 @@ export default function TabsLayout() {
                     title: "Services",
                     tabBarIcon: ({ color }) => (
                         <Icon name="widgets" size={28} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="automation"
+                options={{
+                    title: "Automation",
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="sync" size={28} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "Profile",
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="person" size={28} color={color} />
                     ),
                 }}
             />
