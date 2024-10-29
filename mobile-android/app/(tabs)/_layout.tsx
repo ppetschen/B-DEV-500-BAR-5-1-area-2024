@@ -29,7 +29,7 @@ export default function TabsLayout() {
                 options={{
                     title: "Dashboard",
                     tabBarIcon: ({ color }) => (
-                        <Icon name="extension" size={28} color={color} />
+                        <Icon name="dashboard" size={28} color={color} />
                     ),
                 }}
             />
@@ -38,7 +38,7 @@ export default function TabsLayout() {
                 options={{
                     title: "Services",
                     tabBarIcon: ({ color }) => (
-                        <Icon name="widgets" size={28} color={color} />
+                        <Icon name="dns" size={28} color={color} />
                     ),
                 }}
             />
@@ -47,7 +47,7 @@ export default function TabsLayout() {
                 options={{
                     title: "Automation",
                     tabBarIcon: ({ color }) => (
-                        <Icon name="sync" size={28} color={color} />
+                        <Icon name="autorenew" size={28} color={color} />
                     ),
                 }}
             />

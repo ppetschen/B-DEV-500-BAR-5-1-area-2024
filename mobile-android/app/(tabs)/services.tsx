@@ -15,7 +15,9 @@ import {
   ScrollView,
 } from "react-native";
 import { styled } from "nativewind";
-import Icon from "react-native-vector-icons/FontAwesome";
+import IconFontAwesome from "react-native-vector-icons/FontAwesome";
+import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import IconMaterial from "react-native-vector-icons/MaterialIcons";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -27,31 +29,31 @@ export default function ServicesPage() {
     {
       name: "Google",
       description: "Google is a search engine",
-      icon: "google",
+      icon: <IconFontAwesome name="google" size={32} color="#fff" />,
       category: "Productivity",
     },
     {
       name: "GitHub",
       description: "GitHub is a code hosting platform",
-      icon: "github",
+      icon: <IconFontAwesome name="github" size={32} color="#fff" />,
       category: "Developer Tools",
     },
     {
       name: "Facebook",
       description: "Facebook is a social media platform",
-      icon: "facebook",
+      icon: <IconFontAwesome name="facebook" size={32} color="#fff" />,
       category: "Advertising",
     },
     {
       name: "Outlook",
       description: "Outlook is an email service",
-      icon: "envelope",
+      icon: <IconMaterialCommunityIcons name="microsoft-outlook" size={32} color="#fff" />,
       category: "Productivity",
     },
     {
       name: "Discord",
       description: "Discord is a communication platform",
-      icon: "discord",
+      icon: <IconMaterial name="discord" size={32} color="#fff" />,
       category: "Communication",
     },
   ];
@@ -146,7 +148,7 @@ export default function ServicesPage() {
                   alignItems: "center",
                 }}
               >
-                <Icon name={item.icon} size={32} color="#fff" />
+                {item.icon}
               </TouchableOpacity>
 
               <StyledText className="text-lg font-bold text-[#273240] mb-1">
