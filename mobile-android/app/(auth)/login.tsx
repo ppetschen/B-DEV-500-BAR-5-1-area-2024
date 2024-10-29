@@ -18,8 +18,8 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 
 export default function LoginPage() {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("elisenda@gmail.com");
+    const [password, setPassword] = useState<string>("12345");
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
 
