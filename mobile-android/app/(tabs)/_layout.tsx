@@ -43,15 +43,6 @@ export default function TabsLayout() {
                 }}
             />
             <Tabs.Screen
-                name="automation"
-                options={{
-                    title: "Automation",
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="autorenew" size={28} color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
                 name="profile"
                 options={{
                     title: "Profile",
