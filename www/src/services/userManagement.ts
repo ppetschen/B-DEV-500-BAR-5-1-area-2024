@@ -1,7 +1,7 @@
 import { apiClient } from "./api";
 
-export const login = async (data: { email: string; password: string }) => {
-  const response = await apiClient.post("/user-management/login", data);
+export const login = async (data: { email: string; password: string}, method: string) => {
+  const response = await apiClient.post(`/user-management/login?method=${method}`, data);
   if (!response || !response.data || !response.data.token) {
     return undefined;
   } else {
@@ -10,8 +10,8 @@ export const login = async (data: { email: string; password: string }) => {
   }
 };
 
-export const register = async (data: { email: string; password: string }) => {
-  const response = await apiClient.post("/user-management/register", data);
+export const register = async (data: { email: string; password: string }, method: string) => {
+  const response = await apiClient.post(`/user-management/register?method=${method}`, data);
   if (!response || !response.data || !response.data.token) {
     return undefined;
   } else {
