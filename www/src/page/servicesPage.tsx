@@ -43,11 +43,7 @@ const ServicesPage: React.FC = () => {
       name: "Twitch",
       description: "Twitch is a live-stream platform",
       icon: FaTwitch,
-<<<<<<< HEAD
-      category: 'Live-streaming',
-=======
       category: 'live-streaming',
->>>>>>> 63f5e36 (add: twitch service in service page)
     }
   ];
 
