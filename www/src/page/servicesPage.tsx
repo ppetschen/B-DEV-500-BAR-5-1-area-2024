@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Box, Grid, Card, Typography, IconButton, Chip} from '@mui/material';
-import { FaFacebook, FaGithub, FaGoogle, FaDiscord } from "react-icons/fa";
+import { FaFacebook, FaGithub, FaGoogle, FaDiscord, FaTwitch} from "react-icons/fa";
 import { SiMicrosoftoutlook } from 'react-icons/si';
 import Tooltip from '@mui/material/Tooltip';
 import { authenticateToService } from "@/services/serviceManagement";
@@ -39,6 +39,12 @@ const ServicesPage: React.FC = () => {
       icon: FaDiscord,
       category: 'Communication',
     },
+    {
+      name: "Twitch",
+      description: "Twitch is a live-stream platform",
+      icon: FaTwitch,
+      category: 'live-streaming',
+    }
   ];
 
   const handleServiceClick = (serviceName: string) => {
