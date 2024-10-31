@@ -32,7 +32,6 @@ export const authorizeServiceCallback = async (
       };
       as = _as;
     }
-
     const client: oauth.Client = { client_id: strategy.client_id || "" };
     const clientAuth = oauth.ClientSecretPost(
       strategy.client_secret || "",
@@ -47,7 +46,7 @@ export const authorizeServiceCallback = async (
       throw Error("Failed to get session");
     }
     const params = oauth.validateAuthResponse(as, client, currentUrl, state);
-    const response = await oauth.authorizationCodeGrantRequest(
+    let response = await oauth.authorizationCodeGrantRequest(
       as,
       client,
       clientAuth,
@@ -55,6 +54,16 @@ export const authorizeServiceCallback = async (
       strategy.redirect_uri || "",
       session.code_verifier,
     );
+    if (service == "twitch") {
+      let test = await response.json();
+      test.scope = test.scope.join(" ");
+      response = new Response(JSON.stringify(test), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },);
+    }
+
     const result = await oauth.processAuthorizationCodeResponse(
       as,
       client,
@@ -67,6 +76,7 @@ export const authorizeServiceCallback = async (
         method: "GET",
         headers: {
           Authorization: `Bearer ${result.access_token}`,
+          "Client-Id": strategy.client_id,
         },
       },
     );
@@ -75,11 +85,16 @@ export const authorizeServiceCallback = async (
       throw Error("Failed to retrieve user info");
     }
     let user = await userResponse.json();
-
     if (!user) {
       throw Error("Failed to retrieve user info");
     }
-    const user_email = user.email ? user.email : user[0].email;
+    let user_email;
+    if (service == "twitch") {
+      user_email = user.data[0].email;
+    }
+    else {
+      user_email = user.email ? user.email : user[0].email;
+    }
 
     if (user_email !== session.user_email) {
       throw Error("User email does not match");
@@ -113,3 +128,4 @@ export const authorizeServiceCallback = async (
     return false;
   }
 };
+ 
