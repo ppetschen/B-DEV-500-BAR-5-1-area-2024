@@ -43,7 +43,7 @@ const ServicesPage: React.FC = () => {
       name: "Twitch",
       description: "Twitch is a live-stream platform",
       icon: FaTwitch,
-      category: 'live-streaming',
+      category: 'Live-streaming',
     }
   ];
 
@@ -61,7 +61,7 @@ const ServicesPage: React.FC = () => {
       </Typography>
 
       <Box sx={{mb: 2}}>
-        {['All', 'Advertising', 'Productivity', 'Communication', 'Developer Tools'].map((category) => (
+        {['All', 'Advertising', 'Productivity', 'Communication', 'Developer Tools', 'Live-streaming'].map((category) => (
           <Chip
             key={category}
             label={category}
