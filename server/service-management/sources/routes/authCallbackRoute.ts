@@ -30,7 +30,7 @@ const route: Route<typeof schema> = {
       const frontendRedirectUrl = process.env.FRONT_REDIRECT_SERVICES_URI!;
       return Response.redirect(frontendRedirectUrl);
     } catch (error) {
-      console.log("Error in google callback", error);
+      console.log("Error in service callback", error);
       return new Response(
         JSON.stringify({ error: "Failed to authorize", information: error }),
         {

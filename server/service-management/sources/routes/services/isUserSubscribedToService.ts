@@ -10,7 +10,7 @@ const schema = z.object(
 );
 
 const route: Route<typeof schema> = {
-  path: "/auth/is_user_subscribed",
+  path: "/auth/is-user-subscribed",
   method: "POST",
   schema,
   handler: async (request, _server) => {
@@ -21,11 +21,11 @@ const route: Route<typeof schema> = {
 
     const response = await getServiceSubscription(service, user_id);
     if (!response) {
-      return new Response(JSON.stringify("User not subscribed to ${service}"), {
+      return new Response(JSON.stringify(`User not subscribed to ${service}`), {
         status: 404,
       });
     } else {
-      return new Response(JSON.stringify("User is subscribed to ${service}"), {
+      return new Response(JSON.stringify(`User is subscribed to ${service}`), {
         status: 200,
       });
     }

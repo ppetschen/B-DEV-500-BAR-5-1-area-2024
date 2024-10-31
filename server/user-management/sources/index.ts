@@ -27,14 +27,16 @@ const routes = (await Array.fromAsync(
 const infoRoute: Route = {
   path: "/info",
   method: "GET",
-  handler: async () => {
-    return new Response(
-      JSON.stringify({ routes: routes.map((route) => route.path) }),
-      {
-        headers: {
-          "Content-Type": "application/json",
+  handler: () => {
+    return Promise.resolve(
+      new Response(
+        JSON.stringify({ routes: routes.map((route) => route.path) }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      },
+      ),
     );
   },
   schema: z.any(),

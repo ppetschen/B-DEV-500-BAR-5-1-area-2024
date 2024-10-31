@@ -2,10 +2,11 @@ import type { Route } from "../types";
 import { z } from "zod";
 import { hash } from "bcryptjs";
 import { craftJWTFromResponse, createJWT, host } from "../utils";
+import { v4 as uuidv4 } from "uuid";
 
 const schema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().optional().default(""),
 });
 
 const route: Route<typeof schema> = {
@@ -13,7 +14,14 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const { email, password } = await request.json();
+    const { email, password } = schema.parse(await request.json());
+    const method = new URLSearchParams(request.url.split("?")[1]).get(
+      "method",
+    );
+    if (method != "third-party" && method != "credentials") {
+      console.log(method);
+      return new Response("Invalid method", { status: 400 });
+    }
 
     const userRequest = await fetch(
       host("DATABASE", "/user-management/get-user-by-email"),
@@ -27,10 +35,16 @@ const route: Route<typeof schema> = {
     );
 
     if (userRequest.ok) {
-      return new Response("Conflict", { status: 409 });
+      return new Response("Conflict, user already exists", { status: 409 });
     }
-
-    const hashedPassword = await hash(password, 10);
+    let hashedPassword;
+    if (method === "third-party") {
+      const randomPassword = uuidv4();
+      hashedPassword = await hash(randomPassword, 10);
+    }
+    if (method === "credentials") {
+      hashedPassword = await hash(password, 10);
+    }
 
     const resultRequest = await fetch(
       host("DATABASE", "/user-management/create-user"),

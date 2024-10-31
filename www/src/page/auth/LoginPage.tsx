@@ -24,7 +24,7 @@ export default function LoginPage({ className, ...props }: React.HTMLAttributes<
     setIsLoading(true);
 
     try {
-      const user = await login({ email, password });
+      const user = await login({ email, password }, "credentials");
 
       if (user) {
         localStorage.setItem("currentUser", JSON.stringify(user));

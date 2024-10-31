@@ -31,7 +31,7 @@ export default function SignupPage({ className, ...props }: React.HTMLAttributes
     }
 
     try {
-      const user = await register({ email, password });
+      const user = await register({ email, password }, "credentials");
 
       if (user) {
         localStorage.setItem("currentUser", JSON.stringify(user));
