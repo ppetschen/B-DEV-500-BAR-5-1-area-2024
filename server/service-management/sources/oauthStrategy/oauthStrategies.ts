@@ -8,6 +8,8 @@ export const getOauthStrategy = (service: string) => {
       return getGithubStrategy();
     case "discord":
       return getDiscordStrategy();
+    case "twitch":
+      return getTwitchStrategy();
     // case "new-service":
     //   return getNewServiceStrategy();
     default:
@@ -56,6 +58,21 @@ const getDiscordStrategy = () => {
   };
   return discordStrategy;
 };
+
+const getTwitchStrategy = () => {
+  const twitchStrategy = {
+    issuer: new URL("https://id.twitch.tv/oauth2/authorize"),
+    redirect_uri: process.env.TWITCH_REDIRECT_URI!,
+    algorithm: "oauth2",
+    client_id: process.env.TWITCH_CLIENT_ID!,
+    client_secret: process.env.TWITCH_CLIENT_SECRET!,
+    scope: "user:read:email",
+    userinfo_endpoint: "https://api.twitch.tv/helix/users",
+    token_endpoint: "https://id.twitch.tv/oauth2/token",
+  };
+  return twitchStrategy;
+};
+
 
 /**
  * Example strategy for a new service
