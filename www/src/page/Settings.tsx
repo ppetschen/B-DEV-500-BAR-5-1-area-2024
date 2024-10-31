@@ -6,8 +6,8 @@ import ServiceSubscribed from "./ServiceSubscribed";
 import DeleteAccount from "./DeleteAccount";
 
 interface SettingsNavigatorProps {
-  value: string;
-  setValue: (value: string) => void;
+  value: TabKey;
+  setValue: (value: TabKey) => void;
 }
 
 const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({value, setValue}) => {
@@ -25,7 +25,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({value, setValue}) 
           key={option.value}
           label={option.label}
           variant={value == option.value ? "filled" : "outlined"}
-          onClick={() => setValue(option.value)}
+          onClick={() => setValue(option.value as TabKey)}
           sx={{
             mr: 1,
             transition: "background-color 0.3s, color 0.3s",
@@ -43,8 +43,10 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({value, setValue}) 
   );
 };
 
+type TabKey = 'profile' | 'changePassword' | 'serviceSubscribed' | 'deleteAccount';
+
 const Settings = () => {
-  const [tab, setTab] = useState("profile");
+  const [tab, setTab] = useState<TabKey>("profile");
   const tabs = {
     profile: <ProfilePage />,
     changePassword: <ChangePassword />,
