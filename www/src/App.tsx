@@ -11,10 +11,10 @@ import SignupPage from "./page/auth/SignupPage";
 import Layout from "./components/layout/Layout";
 import Dashboard from "./page/DashboardPage";
 import CreateAreaPage from "./page/AutomationPage";
-import ServicesPage from "./page/servicesPage";
+import ServicesPage from "./page/ServicesPage";
 import "../src/style/styles.css";
 import MenuPage from "./page/MenuPage";
-import Profile from "./page/profile";
+import Settings from "./page/Settings";
 
 const ProtectedRoute: React.FC = () => {
   const isAuthenticated = !!localStorage.getItem("currentUser");
@@ -32,10 +32,10 @@ const App: React.FC = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
             <Route path="/" element={<Navigate to="/login" replace />} />
+            <Route path="/settings" element={<Settings />} />
             <Route path="/current-area" element={<CreateAreaPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/services" element={<ServicesPage />} />
-            <Route path="/profile" element={<Profile />} />
           </Route>
         </Route>
 

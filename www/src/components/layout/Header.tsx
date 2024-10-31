@@ -30,7 +30,7 @@ const Header: React.FC = () => {
   };
 
   const handleProfileClick = () => {
-    navigate("/profile");
+    navigate("/Settings");
   };
 
   const handleLogout = () => {
