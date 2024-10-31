@@ -1,6 +1,6 @@
 import React from "react";
-import AppSelector from "./AppSelector";
 import { setupArea } from "@/services/areaComposition";
+import AppSelector from "./AppSelector";
 
 type One = Parameters<Parameters<typeof AppSelector>[0]["onComplete"]>;
 
