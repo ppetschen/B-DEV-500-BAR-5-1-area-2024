@@ -29,6 +29,10 @@ const Header: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -69,10 +73,10 @@ const Header: React.FC = () => {
             open={open}
             onClose={handleCloseMenu}
         >
-            <MenuItem>
-                <AccountCircleIcon sx={{mr: 1}}/>
-                Profile Info
-            </MenuItem>
+             <MenuItem onClick={handleProfileClick}>
+            <AccountCircleIcon sx={{ mr: 1 }} />
+            Profile Info
+          </MenuItem>
             <MenuItem onClick={handleLogout}>
                 <ExitToAppIcon sx={{mr: 1}}/>
                 Logout
