@@ -2,7 +2,7 @@ import { apiClient } from "./api";
 import { User } from "./types";
 
 export const login = async (
-  data: { email: string; password: string },
+  data: { email: string; password?: string },
   method: string,
 ): Promise<boolean> => {
   try {
@@ -19,7 +19,7 @@ export const login = async (
 };
 
 export const register = async (
-  data: { email: string; password: string },
+  data: { email: string; password?: string },
   method: string,
 ): Promise<boolean> => {
   try {
