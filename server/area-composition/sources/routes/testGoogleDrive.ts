@@ -5,36 +5,35 @@ import { host } from "../utils";
 const schema = z.any();
 
 const route: Route<typeof schema> = {
-    path: "/test/google-drive",
-    method: "POST",
-    schema,
-    handler: async (request, _server) => {
-        const { user_id, file_name, file_content } = await request.json();
-        const response = await fetch(
-            host("REACTION", "/google/upload-to-drive"),
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    user_id,
-                    payload: {
-                        name: file_name,
-                        content: file_content,
-                    }
-                }),
-            },
-        );
-        if (!response.ok) {
-            console.error("Failed to upload to Google Drive", response);
-            console.error(await response.text());
-            return new Response(JSON.stringify({ success: false }), { status: 500 });
-        }
-        else {
-            return new Response(JSON.stringify({ success: true }), { status: 200 });
-        }
-    },
+  path: "/test/google-drive",
+  method: "POST",
+  schema,
+  handler: async (request, _server) => {
+    const { user_id, file_name, file_content } = await request.json();
+    const response = await fetch(
+      host("REACTION", "/google/upload-to-drive"),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id,
+          payload: {
+            name: file_name,
+            content: file_content,
+          },
+        }),
+      },
+    );
+    if (!response.ok) {
+      console.error("Failed to upload to Google Drive", response);
+      console.error(await response.text());
+      return new Response(JSON.stringify({ success: false }), { status: 500 });
+    } else {
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    }
+  },
 };
 
 export default route;

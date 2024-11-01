@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
-  TextField,
   Avatar,
-  IconButton,
   Box,
+  IconButton,
+  InputAdornment,
   Menu,
   MenuItem,
-  InputAdornment,
+  TextField,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -59,7 +59,7 @@ const Header: React.FC = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <SearchIcon/>
+              <SearchIcon />
             </InputAdornment>
           ),
         }}
@@ -69,9 +69,9 @@ const Header: React.FC = () => {
           <Avatar sx={{ bgcolor: "#5A6ACF" }} />
         </IconButton>
         <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleCloseMenu}
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
         >
              <MenuItem onClick={handleProfileClick}>
             <AccountCircleIcon sx={{ mr: 1 }} />

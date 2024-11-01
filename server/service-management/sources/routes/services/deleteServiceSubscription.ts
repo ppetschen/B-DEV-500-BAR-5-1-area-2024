@@ -1,9 +1,6 @@
 import type { Route } from "../../types";
 import { z } from "zod";
 import { deleteServiceSubscription } from "../../controllers/serviceController";
-import { getConsumerFromJWT } from "../../controllers/jwtController";
-import { getUserById } from "../../controllers/userController";
-
 import { getUserByToken } from "../../controllers/userController";
 
 const schema = z.object({

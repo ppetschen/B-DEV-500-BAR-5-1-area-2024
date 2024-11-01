@@ -1,4 +1,4 @@
-import type { UserInfo } from "../types";
+import { customError, type UserInfo } from "../types";
 import { host } from "../utils";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 
@@ -22,27 +22,32 @@ export const getUserById = async (consumer: number): Promise<UserInfo> => {
     host("DATABASE", "/user-management/get-user-by-id"),
     {
       method: "POST",
-      headers: {
-        "Authorization": "Bearer ${token}",
-      },
       body: JSON.stringify({
         consumer,
       }),
     },
   );
+  if (!response.ok) {
+    throw new customError("User not found", 404);
+  }
   const user = await response.json();
-  return await user;
+  return user;
 };
 
-export const getUserByToken = (token: string): Promise<UserInfo> => {
+export const getUserByToken = async (token: string): Promise<UserInfo> => {
   const decodedToken = jwt.decode(token);
   let consumer;
 
   if (decodedToken && typeof decodedToken !== "string") {
-    consumer = (decodedToken as JwtPayload).consumer;
+    consumer = (decodedToken as JwtPayload)["consumer"];
   } else {
     console.error("Failed to decode token or token is invalid.");
+    throw new customError("Failed to decode token or token is invalid.", 401);
   }
-  const user = getUserById(consumer);
+  const user = await getUserById(consumer);
+  if (!user) {
+    throw new customError("User not found", 404);
+  }
+
   return user;
 };

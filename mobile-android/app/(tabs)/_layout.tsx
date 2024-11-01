@@ -27,9 +27,18 @@ export default function TabsLayout() {
             <Tabs.Screen
                 name="dashboard"
                 options={{
-                    title: "Workflows",
+                    title: "Dashboard",
                     tabBarIcon: ({ color }) => (
-                        <Icon name="extension" size={28} color={color} />
+                        <Icon name="dashboard" size={28} color={color} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="services"
+                options={{
+                    title: "Services",
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="dns" size={28} color={color} />
                     ),
                 }}
             />

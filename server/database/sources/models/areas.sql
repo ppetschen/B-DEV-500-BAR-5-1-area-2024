@@ -4,6 +4,9 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) DEFAULT '',
+    last_name VARCHAR(255) DEFAULT '',
+    description TEXT DEFAULT '',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP,
@@ -26,4 +29,15 @@ CREATE TABLE IF NOT EXISTS reactions (
     execution_endpoint VARCHAR(255),
     status VARCHAR(50) NOT NULL DEFAULT 'pending',
     executed_at TIMESTAMP DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS service_subscriptions (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    service VARCHAR(255) NOT NULL,
+    access_token TEXT NOT NULL,
+    refresh_token TEXT NOT NULL,
+    expires_in TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()  
 );

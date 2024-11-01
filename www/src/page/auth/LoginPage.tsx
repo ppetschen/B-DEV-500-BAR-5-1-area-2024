@@ -13,7 +13,9 @@ const Icons = {
   google: FcGoogle,
 };
 
-export default function LoginPage({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export default function LoginPage(
+  { className, ...props }: React.HTMLAttributes<HTMLDivElement>,
+) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -24,10 +26,9 @@ export default function LoginPage({ className, ...props }: React.HTMLAttributes<
     setIsLoading(true);
 
     try {
-      const user = await login({ email, password });
+      const user = await login({ email, password }, "credentials");
 
       if (user) {
-        localStorage.setItem("currentUser", JSON.stringify(user));
         navigate("/dashboard");
       } else {
         alert("Invalid credentials");

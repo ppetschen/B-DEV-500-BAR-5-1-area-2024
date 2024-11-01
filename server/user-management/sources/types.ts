@@ -30,3 +30,22 @@ export type JWTResponse = {
   secret: string;
   tags: null;
 };
+
+export interface UserInfo {
+  email: string;
+  id: number;
+  first_name: string;
+  last_name: string;
+  description: string;
+  password: string;
+  hashedPassword: string;
+  password_hash: string;
+}
+
+export class customError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}

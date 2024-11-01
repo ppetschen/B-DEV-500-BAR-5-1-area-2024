@@ -118,7 +118,7 @@ export const setupConsumer = async () => {
   const id = process.env["JWT_CONSUMER_NAME"]!;
   try {
     await getConsumer(id);
-  } catch (error) {
+  } catch (_error) {
     await createConsumer(id);
     await initConsumer(id);
   }

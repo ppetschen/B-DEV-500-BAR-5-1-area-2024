@@ -111,7 +111,8 @@ const getServiceInfo = (serviceName: string) => {
   return { path, isProtected };
 };
 
-let content = `# Api routes documentation
+let content = `<!-- deno-fmt-ignore-file -->
+# Api routes documentation
 
 > [!IMPORTANT]
 > This documentation was automatically generated using \`Bun\` version \`${Bun.version}\` on

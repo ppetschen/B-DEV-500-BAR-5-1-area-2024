@@ -1,10 +1,10 @@
 import React from "react";
 import {
   BrowserRouter as Router,
-  Route,
-  Routes,
   Navigate,
   Outlet,
+  Route,
+  Routes,
 } from "react-router-dom";
 import LoginPage from "./page/auth/LoginPage";
 import SignupPage from "./page/auth/SignupPage";
@@ -25,7 +25,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MenuPage/>}/>
+        <Route path="/" element={<MenuPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
 

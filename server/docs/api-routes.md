@@ -1,3 +1,4 @@
+<!-- deno-fmt-ignore-file -->
 # Api routes documentation
 
 > [!IMPORTANT]
@@ -13,7 +14,7 @@ POST /user-management/register
 // This route is internal, won't be exposed
 {
     email: string;
-    password: string;
+    password?: string;
 }
 ```
 
@@ -24,8 +25,37 @@ POST /user-management/login
 // This route is internal, won't be exposed
 {
     email: string;
-    password: string;
+    password?: string;
 }
+```
+
+```http
+DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+never
+```
+
+```http
+PUT /user-management/update-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    new_password?: string;
+    first_name?: string;
+    last_name?: string;
+    description?: string;
+}
+```
+
+```http
+GET /user-management/get-user
+```
+```ts
+// This route is internal, won't be exposed
+any
 ```
 
 
@@ -99,6 +129,16 @@ DELETE /service-management/delete-oauth-session
 ```
 
 ```http
+POST /service-management/get-services-by-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+}
+```
+
+```http
 POST /service-management/create-oauth-session
 ```
 ```ts
@@ -149,6 +189,31 @@ POST /user-management/create-user
 {
     email: string;
     hashedPassword: string;
+}
+```
+
+```http
+DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: number;
+}
+```
+
+```http
+PUT /user-management/update-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: number;
+    email: string;
+    password_hash: string;
+    first_name: string;
+    last_name: string;
+    description: string;
 }
 ```
 
@@ -286,13 +351,21 @@ POST /service-management/auth/get-service-subscription
 ```
 
 ```http
-POST /service-management/auth/is_user_subscribed
+POST /service-management/auth/is-user-subscribed
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
 {
     service: string;
 }
+```
+
+```http
+GET /service-management/auth/get-services-by-user
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
 ```
 
 ```http

@@ -13,7 +13,9 @@ const Icons = {
   google: FcGoogle,
 };
 
-export default function SignupPage({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export default function SignupPage(
+  { className, ...props }: React.HTMLAttributes<HTMLDivElement>,
+) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
@@ -31,15 +33,16 @@ export default function SignupPage({ className, ...props }: React.HTMLAttributes
     }
 
     try {
-      const user = await register({ email, password });
+      const user = await register({ email, password }, "credentials");
 
       if (user) {
-        localStorage.setItem("currentUser", JSON.stringify(user));
         alert("Registration successful");
         navigate("/dashboard");
+      } else {
+        alert("Conflict, user already exists");
       }
     } catch {
-      alert("User already exists");
+      alert("Error occurred during registration");
     } finally {
       setIsLoading(false);
     }

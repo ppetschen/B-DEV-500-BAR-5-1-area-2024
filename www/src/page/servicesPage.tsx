@@ -1,7 +1,18 @@
 import React, { useState } from "react";
-import { Box, Grid, Card, Typography, IconButton, Chip } from "@mui/material";
-import { FaFacebook, FaGithub, FaGoogle, FaDiscord } from "react-icons/fa";
-import { SiMicrosoftoutlook } from "react-icons/si";
+import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
+import {
+  FaDiscord,
+  FaFacebook,
+  FaGithub,
+  FaGoogle,
+  FaTwitch,
+} from "react-icons/fa";
+import {
+  SiGmail,
+  SiGooglecalendar,
+  SiGoogledrive,
+  SiMicrosoftoutlook,
+} from "react-icons/si";
 import Tooltip from "@mui/material/Tooltip";
 import { authenticateToService } from "@/services/serviceManagement";
 
@@ -39,6 +50,30 @@ const ServicesPage: React.FC = () => {
       icon: FaDiscord,
       category: "Communication",
     },
+    {
+      name: "Twitch",
+      description: "Twitch is a live-stream platform",
+      icon: FaTwitch,
+      category: "Live-streaming",
+    },
+    {
+      name: "Google-Mail",
+      description: "Google mail is an email service",
+      icon: SiGmail,
+      category: "Productivity",
+    },
+    {
+      name: "Google-Drive",
+      description: "Google drive is a cloud storage service",
+      icon: SiGoogledrive,
+      category: "Productivity",
+    },
+    {
+      name: "Google-Calendar",
+      description: "Google calendar is a calendar service",
+      icon: SiGooglecalendar,
+      category: "Productivity",
+    },
   ];
 
   const handleServiceClick = (serviceName: string) => {
@@ -66,6 +101,7 @@ const ServicesPage: React.FC = () => {
           "Productivity",
           "Communication",
           "Developer Tools",
+          "Live-streaming",
         ].map((category) => (
           <Chip
             key={category}
@@ -78,8 +114,9 @@ const ServicesPage: React.FC = () => {
               mr: 1,
               transition: "background-color 0.3s, color 0.3s",
               cursor: "pointer",
-              bgcolor:
-                selectedCategory === category ? "#5A6ACF" : "transparent",
+              bgcolor: selectedCategory === category
+                ? "#5A6ACF"
+                : "transparent",
               color: selectedCategory === category ? "#fff" : "#5A6ACF",
               "&:hover": {
                 bgcolor: selectedCategory !== category ? "#E0E7FF" : "#5A6ACF",
@@ -114,7 +151,8 @@ const ServicesPage: React.FC = () => {
               <Tooltip title={service.name} arrow>
                 <IconButton
                   sx={{ bgcolor: "#5A6ACF", color: "#fff", p: 2, mb: 2 }}
-                  onClick={() => handleServiceClick(service.name)}
+                  onClick={() =>
+                    handleServiceClick(service.name)}
                 >
                   {React.createElement(service.icon, { size: 32 })}
                 </IconButton>
