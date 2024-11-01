@@ -11,7 +11,7 @@ import SignupPage from "./page/auth/SignupPage";
 import Layout from "./components/layout/Layout";
 import Dashboard from "./page/DashboardPage";
 import CreateAreaPage from "./page/AutomationPage";
-import ServicesPage from "./page/ServicesPage";
+import ServicesPage from "./page/servicesPage";
 import "./style/styles.css";
 import MenuPage from "./page/MenuPage";
 import Settings from "./page/Settings";
