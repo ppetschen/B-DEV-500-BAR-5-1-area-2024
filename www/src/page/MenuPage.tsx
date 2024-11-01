@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Button, Typography, Container } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 
 const MenuPage: React.FC = () => {
@@ -36,16 +36,17 @@ const MenuPage: React.FC = () => {
           <Button
             variant="outlined"
             sx={{
-                color: 'white',
-                borderColor: 'white',
-                fontSize: '1.2rem',
-                padding: '12px 30px',
-                borderRadius: '30px',
-                transition: 'border-color 0.3s, color 0.3s',
-                margin: '0 10px', '&:hover' : {
-                    borderColor: '#F9F9F8',
-                    color: '#F9F9F8',
-                },
+              color: "white",
+              borderColor: "white",
+              fontSize: "1.2rem",
+              padding: "12px 30px",
+              borderRadius: "30px",
+              transition: "border-color 0.3s, color 0.3s",
+              margin: "0 10px",
+              "&:hover": {
+                borderColor: "#F9F9F8",
+                color: "#F9F9F8",
+              },
             }}
             onClick={() => (window.location.href = "/login")}
           >
@@ -54,19 +55,20 @@ const MenuPage: React.FC = () => {
           <Button
             variant="contained"
             sx={{
-                color: '#643DF2',
-                bgcolor: '#F2F2F2',
-                '&:hover': {
-                    bgcolor: '#7552F2',
-                    color: 'white',
-                },
-                fontSize: '1.2rem',
-                padding: '12px 30px',
-                borderRadius: '30px',
-                transition: 'background-color 0.3s',
-                margin: '0 10px',
+              color: "#643DF2",
+              bgcolor: "#F2F2F2",
+              "&:hover": {
+                bgcolor: "#7552F2",
+                color: "white",
+              },
+              fontSize: "1.2rem",
+              padding: "12px 30px",
+              borderRadius: "30px",
+              transition: "background-color 0.3s",
+              margin: "0 10px",
             }}
-            onClick={() => (window.location.href = "/signup")}>
+            onClick={() => (window.location.href = "/signup")}
+          >
             Get started for free
           </Button>
         </motion.div>
