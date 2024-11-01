@@ -1,6 +1,6 @@
 // src/components/Layout.tsx
 import React from "react";
-import { Outlet, Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 

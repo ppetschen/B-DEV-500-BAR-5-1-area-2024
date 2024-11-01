@@ -7,7 +7,12 @@ import {
   FaGoogle,
   FaTwitch,
 } from "react-icons/fa";
-import { SiMicrosoftoutlook } from "react-icons/si";
+import {
+  SiGmail,
+  SiGooglecalendar,
+  SiGoogledrive,
+  SiMicrosoftoutlook,
+} from "react-icons/si";
 import Tooltip from "@mui/material/Tooltip";
 import { authenticateToService } from "@/services/serviceManagement";
 
@@ -52,11 +57,23 @@ const ServicesPage: React.FC = () => {
       category: "Live-streaming",
     },
     {
-      name: "Twitch",
-      description: "Twitch is a live-stream platform",
-      icon: FaTwitch,
-      category: 'Live-streaming',
-    }
+      name: "Google-Mail",
+      description: "Google mail is an email service",
+      icon: SiGmail,
+      category: "Productivity",
+    },
+    {
+      name: "Google-Drive",
+      description: "Google drive is a cloud storage service",
+      icon: SiGoogledrive,
+      category: "Productivity",
+    },
+    {
+      name: "Google-Calendar",
+      description: "Google calendar is a calendar service",
+      icon: SiGooglecalendar,
+      category: "Productivity",
+    },
   ];
 
   const handleServiceClick = (serviceName: string) => {

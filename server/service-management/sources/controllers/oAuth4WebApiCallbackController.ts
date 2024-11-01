@@ -54,15 +54,17 @@ export const authorizeServiceCallback = async (
       strategy.redirect_uri || "",
       session.code_verifier,
     );
-    if (service == "twitch") {
-      const test = await response.json();
-      test.scope = test.scope.join(" ");
-      response = new Response(JSON.stringify(test), {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const scopeToString = await response.json();
+    try {
+      scopeToString.scope = scopeToString.scope.join(" ");
+    } catch (error) {
+      // Do nothing. Scope is already a string
     }
+    response = new Response(JSON.stringify(scopeToString), {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     const result = await oauth.processAuthorizationCodeResponse(
       as,
