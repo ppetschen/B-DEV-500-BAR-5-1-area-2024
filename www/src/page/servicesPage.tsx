@@ -108,7 +108,8 @@ const ServicesPage: React.FC = () => {
             label={category}
             variant={selectedCategory === category ? "filled" : "outlined"}
             onClick={() =>
-              setSelectedCategory(category === "All" ? null : category)}
+              setSelectedCategory(category === "All" ? null : category)
+            }
             sx={{
               mr: 1,
               transition: "background-color 0.3s, color 0.3s",
