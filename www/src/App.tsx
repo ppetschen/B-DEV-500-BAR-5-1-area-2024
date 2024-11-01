@@ -12,7 +12,7 @@ import Layout from "./components/layout/Layout";
 import Dashboard from "./page/DashboardPage";
 import CreateAreaPage from "./page/AutomationPage";
 import ServicesPage from "./page/ServicesPage";
-import "../src/style/styles.css";
+import "./style/styles.css";
 import MenuPage from "./page/MenuPage";
 import Settings from "./page/Settings";
 
