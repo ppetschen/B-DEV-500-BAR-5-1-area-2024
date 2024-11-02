@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -10,29 +10,67 @@ import {
   Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { getUser, updateUser } from "@/services/userManagement";
+
+type UserData = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  description: string;
+};
 
 const ProfilePage: React.FC = () => {
-  const [userData, setUserData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "JohnDoe@gmail.com",
-    avatar: "/static/images/avatar/1.jpg",
-    bio: "Software Engineer with a passion for building web applications. Loves coding and learning new technologies. Always excited to tackle new challenges and explore innovative solutions in the tech world.",
+  const [userData, setUserData] = useState<UserData>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    description: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
-  const [editBio, setEditBio] = useState("");
+  const [editDescription, setEditDescription] = useState("");
 
-  const handleSaveProfile = () => {
-    setUserData((prev) => ({
-      ...prev,
-      firstName: editFirstName,
-      lastName: editLastName,
-      bio: editBio,
-    }));
-    setIsEditing(false);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = await getUser();
+      if (user && typeof user !== "boolean") {
+        setUserData({
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          description: user.description,
+        });
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const handleSaveProfile = async () => {
+    const updatedUser = await updateUser({
+      first_name: editFirstName,
+      last_name: editLastName,
+      description: editDescription,
+    });
+
+    if (updatedUser && typeof updatedUser !== "boolean") {
+      setUserData({
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+        email: updatedUser.email,
+        description: updatedUser.description,
+      });
+      setIsEditing(false);
+    } else {
+      console.log("Failed to update user");
+    }
+  };
+
+  const getInitials = (firstLetterName: string, lastLetterName: string) => {
+    const firstInitial = firstLetterName ? firstLetterName.charAt(0) : "";
+    const lastInitial = lastLetterName ? lastLetterName.charAt(0) : "";
+    return `${firstInitial}${lastInitial}`.toUpperCase();
   };
 
   return (
@@ -55,10 +93,10 @@ const ProfilePage: React.FC = () => {
         }}
       >
         <Avatar
-          alt={`${userData.firstName} ${userData.lastName}`}
-          src={userData.avatar}
           sx={{ width: 90, height: 90, mr: 3, border: "1px solid #5A6ACF" }}
-        />
+          >
+            {getInitials(userData.first_name, userData.last_name)}
+        </Avatar>
         <Box sx={{ flexGrow: 1 }}>
           {isEditing ? (
             <>
@@ -87,15 +125,15 @@ const ProfilePage: React.FC = () => {
                 variant="h5"
                 sx={{ fontWeight: "bold", color: "#333", mr: 1 }}
               >
-                {`${userData.firstName} ${userData.lastName}`}
+                {`${userData.first_name} ${userData.last_name}`}
               </Typography>
               <IconButton
                 size="small"
                 onClick={() => {
                   setIsEditing(true);
-                  setEditFirstName(userData.firstName);
-                  setEditLastName(userData.lastName);
-                  setEditBio(userData.bio);
+                  setEditFirstName(userData.first_name);
+                  setEditLastName(userData.last_name);
+                  setEditDescription(userData.description);
                 }}
               >
                 <EditIcon color="primary" />
@@ -122,7 +160,7 @@ const ProfilePage: React.FC = () => {
           variant="h6"
           sx={{ fontWeight: "bold", color: "#333", mb: 1 }}
         >
-          Bio
+          Description
         </Typography>
         {isEditing ? (
           <>
@@ -133,8 +171,8 @@ const ProfilePage: React.FC = () => {
               rows={4}
               fullWidth
               variant="outlined"
-              value={editBio}
-              onChange={(e) => setEditBio(e.target.value)}
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
               sx={{ mb: 2 }}
             />
             <Button
@@ -154,7 +192,7 @@ const ProfilePage: React.FC = () => {
           </>
         ) : (
           <Typography variant="body2" color="textSecondary">
-            {userData.bio}
+            {userData.description}
           </Typography>
         )}
       </Card>
