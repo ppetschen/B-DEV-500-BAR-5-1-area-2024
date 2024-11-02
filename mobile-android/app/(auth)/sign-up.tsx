@@ -5,26 +5,23 @@
  ** signUp page
  */
 
-import { Text, View } from "react-native";
-import { styled } from "nativewind";
+import { SafeAreaView } from "react-native";
 import { useState } from "react";
 // @ts-ignore
 import { useRouter } from "expo-router";
 
-import { TextInput } from "@components/TextInput";
-import { BasicButton } from "@components/BasicButton";
 import { register } from "@/services/user-management";
+import { Text, Button, TextInput } from "react-native-paper";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-const StyledView = styled(View);
-const StyledText = styled(Text);
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignUpPage() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [showConfirmPassword, setShowConfirmPassword] =
+        useState<boolean>(false);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const [confirmPasswordError, setConfirmPasswordError] = useState<
@@ -32,39 +29,6 @@ export default function SignUpPage() {
     >(null);
 
     const router = useRouter();
-
-    // const handleSignUp = async () => {
-    //     console.log("Signing handleSignUp");
-    //     let valid = true;
-    //     if (!email) {
-    //         setEmailError("Email is required");
-    //         valid = false;
-    //     } else if (!email.includes("@")) {
-    //         setEmailError("Please enter a valid email");
-    //         valid = false;
-    //     }
-    //     if (!password) {
-    //         setPasswordError("Password is required");
-    //         valid = false;
-    //     }
-    //     if (password !== confirmPassword) {
-    //         setConfirmPasswordError(
-    //             "Password confirmation must match password"
-    //         );
-    //         valid = false;
-    //     }
-    //     if (valid) {
-    //         console.log("Valid\n");
-
-    //         const response = await register({ email, password });
-    //         console.log("Response:", response);
-    //         console.log("Signing up with:", { email, password });
-    //         router.push("/dashboard");
-    //     } else {
-    //         console.log("Error signing up");
-    //     }
-    // };
-
     const handleSignUp = async () => {
         console.log("Signing handleSignUp");
         let valid = true;
@@ -94,7 +58,11 @@ export default function SignUpPage() {
         if (valid) {
             console.log("Valid\n");
 
-            const response = await register({ email, password });
+            const response = await register({
+                email,
+                password,
+                method: "credentials",
+            });
 
             if (response) {
                 console.log("Response:", response);
@@ -111,40 +79,76 @@ export default function SignUpPage() {
         }
     };
     return (
-        <StyledView className="flex-1 justify-center items-center bg-white px-6">
-            <StyledText className="flex-2 text-3xl font-bold text-gray-800 mb-8">
+        <SafeAreaView
+            style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 24,
+            }}
+        >
+            <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
                 Sign Up
-            </StyledText>
-
-            <StyledView className="flex-2">
-                <TextInput
-                    value={email}
-                    placeholder="Email"
-                    onChangeText={setEmail}
-                    onChange={() => setEmailError(null)}
-                    keyboardType="email-address"
-                    error={emailError}
-                />
-                <TextInput
-                    value={password}
-                    placeholder="Password"
-                    secureTextEntry
-                    onChangeText={setPassword}
-                    onChange={() => setPasswordError(null)}
-                    error={passwordError}
-                />
-                <TextInput
-                    textContentType="password"
-                    value={confirmPassword}
-                    placeholder="Confirm Password"
-                    secureTextEntry
-                    onChangeText={setConfirmPassword}
-                    onChange={() => setConfirmPasswordError(null)}
-                    error={confirmPasswordError}
-                />
-            </StyledView>
-
-            <BasicButton title="Sign Up" onPress={handleSignUp} />
-        </StyledView>
+            </Text>
+            <TextInput
+                label="Email"
+                mode="outlined"
+                style={{ width: "80%", marginBottom: 16 }}
+                value={email}
+                onChangeText={(text) => {
+                    setEmail(text);
+                    setEmailError(null);
+                }}
+                keyboardType="email-address"
+                error={!!emailError}
+            />
+            <TextInput
+                label="Password"
+                mode="outlined"
+                style={{ width: "80%", marginBottom: 16 }}
+                value={password}
+                secureTextEntry={!showPassword}
+                onChangeText={(text) => {
+                    setPassword(text);
+                    setPasswordError(null);
+                }}
+                error={!!passwordError}
+                right={
+                    <TextInput.Icon
+                        icon={showPassword ? "eye-off" : "eye"}
+                        onPress={() => setShowPassword(!showPassword)}
+                    />
+                }
+            />
+            <TextInput
+                label="Confirm Password"
+                mode="outlined"
+                style={{ width: "80%", marginBottom: 16 }}
+                value={confirmPassword}
+                secureTextEntry={!showConfirmPassword}
+                onChangeText={(text) => {
+                    setConfirmPassword(text);
+                    setConfirmPasswordError(null);
+                }}
+                error={!!confirmPasswordError}
+                right={
+                    <TextInput.Icon
+                        icon={showConfirmPassword ? "eye-off" : "eye"}
+                        onPress={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                        }
+                    />
+                }
+            />
+            <Button
+                mode="contained"
+                onPress={handleSignUp}
+                contentStyle={{ height: 50 }}
+                labelStyle={{ fontSize: 16 }}
+                style={{ width: "80%", marginTop: 16 }}
+            >
+                Sign Up
+            </Button>
+        </SafeAreaView>
     );
 }
