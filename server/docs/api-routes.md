@@ -2,8 +2,8 @@
 # Api routes documentation
 
 > [!IMPORTANT]
-> This documentation was automatically generated using `Bun` version `1.1.33` on
-> GitHub actions, commit hash `9f2b4758fec65d616b287d0c188fbcb6acc0ccdc`.
+> This documentation was automatically generated using `Bun` version `1.1.34` on
+> GitHub actions, commit hash `6057cefe6e750edefdc5f6735a453f9a7d418365`.
 
 ## user-management
 
