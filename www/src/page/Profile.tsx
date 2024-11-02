@@ -166,7 +166,7 @@ const ProfilePage: React.FC = () => {
           <>
             <TextField
               margin="dense"
-              label="Bio"
+              label="Description"
               multiline
               rows={4}
               fullWidth
