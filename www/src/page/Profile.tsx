@@ -10,14 +10,22 @@ import {
   Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import {getUser, updateUser} from "@/services/userManagement";
+import {userNavigate} from "react-router-dom";
+
+type UserData = {
+  firstName: string,
+  last_name: string;
+  email: string;
+  description: string;
+};
 
 const ProfilePage: React.FC = () => {
   const [userData, setUserData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "JohnDoe@gmail.com",
-    avatar: "/static/images/avatar/1.jpg",
-    bio: "Software Engineer with a passion for building web applications. Loves coding and learning new technologies. Always excited to tackle new challenges and explore innovative solutions in the tech world.",
+    firstName: "",
+    lastName: "",
+    email: "",
+    description: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
