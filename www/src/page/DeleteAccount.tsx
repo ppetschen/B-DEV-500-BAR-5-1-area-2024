@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Box, Card, Typography, TextField, Button } from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import { deleteUser} from "@/services/userManagement";
 
 const DeleteAccount: React.FC = () => {
   const [deleteEmail, setDeleteEmail] = useState("");
   const [deletePassword, setDeletePassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleDeleteAccount = () => {
-    console.log("Account deleted:", { deleteEmail, deletePassword });
+  const handleDeleteAccount = async () => {
+    const deleted = await deleteUser();
+    if (deleted) {
+      localStorage.removeItem("token");
+      setTimeout(() => navigate("/"), 2000);
+    } else {
+      console.log("Account deletion failed.");
+    }
   };
 
   return (
