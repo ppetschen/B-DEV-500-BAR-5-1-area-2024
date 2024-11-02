@@ -13,10 +13,12 @@ const route: Route<typeof schema> = {
   method: "GET",
   schema,
   handler: async (request, _server) => {
+    console.log("Request to /auth/callback", request.url);
     try {
       const service = new URLSearchParams(request.url.split("?")[1]).get(
         "service",
       );
+      console.log("Service", service);
       if (!service) {
         throw Error("Service not found");
       }

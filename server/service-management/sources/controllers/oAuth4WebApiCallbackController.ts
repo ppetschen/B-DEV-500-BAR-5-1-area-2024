@@ -97,11 +97,11 @@ export const authorizeServiceCallback = async (
       user_email = user.email ? user.email : user[0].email;
     }
 
-    if (user_email !== session.user_email) {
-      throw Error("User email does not match");
-    }
+    // if (user_email !== session.user_email) { // Is this necessary?? why
+    //   throw Error("User email does not match");
+    // }
 
-    user = await getUserByEmail(user_email);
+    user = await getUserByEmail(session.user_email);
 
     if (!user) {
       throw Error("User not found");

@@ -16,6 +16,8 @@ export const getOauthStrategy = (service: string) => {
       return getDiscordStrategy();
     case "twitch":
       return getTwitchStrategy();
+    case "notion":
+      return getNotionStrategy();
     // case "new-service":
     //   return getNewServiceStrategy();
     default:
@@ -102,6 +104,21 @@ const getTwitchStrategy = () => {
     token_endpoint: "https://id.twitch.tv/oauth2/token",
   };
   return twitchStrategy;
+};
+
+const getNotionStrategy = () => {
+  const notionStrategy = {
+    issuer: new URL("https://api.notion.com/v1/oauth/authorize?client_id=131d872b-594c-80a6-9241-003797911715&response_type=code&owner=user&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fservice-management%2Fauth%2Fcallback%3Fservice%3Dnotion"),
+    //issuer: new URL("https://api.notion.com/v1/oauth/authorize?client_id=131d872b-594c-80a6-9241-003797911715&response_type=code&redirect_uri=http://localhost:8000/service-management/auth/callback&state=service%3Dnotion"),
+    redirect_uri: process.env.NOTION_REDIRECT_URI!,
+    algorithm: "oauth2",
+    client_id: process.env.NOTION_CLIENT_ID!,
+    client_secret: process.env.NOTION_CLIENT_SECRET!,
+    scope: "read_content update_content",
+    userinfo_endpoint: "https://api.notion.com",
+    token_endpoint: "https://api.notion.com/v1/oauth/token",
+  };
+  return notionStrategy;
 };
 
 /**
