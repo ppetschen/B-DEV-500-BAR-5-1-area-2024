@@ -6,9 +6,10 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TOKEN } from "../asyncStorageLibrary/basicRequestVars";
 
 // Define a key for AsyncStorage
-const TOKEN = "token";
+// const TOKEN = "token";
 
 // services/api.ts
 
@@ -26,30 +27,27 @@ export interface RegisterAndLoginResponse {
 interface RegisterRequest {
     email: string;
     password: string;
+    method: "third-party" | "credentials";
 }
 
 export async function register({
     email,
     password,
+    method,
 }: RegisterRequest): Promise<RegisterAndLoginResponse | null> {
     const baseUrl: string = (await AsyncStorage.getItem("api_base_url"))
         ? (await AsyncStorage.getItem("api_base_url")) +
-          "/user-management/register"
-        : "http://localhost:8000/user-management/register";
+          `/user-management/register?method=${method}`
+        : `http://localhost:8000/user-management/register?method=${method}`;
     console.log("BASE_URL:", baseUrl);
     try {
-        const response = await fetch(
-            `${await AsyncStorage.getItem(
-                "api_base_url"
-            )}/user-management/register`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            }
-        );
+        const response = await fetch(`${baseUrl}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -68,20 +66,20 @@ export async function register({
 export async function login({
     email,
     password,
+    method,
 }: RegisterRequest): Promise<RegisterAndLoginResponse | null> {
+    const baseUrl: string = (await AsyncStorage.getItem("api_base_url"))
+        ? (await AsyncStorage.getItem("api_base_url")) +
+          `/user-management/login?method=${method}`
+        : `http://localhost:8000/user-management/login?method=${method}`;
     try {
-        const response = await fetch(
-            `${await AsyncStorage.getItem(
-                "api_base_url"
-            )}/user-management/login`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            }
-        );
+        const response = await fetch(`${baseUrl}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
