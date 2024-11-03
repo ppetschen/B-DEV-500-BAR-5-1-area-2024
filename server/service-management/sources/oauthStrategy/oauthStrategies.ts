@@ -16,6 +16,8 @@ export const getOauthStrategy = (service: string) => {
       return getDiscordStrategy();
     case "twitch":
       return getTwitchStrategy();
+    case "notion":
+      return getNotionStrategy();
     // case "new-service":
     //   return getNewServiceStrategy();
     default:
@@ -32,33 +34,34 @@ const getGoogleStrategy = () => {
     scope: "email ",
     userinfo_endpoint: "https://www.googleapis.com/oauth2/v3/userinfo",
     token_endpoint: "",
+    client_auth_method: "",
   };
   return strategy;
 };
 const getGmailStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_MAIL_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/gmail.send";
+    strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/gmail.send";
   return strategy;
 };
 
 const getGoogleDriveStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_DRIVE_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/drive.file";
+    strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/drive.file";
   return strategy;
 };
 
 const getGoogleCalendarStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_CALENDAR_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/calendar.events";
+    strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/calendar.events";
   return strategy;
 };
 
@@ -72,6 +75,7 @@ const getGithubStrategy = () => {
     scope: "user repo",
     userinfo_endpoint: "https://api.github.com/user/emails",
     token_endpoint: "https://github.com/login/oauth/access_token",
+    client_auth_method: "",
   };
   return githubStrategy;
 };
@@ -86,6 +90,7 @@ const getDiscordStrategy = () => {
     scope: "identify email",
     userinfo_endpoint: "https://discord.com/api/users/@me",
     token_endpoint: "https://discord.com/api/oauth2/token",
+    client_auth_method: "",
   };
   return discordStrategy;
 };
@@ -100,8 +105,24 @@ const getTwitchStrategy = () => {
     scope: "user:read:email",
     userinfo_endpoint: "https://api.twitch.tv/helix/users",
     token_endpoint: "https://id.twitch.tv/oauth2/token",
+    client_auth_method: "",
   };
   return twitchStrategy;
+};
+
+const getNotionStrategy = () => {
+  const notionStrategy = {
+    issuer: new URL("https://api.notion.com/v1/oauth/authorize"),
+    redirect_uri: process.env.NOTION_REDIRECT_URI!,
+    algorithm: "oauth2",
+    client_id: process.env.NOTION_CLIENT_ID!,
+    client_secret: process.env.NOTION_CLIENT_SECRET!,
+    scope: "user:read read_content update_content",
+    userinfo_endpoint: "https://api.notion.com/v1/users",
+    token_endpoint: "https://api.notion.com/v1/oauth/token",
+    client_auth_method: "Basic Auth",
+  };
+  return notionStrategy;
 };
 
 /**

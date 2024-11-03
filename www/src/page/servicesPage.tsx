@@ -12,6 +12,7 @@ import {
   SiGooglecalendar,
   SiGoogledrive,
   SiMicrosoftoutlook,
+  SiNotion,
 } from "react-icons/si";
 import Tooltip from "@mui/material/Tooltip";
 import { authenticateToService } from "@/services/serviceManagement";
@@ -72,6 +73,12 @@ const ServicesPage: React.FC = () => {
       name: "Google-Calendar",
       description: "Google calendar is a calendar service",
       icon: SiGooglecalendar,
+      category: "Productivity",
+    },
+    {
+      name: "Notion",
+      description: "Notion is a versatile workspace tool",
+      icon: SiNotion,
       category: "Productivity",
     },
   ];
