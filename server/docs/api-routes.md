@@ -2,8 +2,8 @@
 # Api routes documentation
 
 > [!IMPORTANT]
-> This documentation was automatically generated using `Bun` version `1.1.33` on
-> GitHub actions, commit hash `9f2b4758fec65d616b287d0c188fbcb6acc0ccdc`.
+> This documentation was automatically generated using `Bun` version `1.1.34` on
+> GitHub actions, commit hash `c37c2eeedfa896bde4196a64646fbc29c28aab6c`.
 
 ## user-management
 
@@ -119,6 +119,16 @@ POST /service-management/get-service-subscription
 ```
 
 ```http
+POST /service-management/get-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
 DELETE /service-management/delete-oauth-session
 ```
 ```ts
@@ -147,6 +157,7 @@ POST /service-management/create-oauth-session
     code_verifier: string;
     state: string;
     user_email: string;
+    service: string;
 }
 ```
 
