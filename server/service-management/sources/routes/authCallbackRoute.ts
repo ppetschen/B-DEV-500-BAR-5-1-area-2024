@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { Route } from "../types";
 import { authorizeServiceCallback } from "../controllers/oAuth4WebApiCallbackController";
 import process from "node:process";
+import { getSession } from "../controllers/sessionController";
 
 const schema = z.any();
 
@@ -13,13 +14,22 @@ const route: Route<typeof schema> = {
   method: "GET",
   schema,
   handler: async (request, _server) => {
+    console.log("Request to /auth/callback", request.url);
     try {
-      const service = new URLSearchParams(request.url.split("?")[1]).get(
+      let service = new URLSearchParams(request.url.split("?")[1]).get(
         "service",
       );
       if (!service) {
-        throw Error("Service not found");
+        const state = new URLSearchParams(request.url.split("?")[1]).get(
+          "state",
+        );
+        const session = await getSession(state!);
+        service = session.service;
       }
+      if (!service) {
+        throw new Error(`Service: ${service} not found`);
+      }
+
       const response = await authorizeServiceCallback(service, request.url);
       if (!response) {
         return new Response(JSON.stringify({ error: "Failed to authorize" }), {

@@ -14,6 +14,9 @@ export const getUserByEmail = async (email: string): Promise<UserInfo> => {
     },
   );
   const user = await response.json();
+  if (!user) {
+    throw new Error("User not found");
+  }
   return user;
 };
 
