@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `c37c2eeedfa896bde4196a64646fbc29c28aab6c`.
+> GitHub actions, commit hash `4367799de5bd595633aabacea2b7b70e5cc1fabb`.
 
 ## user-management
 
