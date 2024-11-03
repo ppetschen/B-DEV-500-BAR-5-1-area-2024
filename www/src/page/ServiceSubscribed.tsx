@@ -19,6 +19,7 @@ const ServiceSubscribed: React.FC = () => {
         setSubscribedServices(user.services || []);
       } else {
         setErrorMessage("Failed to load subscribed services.");
+        alert("Failed to load subscribed services.");
       }
     };
     fetchUserServices();
@@ -54,7 +55,7 @@ const ServiceSubscribed: React.FC = () => {
           ))}
         </Stack>
         ) : (
-          <Typography variant="body2" color="textSecondary">You have no subscribed services</Typography>
+          <Typography variant="body2" color="error">You have no subscribed services</Typography>
         )}
       </Card>
     </Box>

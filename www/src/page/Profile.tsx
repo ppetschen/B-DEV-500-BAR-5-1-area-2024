@@ -8,6 +8,7 @@ import {
   IconButton,
   TextField,
   Button,
+  Alert,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { getUser, updateUser } from "@/services/userManagement";
@@ -31,6 +32,8 @@ const ProfilePage: React.FC = () => {
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -48,6 +51,12 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const handleSaveProfile = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+    if (!editFirstName || !editLastName) {
+      setErrorMessage("Name and Surname are required.");
+      return;
+    }
     const updatedUser = await updateUser({
       first_name: editFirstName,
       last_name: editLastName,
@@ -62,8 +71,9 @@ const ProfilePage: React.FC = () => {
         description: updatedUser.description,
       });
       setIsEditing(false);
+      setSuccessMessage("Profile updated successfully!");
     } else {
-      console.log("Failed to update user");
+      setErrorMessage("Failed to update profile.");
     }
   };
 
@@ -108,6 +118,7 @@ const ProfilePage: React.FC = () => {
                 value={editFirstName}
                 onChange={(e) => setEditFirstName(e.target.value)}
                 sx={{ mb: 1 }}
+                required
               />
               <TextField
                 margin="dense"
@@ -117,6 +128,7 @@ const ProfilePage: React.FC = () => {
                 value={editLastName}
                 onChange={(e) => setEditLastName(e.target.value)}
                 sx={{ mb: 1 }}
+                required
               />
             </>
           ) : (
@@ -194,6 +206,16 @@ const ProfilePage: React.FC = () => {
           <Typography variant="body2" color="textSecondary">
             {userData.description}
           </Typography>
+        )}
+        {errorMessage && (
+          <Alert severity="error" sx={{mt: 2}}>
+            {errorMessage}
+          </Alert>
+        )}
+        {successMessage && (
+          <Alert severity="success" sx={{mt: 2}}>
+            {successMessage}
+          </Alert>
         )}
       </Card>
     </Box>
