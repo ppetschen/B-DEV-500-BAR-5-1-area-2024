@@ -1,13 +1,36 @@
 import React, { useState } from "react";
-import { Box, Card, Typography, TextField, Button } from "@mui/material";
+import { Box, Card, Typography, TextField, Button, Alert, CircularProgress } from "@mui/material";
+import { updateUser } from "@/services/userManagement";
 
 const ChangePassword: React.FC = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
+  //const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [repeatNewPassword, setRepeatNewPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handlePasswordSave = () => {
-    console.log("Password changed:", { currentPassword, newPassword });
+  const handlePasswordSave = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    if (newPassword !== repeatNewPassword) {
+      setErrorMessage("New passwords do not match.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const updatedUser = await updateUser({ new_password: newPassword });
+    setIsLoading(false);
+
+    if (updatedUser && typeof updatedUser !== "boolean") {
+      setSuccessMessage("Password changed successfully.");
+      setNewPassword("");
+      setRepeatNewPassword("");
+    } else {
+      setErrorMessage("Failed to change password. Please try again.");
+    }
   };
 
   return (
@@ -27,16 +50,16 @@ const ChangePassword: React.FC = () => {
           mb: 4,
         }}
       >
-        <TextField
-          margin="dense"
-          label="Current Password"
-          type="password"
-          fullWidth
-          variant="outlined"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          sx={{ mb: 2 }}
-        />
+        {errorMessage && (
+          <Alert severity="error" sx={{mb: 2}}>
+            {errorMessage}
+          </Alert>
+        )}
+        {successMessage && (
+          <Alert severity="success" sx={{mb: 2}}>
+            {successMessage}
+          </Alert>
+        )}
         <TextField
           margin="dense"
           label="New Password"
@@ -45,7 +68,7 @@ const ChangePassword: React.FC = () => {
           variant="outlined"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{mb: 2}}
         />
         <TextField
           margin="dense"
@@ -55,7 +78,7 @@ const ChangePassword: React.FC = () => {
           variant="outlined"
           value={repeatNewPassword}
           onChange={(e) => setRepeatNewPassword(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{mb: 2}}
         />
         <Button
           onClick={handlePasswordSave}
@@ -68,8 +91,9 @@ const ChangePassword: React.FC = () => {
               color: "#273240",
             },
           }}
+          disabled={isLoading}
         >
-          Save Password
+          {isLoading ? <CircularProgress size={24} color="inherit"/> : "Save Password"}
         </Button>
       </Card>
     </Box>
