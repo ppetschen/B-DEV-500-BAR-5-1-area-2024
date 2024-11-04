@@ -113,7 +113,7 @@ const ServicesPage: React.FC = () => {
           <Chip
             key={category}
             label={category}
-            variant={selectedCategory === category ? "filled" : "outlined"}
+            variant={selectedCategory === category || (category === "All" && selectedCategory === null) ? "filled" : "outlined"}
             onClick={() =>
               setSelectedCategory(category === "All" ? null : category)
             }
@@ -121,13 +121,13 @@ const ServicesPage: React.FC = () => {
               mr: 1,
               transition: "background-color 0.3s, color 0.3s",
               cursor: "pointer",
-              bgcolor: selectedCategory === category
+              bgcolor: selectedCategory === category || (category === "All" && selectedCategory === null)
                 ? "#5A6ACF"
                 : "transparent",
-              color: selectedCategory === category ? "#fff" : "#5A6ACF",
+              color: selectedCategory === category || (category === "All" && selectedCategory === null) ? "#fff" : "#5A6ACF",
               "&:hover": {
-                bgcolor: selectedCategory !== category ? "#E0E7FF" : "#5A6ACF",
-                color: selectedCategory !== category ? "#5A6ACF" : "#fff",
+                bgcolor: selectedCategory !== category && !(category === "All" && selectedCategory === null) ? "#E0E7FF" : "#5A6ACF",
+                color: selectedCategory !== category && !(category === "All" && selectedCategory === null) ? "#5A6ACF" : "#fff",
               },
             }}
           />
