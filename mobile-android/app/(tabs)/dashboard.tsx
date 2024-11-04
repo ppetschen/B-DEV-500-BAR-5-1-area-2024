@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from "react";
 import {
     View,
-    FlatList,
     ActivityIndicator,
     Dimensions,
     SafeAreaView,
 } from "react-native";
-import { Card, Text, Button, Avatar } from "react-native-paper";
+import { Card, Text, IconButton } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import PagerView from "react-native-pager-view";
+import { useRouter } from "expo-router";
+import {
+    areaInList,
+    getListAreas,
+    responseAreaInList,
+} from "@/services/area-composition";
+import AreaInListCard from "@components/AreaInListCard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-//TODO: connect to back + better styling
+const iconMapping: Record<string, string> = {
+    github: "github",
+    google: "google",
+    discord: "discord",
+};
+
 interface Metric {
     label: string;
     value: number;
@@ -18,30 +30,6 @@ interface Metric {
     color: string;
 }
 
-//&  Mock data - Areas
-const mockAreas = [
-    {
-        name: "GitHub",
-        services: [<Icon name="github" size={24} color="#5A6ACF" />],
-        status: "success",
-        date: "2024-10-01",
-        url: "https://example.com/test/github",
-    },
-    {
-        name: "Google Drive",
-        services: [<Icon name="google" size={24} color="#5A6ACF" />],
-        status: "pending",
-        date: "2024-09-30",
-        url: "https://example.com/test/google-drive",
-    },
-    {
-        name: "Discord",
-        services: [<Icon name="discord" size={24} color="#5A6ACF" />],
-        status: "failure",
-        date: "2024-09-28",
-        url: "https://example.com/test/discord",
-    },
-];
 //&  Mock data - Metrics
 const mockMetrics: Metric[] = [
     {
@@ -73,16 +61,91 @@ const mockMetrics: Metric[] = [
 const { width: viewportWidth } = Dimensions.get("window");
 
 const Dashboard = () => {
+    const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const [areas, setAreas] = useState(mockAreas);
-    const [metrics, setMetrics] = useState<Metric[]>(mockMetrics); // Specify Metric type here
+    const [areas, setAreas] = useState<areaInList[]>([]);
+    const [metrics, setMetrics] = useState<Metric[]>([]);
+    const [completedCount, setCompletedCount] = useState(0);
+    const [pendingCount, setPendingCount] = useState(0);
+    const [failedCount, setFailedCount] = useState(0);
 
+    //*[IconMap[area.service_name as keyof typeof IconMap]]
     // Simulate data loading with a timeout
     useEffect(() => {
         const loadData = () => {
-            setTimeout(() => {
-                setAreas(mockAreas);
-                setMetrics(mockMetrics);
+            setTimeout(async () => {
+                console.log("Areas:", areas);
+                const fetchedAreas: Array<areaInList> | null =
+                    await getListAreas().then(async (areas) =>
+                        areas
+                            ? await Promise.all(
+                                  areas.map(async (area) => ({
+                                      name: area.service_name,
+                                      //TODO: CLEANUP
+                                      services: [
+                                          <Icon
+                                              name={
+                                                  iconMapping[
+                                                      area.service_name.toLowerCase()
+                                                  ] || "question-circle"
+                                              }
+                                              size={24}
+                                              color="#5A6ACF"
+                                          />,
+                                      ],
+                                      status: area.event_type,
+                                      date: area.created_at,
+                                      url: `${await AsyncStorage.getItem(
+                                          "api_base_url"
+                                      )}/area-composition/execute?id=${
+                                          area.id
+                                      }`,
+                                  }))
+                              )
+                            : []
+                    );
+                setAreas(fetchedAreas || []);
+                if (areas !== null) {
+                    setCompletedCount(
+                        areas.filter((area) => area.status === "success").length
+                    );
+                    setPendingCount(
+                        areas.filter((area) => area.status === "pending").length
+                    );
+                    setFailedCount(
+                        areas.filter((area) => area.status === "failure").length
+                    );
+                } else {
+                    setCompletedCount(0);
+                    setPendingCount(0);
+                    setFailedCount(0);
+                }
+                setMetrics([
+                    {
+                        label: "Completed Automations",
+                        value: completedCount,
+                        icon: "check-circle",
+                        color: "#4CAF50",
+                    },
+                    {
+                        label: "Pending Tasks",
+                        value: pendingCount,
+                        icon: "hourglass-half",
+                        color: "#FFC107",
+                    },
+                    {
+                        label: "Failed Automations",
+                        value: failedCount,
+                        icon: "times-circle",
+                        color: "#F44336",
+                    },
+                    {
+                        label: "Total Automations",
+                        value: (fetchedAreas || []).length,
+                        icon: "bar-chart",
+                        color: "#5A6ACF",
+                    },
+                ]);
                 setLoading(false);
             }, 1000);
         };
@@ -95,6 +158,9 @@ const Dashboard = () => {
         alert(`Test area executed for ${url}!`);
     };
 
+    const handleAddWorkflow = () => {
+        router.push("/new-workflow");
+    };
     // Render the dashboard page
     return (
         <SafeAreaView style={{ flex: 1, padding: 16 }}>
@@ -109,7 +175,6 @@ const Dashboard = () => {
                 >
                     Metrics Overview
                 </Text>
-
                 {loading ? (
                     <ActivityIndicator size="large" color="#5A6ACF" />
                 ) : (
@@ -176,7 +241,7 @@ const Dashboard = () => {
                 >
                     Recent Activities
                 </Text>
-                {/* //TODO: add Areas into flatlist */}
+
                 {loading ? (
                     <ActivityIndicator size="large" color="#5A6ACF" />
                 ) : (
@@ -184,61 +249,36 @@ const Dashboard = () => {
                         {areas.length === 0 ? (
                             <Text>No activities found</Text>
                         ) : (
-                            areas.map((activity, index) => (
-                                <Card key={index} style={{ marginBottom: 15 }}>
-                                    <Card.Title
-                                        title={activity.name}
-                                        subtitle={activity.date}
-                                        left={(props) => (
-                                            <Avatar.Icon
-                                                {...props}
-                                                icon={() =>
-                                                    activity.services[0]
-                                                }
-                                                color="#FFF"
-                                                style={{
-                                                    backgroundColor: "#5A6ACF",
-                                                }}
-                                            />
-                                        )}
-                                    />
-                                    <Card.Content>
-                                        <Text variant="bodyMedium">
-                                            {activity.url}
-                                        </Text>
-                                    </Card.Content>
-                                    <Card.Actions>
-                                        <Button
-                                            mode="outlined"
-                                            onPress={() =>
-                                                testArea(activity.url)
-                                            }
-                                            style={{ marginRight: 10 }}
-                                        >
-                                            Test Area
-                                        </Button>
-                                        <Button
-                                            mode="contained-tonal"
-                                            style={{
-                                                backgroundColor:
-                                                    activity.status ===
-                                                    "success"
-                                                        ? "#4CAF50"
-                                                        : activity.status ===
-                                                          "pending"
-                                                        ? "#FFC107"
-                                                        : "#F44336",
-                                            }}
-                                        >
-                                            {activity.status}
-                                        </Button>
-                                    </Card.Actions>
-                                </Card>
-                            ))
+                            areas.map((activity, index) =>
+                                AreaInListCard(
+                                    {
+                                        name: activity.name,
+                                        date: activity.date,
+                                        url: activity.url,
+                                        services: activity.services,
+                                        status: activity.status,
+                                        onTest: testArea,
+                                    },
+                                    index.toString()
+                                )
+                            )
                         )}
                     </View>
                 )}
             </View>
+            <IconButton
+                icon="plus"
+                iconColor="#18345E"
+                size={40}
+                onPress={handleAddWorkflow}
+                style={{
+                    backgroundColor: "#A4B3FF",
+                    position: "absolute",
+                    bottom: 20,
+                    right: 20,
+                    zIndex: 1000,
+                }}
+            />
         </SafeAreaView>
     );
 };

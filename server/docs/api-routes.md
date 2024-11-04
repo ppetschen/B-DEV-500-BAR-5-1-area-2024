@@ -1,8 +1,9 @@
+<!-- deno-fmt-ignore-file -->
 # Api routes documentation
 
 > [!IMPORTANT]
-> This documentation was automatically generated using `Bun` version `1.1.33` on
-> GitHub actions, commit hash `f2b5769e41ce7f212709eda72cf7d6c510ae777a`.
+> This documentation was automatically generated using `Bun` version `1.1.34` on
+> GitHub actions, commit hash `4367799de5bd595633aabacea2b7b70e5cc1fabb`.
 
 ## user-management
 
@@ -13,7 +14,7 @@ POST /user-management/register
 // This route is internal, won't be exposed
 {
     email: string;
-    password: string;
+    password?: string;
 }
 ```
 
@@ -24,8 +25,37 @@ POST /user-management/login
 // This route is internal, won't be exposed
 {
     email: string;
-    password: string;
+    password?: string;
 }
+```
+
+```http
+DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+never
+```
+
+```http
+PUT /user-management/update-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    new_password?: string;
+    first_name?: string;
+    last_name?: string;
+    description?: string;
+}
+```
+
+```http
+GET /user-management/get-user
+```
+```ts
+// This route is internal, won't be exposed
+any
 ```
 
 
@@ -89,12 +119,32 @@ POST /service-management/get-service-subscription
 ```
 
 ```http
+POST /service-management/get-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
 DELETE /service-management/delete-oauth-session
 ```
 ```ts
 // This route is internal, won't be exposed
 {
     state: string;
+}
+```
+
+```http
+POST /service-management/get-services-by-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
 }
 ```
 
@@ -107,6 +157,7 @@ POST /service-management/create-oauth-session
     code_verifier: string;
     state: string;
     user_email: string;
+    service: string;
 }
 ```
 
@@ -149,6 +200,31 @@ POST /user-management/create-user
 {
     email: string;
     hashedPassword: string;
+}
+```
+
+```http
+DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: number;
+}
+```
+
+```http
+PUT /user-management/update-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: number;
+    email: string;
+    password_hash: string;
+    first_name: string;
+    last_name: string;
+    description: string;
 }
 ```
 
@@ -286,13 +362,21 @@ POST /service-management/auth/get-service-subscription
 ```
 
 ```http
-POST /service-management/auth/is_user_subscribed
+POST /service-management/auth/is-user-subscribed
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
 {
     service: string;
 }
+```
+
+```http
+GET /service-management/auth/get-services-by-user
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
 ```
 
 ```http

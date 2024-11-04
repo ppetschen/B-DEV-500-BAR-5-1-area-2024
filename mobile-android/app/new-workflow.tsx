@@ -2,195 +2,338 @@
  ** EPITECH PROJECT, 2024
  ** Area
  ** File description:
- ** new-workflow
+ ** workflow
  */
 
 import React, { useState } from "react";
-import { View, StyleSheet } from "react-native";
-import {
-    TextInput,
-    Button,
-    Appbar,
-    Snackbar,
-    SegmentedButtons,
-} from "react-native-paper";
-import { styled } from "nativewind";
 import { useNavigation } from "@react-navigation/native";
-import DropDownPicker from "react-native-dropdown-picker";
-import { FlatList } from "react-native";
+import { SafeAreaView, View, FlatList } from "react-native";
+import { Appbar, SegmentedButtons, Button, Snackbar } from "react-native-paper";
+import { StyleSheet } from "react-native";
+import { styled } from "nativewind";
 import { WorkflowDetails } from "@components/workflowDetails";
-
-// Mock data for apps and actions
-const mockApps = [
-    {
-        id: "1",
-        name: "GitHub",
-        actions: ["Create Issue", "Push Commit", "Create Pull Request"],
-    },
-    {
-        id: "2",
-        name: "Slack",
-        actions: ["Send Message", "Create Channel", "Archive Channel"],
-    },
-    {
-        id: "3",
-        name: "Google Drive",
-        actions: ["Upload File", "Create Folder", "Share Document"],
-    },
-    {
-        id: "4",
-        name: "Twitter",
-        actions: ["Post Tweet", "Follow User", "Like Tweet"],
-    },
-];
+import DropdownSelector from "@components/DropdownSelector"; // Import the new component
 
 const StyledView = styled(View);
 
-export default function WorkflowCreationPage() {
+interface Action {
+    id: string;
+    serviceName: string;
+    eventType: string;
+}
+
+interface Reaction {
+    id: string;
+    serviceName: string;
+    eventType: string;
+    payload: {
+        name: string;
+        content: string;
+    };
+}
+
+interface ThisAreaValues {
+    name: string;
+    description: string;
+    actions: Action;
+    reactions: Reaction;
+}
+
+const mockActionServiceOptions = [
+    {
+        id: "1",
+        serviceName: "Google",
+        eventTypeOptions: ["Sheet Created", "File Uploaded", "Calendar Event"],
+    },
+    {
+        id: "2",
+        serviceName: "GitHub",
+        eventTypeOptions: [
+            "Issue Created",
+            "Pull Request Created",
+            "Commit Added",
+        ],
+    },
+    {
+        id: "3",
+        serviceName: "Outlook",
+        eventTypeOptions: ["Email Dispatched"],
+    },
+    {
+        id: "4",
+        serviceName: "Jira",
+        eventTypeOptions: ["Issue Created", "Issue Updated", "Issue Deleted"],
+    },
+];
+
+const mockReactionServiceOptions = [
+    {
+        id: "a",
+        serviceName: "Discord",
+        eventTypeOptions: ["Discord Webhook"],
+        payload: {
+            name: "Webhook URL",
+            content: "Message content",
+        },
+    },
+    {
+        id: "b",
+        serviceName: "Google",
+        eventTypeOptions: ["Google Drive File"],
+        payload: {
+            name: "File Name",
+            content: "File content",
+        },
+    },
+];
+
+export default function AreaEditor(id: string | null) {
     const navigation = useNavigation();
-    const [value, setValue] = useState<"details" | "actions" | "reactions">(
+    const [step, setStep] = useState<"details" | "actions" | "reactions">(
         "details"
     );
-    const [name, setName] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    const [areaName, setAreaName] = useState<string>("");
+    const [areaDescription, setAreaDescription] = useState<string>("");
+    const [selectedApp, setSelectedApp] = useState<{
+        label: string;
+        value: string;
+    } | null>(null);
+    const [selectedAction, setSelectedAction] = useState<{
+        label: string;
+        value: string;
+    } | null>(null);
+    const [appModalVisible, setAppModalVisible] = useState(false);
+    const [actionModalVisible, setActionModalVisible] = useState(false);
+    const [selectedReactionService, setSelectedReactionService] = useState<{
+        label: string;
+        value: string;
+    } | null>(null);
+    const [selectedReactionEvent, setSelectedReactionEvent] = useState<{
+        label: string;
+        value: string;
+    } | null>(null);
+    const [reactionModalVisible, setReactionModalVisible] = useState(false);
+    const [eventTypeModalVisible, setEventTypeModalVisible] = useState(false);
+    const [reactionPayload, setReactionPayload] = useState<{
+        name: string;
+        content: string;
+    }>({ name: "", content: "" });
+
     const [detailsSnackbarVisible, setDetailsSnackbarVisible] =
         useState<boolean>(false);
 
-    // State for DropDownPicker
-    const [openApp, setOpenApp] = useState(false);
-    const [selectedApp, setSelectedApp] = useState<string | null>(null);
-    const [openAction, setOpenAction] = useState(false);
-    const [selectedAction, setSelectedAction] = useState<string | null>(null);
-
-    const [appItems, setAppItems] = useState(
-        mockApps.map((app) => ({ label: app.name, value: app.id }))
-    );
-
-    const actionItems = selectedApp
-        ? mockApps
-              .find((app) => app.id === selectedApp)
-              ?.actions.map((action) => ({ label: action, value: action })) ||
-          []
-        : [];
-
     const handleSubmit = () => {
-        if (!name || !description) {
+        // All fields must be filled in
+        if (
+            !areaName ||
+            !areaDescription ||
+            !selectedApp ||
+            !selectedAction ||
+            !selectedReactionService ||
+            !selectedReactionEvent ||
+            !reactionPayload.name ||
+            !reactionPayload.content
+        ) {
             setDetailsSnackbarVisible(true);
             return;
         }
-
         console.log({
-            name,
-            description,
+            areaName,
+            areaDescription,
             selectedApp,
             selectedAction,
         });
-
         navigation.goBack(); // Navigate back after creation
+        //TODO: ADD CONNECTION TO BACKEND
     };
 
-    const renderContent = () => {
-        if (value === "details") {
+    const renderStepContent = () => {
+        if (step === "details") {
             return (
-                <WorkflowDetails
-                    name={name}
-                    setName={setName}
-                    description={description}
-                    setDescription={setDescription}
-                ></WorkflowDetails>
+                <View>
+                    <WorkflowDetails
+                        labelSmallInput="Workflow name"
+                        labelBigInput="Description"
+                        name={areaName}
+                        setName={setAreaName}
+                        description={areaDescription}
+                        setDescription={setAreaDescription}
+                    />
+                </View>
             );
-        }
-        if (value === "actions") {
+        } else if (step === "actions") {
+            const appItems = mockActionServiceOptions.map((action) => ({
+                label: action.serviceName,
+                value: action.id,
+            }));
+
+            const actionTypeItems =
+                (selectedApp &&
+                    mockActionServiceOptions
+                        .find((app) => app.id === selectedApp.value)
+                        ?.eventTypeOptions.map((eventType) => ({
+                            label: eventType,
+                            value: eventType,
+                        }))) ||
+                [];
+
             return (
-                <>
-                    <DropDownPicker
-                        open={openApp}
-                        value={selectedApp}
+                <View>
+                    <DropdownSelector
+                        title="Select App"
                         items={appItems}
-                        setOpen={setOpenApp}
-                        setValue={setSelectedApp}
-                        setItems={setAppItems}
-                        placeholder="Select App"
-                        zIndex={3000}
-                        zIndexInverse={1000}
+                        selectedItem={selectedApp}
+                        onSelect={(item) => {
+                            setSelectedApp(item);
+                            setSelectedAction(null);
+                        }}
+                        modalVisible={appModalVisible}
+                        setModalVisible={setAppModalVisible}
                     />
 
-                    {/* Action Picker */}
                     {selectedApp && (
-                        <DropDownPicker
-                            open={openAction}
-                            value={selectedAction}
-                            items={actionItems}
-                            setOpen={setOpenAction}
-                            setValue={setSelectedAction}
-                            placeholder="Select Action"
-                            zIndex={2000}
-                            zIndexInverse={500}
+                        <DropdownSelector
+                            title="Select Action"
+                            items={actionTypeItems}
+                            selectedItem={selectedAction}
+                            onSelect={setSelectedAction}
+                            modalVisible={actionModalVisible}
+                            setModalVisible={setActionModalVisible}
                         />
                     )}
-                </>
+                </View>
             );
-        }
-        if (value === "reactions") {
+        } else if (step === "reactions") {
+            const reactionItems = mockReactionServiceOptions.map(
+                (reaction) => ({
+                    label: reaction.serviceName,
+                    value: reaction.id,
+                })
+            );
+
+            const reactionTypeItems =
+                (selectedReactionService &&
+                    mockReactionServiceOptions
+                        .find(
+                            (service) =>
+                                service.id === selectedReactionService.value
+                        )
+                        ?.eventTypeOptions.map((eventType) => ({
+                            label: eventType,
+                            value: eventType,
+                        }))) ||
+                [];
+
+            const selectedReactionPayload =
+                selectedReactionService &&
+                mockReactionServiceOptions.find(
+                    (service) => service.id === selectedReactionService.value
+                )?.payload;
+
             return (
-                <TextInput
-                    label="Reaction"
-                    value={""} // Replace with reaction state
-                    onChangeText={() => {}} // Replace with reaction setter
-                    mode="outlined"
-                />
+                <View>
+                    <DropdownSelector
+                        title="Select Reaction Service"
+                        items={reactionItems}
+                        selectedItem={selectedReactionService}
+                        onSelect={(item) => {
+                            setSelectedReactionService(item);
+                            setSelectedReactionEvent(null);
+                        }}
+                        modalVisible={reactionModalVisible}
+                        setModalVisible={setReactionModalVisible}
+                    />
+
+                    {selectedReactionService && (
+                        <DropdownSelector
+                            title="Select Reaction Event"
+                            items={reactionTypeItems}
+                            selectedItem={selectedReactionEvent}
+                            onSelect={setSelectedReactionEvent}
+                            modalVisible={eventTypeModalVisible}
+                            setModalVisible={setEventTypeModalVisible}
+                        />
+                    )}
+
+                    {selectedReactionEvent && selectedReactionPayload && (
+                        <View>
+                            <WorkflowDetails
+                                labelSmallInput={selectedReactionPayload.name}
+                                labelBigInput={selectedReactionPayload.content}
+                                name={reactionPayload.name}
+                                setName={(value) =>
+                                    setReactionPayload((prevState) => ({
+                                        ...prevState,
+                                        name:
+                                            typeof value === "string"
+                                                ? value
+                                                : prevState.name,
+                                    }))
+                                }
+                                description={reactionPayload.content}
+                                setDescription={(text) =>
+                                    setReactionPayload({
+                                        ...reactionPayload,
+                                        content:
+                                            typeof text === "string"
+                                                ? text
+                                                : reactionPayload.content,
+                                    })
+                                }
+                            />
+                        </View>
+                    )}
+                </View>
             );
         }
     };
-
+    //TODO: ADD CLEAR BUTTON - to clear all the fields from the specific step
     return (
         <>
-            <Appbar.Header>
-                <Appbar.BackAction onPress={() => navigation.goBack()} />
-                <Appbar.Content title="Create Workflow" />
-            </Appbar.Header>
-
-            <FlatList
-                data={[{ key: value }]}
-                renderItem={() => (
-                    <StyledView className="flex-1 justify-start px-6 mt-6">
-                        <SegmentedButtons
-                            value={value}
-                            onValueChange={(v) =>
-                                setValue(
-                                    v as "details" | "actions" | "reactions"
-                                )
-                            }
-                            buttons={[
-                                { value: "details", label: "Details" },
-                                { value: "actions", label: "Actions" },
-                                { value: "reactions", label: "Reactions" },
-                            ]}
-                        />
-                        {renderContent()}
-                    </StyledView>
-                )}
-                ListFooterComponent={<View style={{ height: 150 }} />}
-            />
-
-            <View style={styles.buttonContainer}>
-                <Button
-                    mode="contained"
-                    onPress={handleSubmit}
-                    style={styles.createButton}
+            <SafeAreaView>
+                <Appbar.Header>
+                    <Appbar.BackAction onPress={() => navigation.goBack()} />
+                    <Appbar.Content title="Create Workflow" />
+                </Appbar.Header>
+                <FlatList
+                    data={[{ key: step }]}
+                    renderItem={() => (
+                        <StyledView className="flex-1 justify-start px-6 mt-6">
+                            <SegmentedButtons
+                                value={step}
+                                onValueChange={(v) =>
+                                    setStep(
+                                        v as "details" | "actions" | "reactions"
+                                    )
+                                }
+                                buttons={[
+                                    { value: "details", label: "Details" },
+                                    { value: "actions", label: "Actions" },
+                                    { value: "reactions", label: "Reactions" },
+                                ]}
+                            />
+                            {renderStepContent()}
+                        </StyledView>
+                    )}
+                    ListFooterComponent={<View style={{ height: 150 }} />}
+                />
+                <View style={styles.buttonContainer}>
+                    <Button
+                        mode="contained"
+                        onPress={handleSubmit}
+                        style={styles.createButton}
+                    >
+                        Create Workflow
+                    </Button>
+                </View>
+                <Snackbar
+                    visible={detailsSnackbarVisible}
+                    onDismiss={() => setDetailsSnackbarVisible(false)}
+                    duration={3000}
                 >
-                    Create Workflow
-                </Button>
-            </View>
-
-            {/* Snackbar for validation errors */}
-            <Snackbar
-                visible={detailsSnackbarVisible}
-                onDismiss={() => setDetailsSnackbarVisible(false)}
-                duration={3000}
-            >
-                Please fill in the workflow details.
-            </Snackbar>
+                    Please Make sure to fill in all the details.
+                </Snackbar>
+            </SafeAreaView>
         </>
     );
 }
@@ -202,9 +345,9 @@ const styles = StyleSheet.create({
         width: "100%",
         paddingHorizontal: 20,
         paddingVertical: 10,
-        backgroundColor: "white",
     },
     createButton: {
         width: "100%",
+        bottom: 0,
     },
 });

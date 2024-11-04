@@ -14,6 +14,9 @@ export const getUserByEmail = async (email: string): Promise<UserInfo> => {
     },
   );
   const user = await response.json();
+  if (!user) {
+    throw new Error("User not found");
+  }
   return user;
 };
 
@@ -45,4 +48,4 @@ export const getUserByToken = (token: string): Promise<UserInfo> => {
   }
   const user = getUserById(consumer);
   return user;
- };
+};

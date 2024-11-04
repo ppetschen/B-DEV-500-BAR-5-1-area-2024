@@ -1,4 +1,8 @@
-import type { ServiceSubscription } from "../types";
+import {
+  customError,
+  type ServicesByUserList,
+  type ServiceSubscription,
+} from "../types";
 import { host } from "../utils";
 
 /**
@@ -110,4 +114,44 @@ export const isAccessTokenValid = (
   const tokenExpirationTime = new Date(serviceSubscription.expires_in!)
     .getTime();
   return currentTime < tokenExpirationTime;
+};
+
+/**
+ * Retrieves all services associated with a user.
+ * @param user_id - The user id to retrieve services for
+ * @returns {Promise<ServicesByUserList>} - Returns a list of services associated with the user
+ */
+export const getServicesByUserId = async (
+  user_id: number,
+): Promise<ServicesByUserList> => {
+  try {
+    const response = await fetch(
+      host("DATABASE", "/service-management/get-services-by-user"),
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id,
+        }),
+      },
+    );
+    if (!response.ok) {
+      if (response.status === 404) {
+        return { services: [] }; // Return an empty services array
+      }
+      // For other errors, you may want to throw a custom error
+      throw new customError(
+        "Failed to retrieve services by user",
+        response.status,
+      );
+    }
+    const result = await response.json();
+    const services = result.services;
+    return { services };
+  } catch (error) {
+    console.log(error);
+    throw new customError("Failed to retrieve services by user", 500);
+  }
 };

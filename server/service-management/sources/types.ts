@@ -47,6 +47,10 @@ export interface ServiceSubscription {
   service: string;
 }
 
+export interface ServicesByUserList {
+  services: string[];
+}
+
 export interface Strategy {
   issuer: URL;
   redirect_uri: string;
@@ -56,4 +60,12 @@ export interface Strategy {
   scope: string;
   userinfo_endpoint: string;
   token_endpoint: string;
+}
+
+export class customError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
 }

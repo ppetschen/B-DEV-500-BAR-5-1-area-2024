@@ -5,7 +5,7 @@ import { craftJWTFromResponse, createJWT, host } from "../utils";
 
 const schema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().optional().default(""),
 });
 
 const route: Route<typeof schema> = {
@@ -13,7 +13,7 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const { email, password } = await request.json();
+    const { email, password } = schema.parse(await request.json());
     const method = new URLSearchParams(request.url.split("?")[1]).get(
       "method",
     );
@@ -44,7 +44,10 @@ const route: Route<typeof schema> = {
     }
 
     if (method === "credentials") {
-      console.log(password);
+      if (password === "") {
+        return new Response("Password is required", { status: 400 });
+      }
+
       const passwordMatch = await compare(password, user.password_hash);
 
       if (!passwordMatch) {
@@ -57,7 +60,6 @@ const route: Route<typeof schema> = {
        * Do we need to implement a way to authenticate third-party users? Like control their token or smth?
        */
     }
-
 
     const jwt = await createJWT();
 

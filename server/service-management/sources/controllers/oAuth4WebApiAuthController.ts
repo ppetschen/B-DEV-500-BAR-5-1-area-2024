@@ -46,7 +46,12 @@ export const authorizeService = async (
     authorizationUrl.searchParams.set("code_challenge", code_challenge);
     authorizationUrl.searchParams.set("code_challenge_method", "S256");
     authorizationUrl.searchParams.set("state", state);
-    const response = await saveSession(code_verifier, state, user_email);
+    const response = await saveSession(
+      code_verifier,
+      state,
+      user_email,
+      service,
+    );
     if (!response) {
       throw Error("Failed to save session");
     }

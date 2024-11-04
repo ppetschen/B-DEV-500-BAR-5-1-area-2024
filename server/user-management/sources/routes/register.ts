@@ -2,11 +2,11 @@ import type { Route } from "../types";
 import { z } from "zod";
 import { hash } from "bcryptjs";
 import { craftJWTFromResponse, createJWT, host } from "../utils";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 const schema = z.object({
   email: z.string().email(),
-  password: z.string(),
+  password: z.string().optional().default(""),
 });
 
 const route: Route<typeof schema> = {
@@ -14,7 +14,7 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const { email, password } = await request.json();
+    const { email, password } = schema.parse(await request.json());
     const method = new URLSearchParams(request.url.split("?")[1]).get(
       "method",
     );

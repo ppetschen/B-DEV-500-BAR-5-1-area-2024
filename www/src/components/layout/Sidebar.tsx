@@ -21,8 +21,7 @@ const Sidebar: React.FC = () => {
                   isActive
                     ? "bg-[#EDEEF1] text-[#5A6ACF] font-bold"
                     : "text-[#273240] hover:bg-[#EDEEF1] hover:text-[#5A6ACF]"
-                }`
-              }
+                }`}
             >
               {label}
             </NavLink>

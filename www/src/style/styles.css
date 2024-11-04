@@ -1,3 +1,4 @@
+
 body {
   font-family:
     -apple-system,
@@ -29,7 +30,18 @@ body {
   flex-direction: column;
   min-height: 100vh;
 }
+.automation-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
+.sidebar {
+  width: 100%;
+  background-color: #F9F9F9;
+  padding: 20px;
+  box-sizing: border-box;
+}
 .sidebar {
   width: 100%;
   background-color: #F9F9F9;
@@ -42,7 +54,19 @@ body {
   padding: 20px;
   box-sizing: border-box;
 }
+.main-content {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
 
+.app-selector {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 300px;
+  overflow-y: auto;
+}
 .app-selector {
   display: flex;
   flex-direction: column;
@@ -61,7 +85,21 @@ body {
   color: #333;
   box-sizing: border-box;
 }
+.app-selector input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #3d3d3d;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  background-color: #F9F9F9;
+  color: #333;
+  box-sizing: border-box;
+}
 
+.app-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
 .app-list {
   flex-grow: 1;
   overflow-y: auto;
@@ -74,11 +112,26 @@ body {
   border-radius: 4px;
   transition: background-color 0.2s;
 }
+.app-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
 
 .app-item:hover {
   background-color: #3d3d3d;
 }
+.app-item:hover {
+  background-color: #3d3d3d;
+}
 
+.app-item img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
 .app-item img {
   width: 24px;
   height: 24px;
@@ -89,7 +142,17 @@ body {
   font-size: 14px;
   color: #333;
 }
+.app-item span {
+  font-size: 14px;
+  color: #333;
+}
 
+.trigger-event-selector h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
 .trigger-event-selector h1 {
   font-size: 24px;
   font-weight: 600;
@@ -102,7 +165,17 @@ body {
   color: #a0a0a0;
   margin-bottom: 24px;
 }
+.trigger-event-selector p {
+  font-size: 16px;
+  color: #a0a0a0;
+  margin-bottom: 24px;
+}
 
+.event-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
 .event-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -116,7 +189,17 @@ body {
   cursor: pointer;
   transition: background-color 0.2s;
 }
+.event-item {
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
+.event-item:hover {
+  background-color: #3d3d3d;
+}
 .event-item:hover {
   background-color: #3d3d3d;
 }
