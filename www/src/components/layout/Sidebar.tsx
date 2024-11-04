@@ -26,8 +26,8 @@ const Sidebar: React.FC = () => {
               className={({ isActive }) =>
                 `block py-2 px-4 rounded transition-colors duration-200 ${
                   isActive
-                    ? "bg-[#EDEEF1] text-[#5A6ACF] font-bold"
-                    : "text-[#273240] hover:bg-[#EDEEF1] hover:text-[#5A6ACF]"
+                    ? "bg-[#EDEEF1] text-[#5c1ed6] font-bold"
+                    : "text-[#273240] hover:bg-[#EDEEF1] hover:text-[#5c1ed6]"
                 }`
               }
             >

@@ -97,7 +97,7 @@ const Dashboard: React.FC = () => {
             label: "Total Automations",
             value: areaData.length,
             icon: FaChartBar,
-            color: "#5A6ACF",
+            color: "#5c1ed6",
           },
         ]);
       }).finally(() => setLoading(false));
@@ -118,7 +118,7 @@ const Dashboard: React.FC = () => {
     <Box sx={{ p: 3, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
       <Typography
         variant="h5"
-        sx={{ color: "#5A6ACF", mb: 3, fontWeight: "bold" }}
+        sx={{ color: "#5c1ed6", mb: 3, fontWeight: "bold" }}
       >
         METRICS OVERVIEW
       </Typography>
@@ -174,7 +174,7 @@ const Dashboard: React.FC = () => {
 
       <Typography
         variant="h5"
-        sx={{ color: "#5A6ACF", mb: 3, fontWeight: "bold" }}
+        sx={{ color: "#5c1ed6", mb: 3, fontWeight: "bold" }}
       >
         RECENT ACTIVITIES
       </Typography>
@@ -221,7 +221,7 @@ const Dashboard: React.FC = () => {
               >
                 <Box sx={{ display: "flex", gap: 1, mr: 2 }}>
                   {activity.services.map((ServiceIcon, i) => (
-                    <Box key={i} sx={{ color: "#5A6ACF", fontSize: 24 }}>
+                    <Box key={i} sx={{ color: "#5c1ed6", fontSize: 24 }}>
                       {ServiceIcon}
                     </Box>
                   ))}
@@ -256,7 +256,7 @@ const Dashboard: React.FC = () => {
                   sx={{ fontWeight: "bold", mr: 2 }}
                 />
                 <IconButton
-                  sx={{ color: "#5A6ACF" }}
+                  sx={{ color: "#5c1ed6" }}
                   onClick={() => setSelectedAutomation(activity.name)}
                 >
                   <FaChartBar />
