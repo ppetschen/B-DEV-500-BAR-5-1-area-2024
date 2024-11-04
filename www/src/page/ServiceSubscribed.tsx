@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Box, Card, Typography, Stack, CircularProgress, Alert } from "@mui/material";
-import {getUser} from "@/services/userManagement";
+import {
+  Box,
+  Card,
+  Typography,
+  Stack,
+  CircularProgress,
+  Alert,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import { getUser } from "@/services/userManagement";
+import { services } from "@/components/layout/serviceList";
 
 const ServiceSubscribed: React.FC = () => {
   const [subscribedServices, setSubscribedServices] = useState<string[]>([]);
@@ -25,6 +35,12 @@ const ServiceSubscribed: React.FC = () => {
     fetchUserServices();
   }, []);
 
+  const subscribedServiceIcons = subscribedServices.map((serviceName) => {
+    return services.find(
+      (service) => service.name.toLowerCase() === serviceName.toLowerCase()
+    );
+  });
+
   return (
     <Box sx={{ p: 4, bgcolor: "#F5F7FA", minHeight: "100vh" }}>
       <Typography
@@ -47,15 +63,30 @@ const ServiceSubscribed: React.FC = () => {
         ) : errorMessage ? (
           <Alert severity="error">{errorMessage}</Alert>
         ) : subscribedServices.length > 0 ? (
-          <Stack spacing={1}>
-          {subscribedServices.map((service, index) => (
-            <Typography key={index} variant="body2" color="textSecondary">
-              • {service}
-            </Typography>
-          ))}
-        </Stack>
+          <Stack spacing={2}>
+            {subscribedServiceIcons.map((service, index) =>
+              service ? (
+                <Box key={index} display="flex" alignItems="center">
+                  <Tooltip title={service.name}>
+                    <IconButton
+                      sx={{ bgcolor: "#5A6ACF", color: "#fff", p: 2, mr: 2,  transform: "scale(1)", transition: "transform 0.3s ease", "&:hover": {
+                        transform: "scale(1.2)",
+                        bgcolor: "#3B4DB7",
+                      },
+                      }}
+                      size="small"
+                    >
+                      {React.createElement(service.icon, { size: 24 })}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              ) : null
+            )}
+          </Stack>
         ) : (
-          <Typography variant="body2" color="error">You have no subscribed services</Typography>
+          <Typography variant="body2" color="error">
+            You have no subscribed services
+          </Typography>
         )}
       </Card>
     </Box>
