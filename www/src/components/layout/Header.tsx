@@ -66,7 +66,7 @@ const Header: React.FC = () => {
       />
       <div>
         <IconButton onClick={handleOpenMenu}>
-          <Avatar sx={{ bgcolor: "#5A6ACF" }} />
+          <Avatar sx={{ bgcolor: "#5c1ed6" }} />
         </IconButton>
         <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
           <MenuItem onClick={handleProfileClick}>

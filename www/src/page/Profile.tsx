@@ -87,7 +87,7 @@ const ProfilePage: React.FC = () => {
     <Box sx={{ p: 4, bgcolor: "#F5F7FA", minHeight: "100vh" }}>
       <Typography
       variant="h4"
-      sx={{ fontWeight: "bold", color: "#5A6ACF", mb: 6 }}
+      sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 6 }}
       >
         PROFILE INFORMATION
       </Typography>
@@ -103,7 +103,7 @@ const ProfilePage: React.FC = () => {
         }}
       >
         <Avatar
-          sx={{ width: 90, height: 90, mr: 3, border: "1px solid #5A6ACF" }}
+          sx={{ width: 90, height: 90, mr: 3, border: "1px solid #5c1ed6" }}
           >
             {getInitials(userData.first_name, userData.last_name)}
         </Avatar>
@@ -191,11 +191,11 @@ const ProfilePage: React.FC = () => {
               onClick={handleSaveProfile}
               variant="contained"
               sx={{
-                bgcolor: "#5A6ACF",
+                bgcolor: "#5c1ed6",
                 color: "#FFFFFF",
                 "&:hover": {
                   bgcolor: "#EDEEF1",
-                  color: "#5A6ACF",
+                  color: "#5c1ed6",
                 },
               }}
             >

@@ -20,7 +20,7 @@ const ServicesPage: React.FC = () => {
     <Box sx={{ p: 4, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
       <Typography
         variant="h4"
-        sx={{ fontWeight: "bold", color: "#5A6ACF", mb: 6 }}
+        sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 6 }}
       >
         SERVICES
       </Typography>
@@ -46,12 +46,12 @@ const ServicesPage: React.FC = () => {
               transition: "background-color 0.3s, color 0.3s",
               cursor: "pointer",
               bgcolor: selectedCategory === category || (category === "All" && selectedCategory === null)
-                ? "#5A6ACF"
+                ? "#5c1ed6"
                 : "transparent",
-              color: selectedCategory === category || (category === "All" && selectedCategory === null) ? "#fff" : "#5A6ACF",
+              color: selectedCategory === category || (category === "All" && selectedCategory === null) ? "#fff" : "#5c1ed6",
               "&:hover": {
-                bgcolor: selectedCategory !== category && !(category === "All" && selectedCategory === null) ? "#E0E7FF" : "#5A6ACF",
-                color: selectedCategory !== category && !(category === "All" && selectedCategory === null) ? "#5A6ACF" : "#fff",
+                bgcolor: selectedCategory !== category && !(category === "All" && selectedCategory === null) ? "#E0E7FF" : "#5c1ed6",
+                color: selectedCategory !== category && !(category === "All" && selectedCategory === null) ? "#5c1ed6" : "#fff",
               },
             }}
           />
@@ -81,7 +81,7 @@ const ServicesPage: React.FC = () => {
             >
               <Tooltip title={service.name} arrow>
                 <IconButton
-                  sx={{ bgcolor: "#5A6ACF", color: "#fff", p: 2, mb: 2 }}
+                  sx={{ bgcolor: "#5c1ed6", color: "#fff", p: 2, mb: 2 }}
                   onClick={() => handleServiceClick(service.name)}
                 >
                   {React.createElement(service.icon, { size: 32 })}
