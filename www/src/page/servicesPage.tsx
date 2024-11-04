@@ -3,8 +3,6 @@ import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { authenticateToService } from "@/services/serviceManagement";
 import { services } from "@/components/layout/ServiceList";
-import theme from "../style/theme";
-import { ThemeProvider } from "@mui/material/styles";
 
 const ServicesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
