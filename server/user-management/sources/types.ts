@@ -5,6 +5,8 @@ interface NarrowRequest<T> extends Request {
   json: () => Promise<T>;
 }
 
+//? export type MobileRequest<P = any> = NarrowRequest<P> & { isMobile?: boolean };
+
 export type Route<
   S extends z.ZodTypeAny = z.ZodTypeAny,
   P extends z.infer<S> = z.infer<S>,
@@ -12,6 +14,7 @@ export type Route<
   path: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   schema: S;
+  //? handler: (request: MobileRequest<P>, server: Server) => Promise<Response>;
   handler: (
     request: NarrowRequest<P>,
     server: Server,

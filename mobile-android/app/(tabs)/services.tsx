@@ -140,6 +140,7 @@ export default function ServicesPage() {
                                 const url = await authenticateToService(
                                     item.name.toLowerCase()
                                 );
+                                console.log("URL:", url);
                                 if (url) {
                                   //* Open the URL
                                     console.log("URL:", url);

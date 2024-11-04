@@ -82,6 +82,9 @@ services:
       - ../database/sources/models:/docker-entrypoint-initdb.d/
     networks:
       - kong-net
+    ports:
+      - "5432:5432" # Expose PostgresSQL port
+    
 
   database-service:
     build:

@@ -5,15 +5,17 @@ import { saveSession } from "./sessionController";
 export const authorizeService = async (
   service: string,
   user_email: string,
+  isMobile: boolean,
+  dynamicMobileRedirectUri?: string
 ): Promise<URL | boolean> => {
   try {
     const strategy = getOauthStrategy(service);
     if (!strategy) {
-      throw Error("Failed to get strategy");
+      throw new Error("Failed to get strategy");
     }
 
     let authorizationUrl;
-    if (strategy.algorithm == "oidc") {
+    if (strategy.algorithm === "oidc") {
       const as = await oauth
         .discoveryRequest(strategy.issuer, { algorithm: strategy.algorithm })
         .then((response) =>
@@ -31,14 +33,20 @@ export const authorizeService = async (
      */
     const code_verifier = oauth.generateRandomCodeVerifier();
     const code_challenge = await oauth.calculatePKCECodeChallenge(
-      code_verifier,
+      code_verifier
     );
     const state = oauth.generateRandomState();
+
+    // Set redirect URI based on `isMobile` and `dynamicMobileRedirectUri
     authorizationUrl.searchParams.set("client_id", strategy.client_id || "");
     authorizationUrl.searchParams.set(
       "redirect_uri",
-      strategy.redirect_uri || "",
-    );
+      isMobile && dynamicMobileRedirectUri
+        ? dynamicMobileRedirectUri
+        : (isMobile ? strategy.mobile_redirect_uri : strategy.redirect_uri) || ""
+  );
+    //   isMobile ? strategy.mobile_redirect_uri : strategy.redirect_uri || ""
+    // );
     authorizationUrl.searchParams.set("response_type", "code");
     authorizationUrl.searchParams.set("access_type", "offline");
     authorizationUrl.searchParams.set("prompt", "consent");
@@ -46,10 +54,13 @@ export const authorizeService = async (
     authorizationUrl.searchParams.set("code_challenge", code_challenge);
     authorizationUrl.searchParams.set("code_challenge_method", "S256");
     authorizationUrl.searchParams.set("state", state);
+
+    // Save session details
     const response = await saveSession(code_verifier, state, user_email);
     if (!response) {
-      throw Error("Failed to save session");
+      throw new Error("Failed to save session");
     }
+
     return authorizationUrl;
   } catch (error) {
     console.log("Failed to authorize service: ", error);

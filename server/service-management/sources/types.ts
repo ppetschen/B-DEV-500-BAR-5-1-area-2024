@@ -5,18 +5,30 @@ interface NarrowRequest<T> extends Request {
   json: () => Promise<T>;
 }
 
+export type MobileRequest<P = any> = NarrowRequest<P> & { isMobile?: boolean };
+
 export type Route<
   S extends z.ZodTypeAny = z.ZodTypeAny,
-  P extends z.infer<S> = z.infer<S>,
+  P extends z.infer<S> = z.infer<S>
 > = {
   path: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   schema: S;
-  handler: (
-    request: NarrowRequest<P>,
-    server: Server,
-  ) => Promise<Response>;
+  handler: (request: MobileRequest<P>, server: Server) => Promise<Response>;
 };
+
+export type OAuthStrategy = {
+  issuer: URL;
+  redirect_uri: string;
+  mobile_redirect_uri?: string;  // New optional property
+  algorithm: string;
+  client_id: string;
+  client_secret: string;
+  scope: string;
+  userinfo_endpoint: string;
+  token_endpoint: string;
+}
+
 
 export type JWTResponse = {
   algorithm: string;
@@ -54,6 +66,7 @@ export interface ServicesByUserList {
 export interface Strategy {
   issuer: URL;
   redirect_uri: string;
+  mobile_redirect_uri?: string;
   algorithm: "oidc" | "oauth2";
   client_id: string;
   client_secret: string;

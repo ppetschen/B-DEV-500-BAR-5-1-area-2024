@@ -1,6 +1,7 @@
 import process from "node:process";
+import type { OAuthStrategy } from "../types";
 
-export const getOauthStrategy = (service: string) => {
+export const getOauthStrategy = (service: string): OAuthStrategy => {
   switch (service) {
     case "google":
       return getGoogleStrategy();
@@ -23,17 +24,29 @@ export const getOauthStrategy = (service: string) => {
   }
 };
 const getGoogleStrategy = () => {
-  const strategy = {
+  return {
     issuer: new URL("https://accounts.google.com"),
     redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+    mobile_redirect_uri: process.env.GOOGLE_MOBILE_REDIRECT_URI || undefined,
     algorithm: "oidc",
     client_id: process.env.GOOGLE_CLIENT_ID!,
     client_secret: process.env.GOOGLE_CLIENT_SECRET!,
     scope: "email ",
     userinfo_endpoint: "https://www.googleapis.com/oauth2/v3/userinfo",
     token_endpoint: "",
-  };
-  return strategy;
+  }
+
+  // const strategy = {
+  //   issuer: new URL("https://accounts.google.com"),
+  //   redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
+  //   algorithm: "oidc",
+  //   client_id: process.env.GOOGLE_CLIENT_ID!,
+  //   client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+  //   scope: "email ",
+  //   userinfo_endpoint: "https://www.googleapis.com/oauth2/v3/userinfo",
+  //   token_endpoint: "",
+  // };
+  // return strategy;
 };
 const getGmailStrategy = () => {
   const strategy = getGoogleStrategy();

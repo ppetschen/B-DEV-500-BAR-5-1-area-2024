@@ -42,7 +42,15 @@ const infoRoute: Route = {
 
 routes.push(infoRoute);
 
+interface MobileRequest extends Request {
+  isMobile?: boolean;
+}
+
 const serve = async (request: Request, server: Server): Promise<Response> => {
+  //^ To check if the request is coming from a mobile client.
+  const isMobile = request.headers.get("X-Client-Type") === "mobile";
+
+  // Find the route based on the request path and method
   const route = routes.find((route) =>
     route.path === new URL(request.url).pathname &&
     route.method === request.method
@@ -56,6 +64,7 @@ const serve = async (request: Request, server: Server): Promise<Response> => {
 
   const clone = request.clone();
 
+  // Validate the request body if it's a POST, PUT, or PATCH request
   if (["POST", "PUT", "PATCH"].includes(clone.method)) {
     const body = await clone.text();
     try {
@@ -72,8 +81,12 @@ const serve = async (request: Request, server: Server): Promise<Response> => {
     }
   }
 
-  return route.handler(request, server);
+  // Pass `isMobile` as part of the MobileRequest
+  const mobileRequest: MobileRequest = Object.assign(request, { isMobile });
+  return route.handler(mobileRequest, server);
+  // return route.handler({ ...request, isMobile}, server);
 };
+
 
 if (import.meta.main) {
   const port = process.env["PORT"] || 3001;
