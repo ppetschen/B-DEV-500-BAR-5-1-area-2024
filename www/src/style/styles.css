@@ -17,6 +17,13 @@ body {
   padding: 0;
 }
 
+.wrapper-main {
+  width: 1000px;
+  padding: 100px 0;
+  margin: 0 auto;
+  border: 4px solid #3d3d3d;
+}
+
 .automation-page {
   display: flex;
   flex-direction: column;
@@ -120,44 +127,39 @@ body {
   color: #ffffff;
 }
 
-/* Media Queries for Responsiveness */
-@media screen and (min-width: 768px) {
-  .automation-page {
-    flex-direction: row;
-  }
 
-  .sidebar {
-    width: 250px;
-    height: 100vh;
-  }
+@media only screen and  (max-width: 600px) {
+  .wrapper-main {
+    width: 100%;
 
-  .main-content {
-    padding: 32px;
-  }
-
-  .event-list {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   }
 }
 
-@media screen and (max-width: 480px) {
-  .sidebar {
-    padding: 10px;
-  }
+@media only screen and (min-width: 601px) {
+  .wrapper-main {
+    width: 100%;
+    background-color: red;
 
-  .main-content {
-    padding: 15px;
   }
+}
 
-  .trigger-event-selector h1 {
-    font-size: 20px;
+@media only screen and (min-width: 768px) {
+  .wrapper-main {
+    width: 100%;
+    background-color: green;
   }
+}
 
-  .trigger-event-selector p {
-    font-size: 14px;
+@media  only screen and (min-width: 992px) {
+  .wrapper-main {
+    width: 100%;
+    background-color: purple;
   }
+}
 
-  .event-list {
-    grid-template-columns: 1fr;
+@media only screen and (min-width: 1200px) {
+  .wrapper-main {
+    width: 100%;
+    background-color: red;
   }
 }
