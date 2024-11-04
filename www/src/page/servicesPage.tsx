@@ -158,8 +158,7 @@ const ServicesPage: React.FC = () => {
               <Tooltip title={service.name} arrow>
                 <IconButton
                   sx={{ bgcolor: "#5A6ACF", color: "#fff", p: 2, mb: 2 }}
-                  onClick={() =>
-                    handleServiceClick(service.name)}
+                  onClick={() => handleServiceClick(service.name)}
                 >
                   {React.createElement(service.icon, { size: 32 })}
                 </IconButton>

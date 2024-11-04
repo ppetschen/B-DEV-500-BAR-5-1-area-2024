@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `4367799de5bd595633aabacea2b7b70e5cc1fabb`.
+> GitHub actions, commit hash `2c4b3ffb9ed7037eda68e529537762c459be2075`.
 
 ## user-management
 
@@ -16,6 +16,14 @@ POST /user-management/register
     email: string;
     password?: string;
 }
+```
+
+```http
+GET /user-management/auth/callback
+```
+```ts
+// This route is internal, won't be exposed
+any
 ```
 
 ```http
@@ -56,6 +64,14 @@ GET /user-management/get-user
 ```ts
 // This route is internal, won't be exposed
 any
+```
+
+```http
+GET /user-management/auth
+```
+```ts
+// This route is internal, won't be exposed
+never
 ```
 
 
@@ -193,6 +209,16 @@ POST /user-management/get-user-by-id
 ```
 
 ```http
+DELETE /user-management/delete-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
 POST /user-management/create-user
 ```
 ```ts
@@ -225,6 +251,19 @@ PUT /user-management/update-user
     first_name: string;
     last_name: string;
     description: string;
+}
+```
+
+```http
+POST /user-management/create-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    code_verifier: string;
+    state: string;
+    user_email?: string;
+    service?: string;
 }
 ```
 
