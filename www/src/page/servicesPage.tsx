@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { authenticateToService } from "@/services/serviceManagement";
-import {services} from "@/components/layout/serviceList";
+import {services} from "@/components/layout/ServiceList";
 
 const ServicesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);

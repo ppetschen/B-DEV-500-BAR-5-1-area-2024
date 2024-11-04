@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import { getUser } from "@/services/userManagement";
-import { services } from "@/components/layout/serviceList";
+import { services } from "@/components/layout/ServiceList";
 
 const ServiceSubscribed: React.FC = () => {
   const [subscribedServices, setSubscribedServices] = useState<string[]>([]);
