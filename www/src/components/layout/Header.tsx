@@ -68,19 +68,15 @@ const Header: React.FC = () => {
         <IconButton onClick={handleOpenMenu}>
           <Avatar sx={{ bgcolor: "#5A6ACF" }} />
         </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleCloseMenu}
-        >
-             <MenuItem onClick={handleProfileClick}>
+        <Menu anchorEl={anchorEl} open={open} onClose={handleCloseMenu}>
+          <MenuItem onClick={handleProfileClick}>
             <AccountCircleIcon sx={{ mr: 1 }} />
             Profile Info
           </MenuItem>
-            <MenuItem onClick={handleLogout}>
-                <ExitToAppIcon sx={{mr: 1}}/>
-                Logout
-            </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <ExitToAppIcon sx={{ mr: 1 }} />
+            Logout
+          </MenuItem>
         </Menu>
       </div>
     </Box>
