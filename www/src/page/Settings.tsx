@@ -4,7 +4,6 @@ import ProfilePage from "./Profile";
 import ChangePassword from "./ChangePassword";
 import ServiceSubscribed from "./ServiceSubscribed";
 import DeleteAccount from "./DeleteAccount";
-
 interface SettingsNavigatorProps {
   value: TabKey;
   setValue: (value: TabKey) => void;
@@ -22,7 +21,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
   ];
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "row", p: 3, pt: 4 }}>
+    <Box sx={{ display: "flex", flexDirection: "row", p: 3, pt: 4}}>
       {options.map((option) => (
         <Chip
           key={option.value}
@@ -35,6 +34,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
             cursor: "pointer",
             bgcolor: value === option.value ? "#5c1ed6" : "transparent",
             color: value === option.value ? "#fff" : "#5c1ed6",
+            className:"lexend-deca-bold",
             "&:hover": {
               bgcolor: value !== option.value ? "#E0E7FF" : "#5c1ed6",
               color: value !== option.value ? "#5c1ed6" : "#fff",
