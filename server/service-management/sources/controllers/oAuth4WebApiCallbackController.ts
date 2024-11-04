@@ -164,7 +164,7 @@ const getEmailFromUser = (user: any): string => {
       user?.data?.[0]?.email ||
       user?.results?.[0]?.person?.email ||
       ""
-  );
+    );
   } catch (error) {
     console.log("Failed to get email from user: ", error);
     return "";

@@ -15,8 +15,10 @@ const route: Route<typeof schema> = {
   schema,
   handler: async (request, _server) => {
     try {
-      const { code_verifier, state, user_email, service } = schema.parse(await request
-        .json());
+      const { code_verifier, state, user_email, service } = schema.parse(
+        await request
+          .json(),
+      );
 
       const { rows: [result] } = await client.query(
         `INSERT INTO oauth_sessions (code_verifier, state, user_email, service) 

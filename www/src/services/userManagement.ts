@@ -15,7 +15,7 @@ export const oauthUser = async (
   } catch (error) {
     throw error;
   }
-}
+};
 
 export const login = async (
   data: { email: string; password?: string },

@@ -16,7 +16,7 @@ const route: Route<typeof schema> = {
       if (!service) {
         throw new Error("Service not found");
       }
-      
+
       const redirect = await authorizeService(service);
       if (!redirect || typeof redirect === "boolean") {
         throw Error("Redirect not found");

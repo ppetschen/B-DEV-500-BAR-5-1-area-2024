@@ -76,7 +76,8 @@ const route: Route<typeof schema> = {
       }
       const jwt = await createJWT();
       const token = craftJWTFromResponse("USER", jwt, user.id);
-      const frontend_redirect_url = `http://localhost:5173/login?token=${token}`;
+      const frontend_redirect_url =
+        `http://localhost:5173/login?token=${token}`;
       return Response.redirect(frontend_redirect_url);
     } catch (error) {
       console.log("Error in service callback", error);
@@ -91,4 +92,3 @@ const route: Route<typeof schema> = {
 };
 
 export default route;
-
