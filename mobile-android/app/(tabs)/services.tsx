@@ -21,6 +21,8 @@ import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommun
 import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import { authenticateToService } from "@/services/service-management";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -137,11 +139,16 @@ export default function ServicesPage() {
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             onPress={async () => {
+                                // let result = await WebBrowser.openBrowserAsync('https://www.friv.com/');
+                                const redirectUri = AuthSession.makeRedirectUri();
+                                // const urk = 
+                                // console.log(result);
                                 const url = await authenticateToService(
                                     item.name.toLowerCase()
                                 );
                                 if (url) {
-                                  //* Open the URL
+                                    //* Open the URL
+                          
                                     console.log("URL:", url);
                                     console.log(`Next step: Open the URL`);
                                 } else {
