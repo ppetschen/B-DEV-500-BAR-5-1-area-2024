@@ -1,5 +1,5 @@
 
-body {
+/*body {
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -16,6 +16,19 @@ body {
   color: #ffffff;
   margin: 0;
   padding: 0;
+}*/
+
+.lexend-deca-light {
+  font-family: 'Lexend Deca';
+  font-weight: 100;
+}
+.lexend-deca-regular {
+  font-family: 'Lexend Deca';
+  font-weight: 400;
+}
+.lexend-deca-bold {
+  font-family: 'Lexend Deca';
+  font-weight: 700;
 }
 
 .wrapper-main {

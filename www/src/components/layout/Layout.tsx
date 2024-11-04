@@ -2,7 +2,6 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
-import Header from "./Header";
 
 const Layout: React.FC = () => {
   const isAuthenticated = !!localStorage.getItem("currentUser");
@@ -15,7 +14,6 @@ const Layout: React.FC = () => {
     <div className="flex h-screen">
       <Sidebar />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
         <main className="flex-1 bg-[#F7F7F9] overflow-y-auto">
           <Outlet />
         </main>
