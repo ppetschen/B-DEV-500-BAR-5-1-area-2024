@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Github, Loader2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { login } from "@/services/userManagement";
+import { oauthUser } from "@/services/userManagement";
 
 const Icons = {
   spinner: Loader2,
@@ -20,6 +21,17 @@ export default function LoginPage(
   const [email, setEmail] = React.useState<string>("");
   const [password, setPassword] = React.useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/dashboard");
+    }
+  }, [location.search]);
+
 
   async function onSubmit(event: React.FormEvent) {
     event.preventDefault();
@@ -109,6 +121,7 @@ export default function LoginPage(
         <div className="flex justify-center space-x-10">
           <Button
             variant="outline"
+            onClick={() => (oauthUser("github"))}
             type="button"
             disabled={isLoading}
             className="flex items-center justify-center text-gray-400 transition-colors border border-gray-600 hover:bg-gray-700"
@@ -124,6 +137,7 @@ export default function LoginPage(
             variant="outline"
             type="button"
             disabled={isLoading}
+            onClick={() => (oauthUser("google"))}
             className="flex items-center justify-center space-x-2 text-gray-400 transition-colors border border-gray-600 hover:bg-gray-700"
           >
             {isLoading ? <Icons.spinner className="w-4 h-4 animate-spin" /> : (

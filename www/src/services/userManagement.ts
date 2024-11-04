@@ -1,6 +1,22 @@
 import { apiClient } from "./api";
 import { User } from "./types";
 
+export const oauthUser = async (
+  service: string,
+) => {
+  try {
+    const response = await apiClient.get(
+      `/user-management/auth?service=${service}`,
+    );
+    if (!response) {
+      return;
+    }
+    window.location.href = response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 export const login = async (
   data: { email: string; password?: string },
   method: string,
