@@ -115,9 +115,9 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <Box sx={{ p: 3, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
+    <Box sx={{ p: 3, pt: 6, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
       <Typography
-        variant="h5"
+        variant="h4"
         sx={{ color: "#5c1ed6", mb: 3, fontWeight: "bold" }}
       >
         METRICS OVERVIEW

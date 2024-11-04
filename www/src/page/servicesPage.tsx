@@ -17,7 +17,7 @@ const ServicesPage: React.FC = () => {
     : services;
 
   return (
-    <Box sx={{ p: 4, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
+    <Box sx={{ p: 4, pt: 6, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
       <Typography
         variant="h4"
         sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 6 }}

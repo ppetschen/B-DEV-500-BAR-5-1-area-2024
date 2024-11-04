@@ -45,7 +45,7 @@ const ServiceSubscribed: React.FC = () => {
     <Box sx={{ p: 4, bgcolor: "#F5F7FA", minHeight: "100vh" }}>
       <Typography
         variant="h4"
-        sx={{ fontWeight: "bold", color: "#5A6ACF", mb: 6 }}
+        sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 4 }}
       >
         SERVICES SUBSCRIBED
       </Typography>
