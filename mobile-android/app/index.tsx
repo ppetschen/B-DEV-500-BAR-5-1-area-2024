@@ -5,22 +5,19 @@
  ** index - landing page
  */
 
-import { Text, View } from "react-native";
+import { View, SafeAreaView } from "react-native";
 import { styled } from "nativewind";
 // @ts-ignore - no types for expo-router
 import { useRouter } from "expo-router";
 
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BasicButtonWithIcon } from "../components/Button";
+import { API_BASE_URL } from "@/asyncStorageLibrary/basicRequestVars";
+import { Button, Text, Surface } from "react-native-paper";
 
-import Constants from 'expo-constants'
+import Constants from "expo-constants";
 
-const StyledText = styled(Text);
 const StyledView = styled(View);
-
-//* The key for getting/setting the base URL from/to AsyncStorage
-const API_BASE_URL = "api_base_url";
 
 export default function LandingPage() {
     // Store the IP address in AsyncStorage at the start of the app to use in api requests - avoid error with cors
@@ -30,10 +27,13 @@ export default function LandingPage() {
             try {
                 const debuggerHost = Constants.expoConfig?.hostUri;
                 if (debuggerHost) {
-                    const ipAddress = debuggerHost.split(':')[0]; // Extract the IP address
+                    const ipAddress = debuggerHost.split(":")[0]; // Extract the IP address
                     const base_url = `http://${ipAddress}:8000`;
                     await AsyncStorage.setItem(API_BASE_URL, base_url);
-                    console.log("BASE_URL:", await AsyncStorage.getItem(API_BASE_URL));
+                    console.log(
+                        "BASE_URL:",
+                        await AsyncStorage.getItem(API_BASE_URL)
+                    );
                 } else {
                     console.error("No hostUri found in expoConfig.");
                 }
@@ -47,24 +47,46 @@ export default function LandingPage() {
 
     const router = useRouter();
     return (
-        <StyledView className="flex-1 justify-center items-center bg-white px-6">
-            <StyledText className="text-3xl pb-3">Area!</StyledText>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                padding: 16,
+                alignItems: "center",
+                justifyContent: "center",
+            }}
+        >
+            <Text
+                variant="headlineMedium"
+                style={{
+                    paddingBottom: 12,
+                    fontWeight: "bold",
+                    color: "#5A6ACF",
+                }}
+            >
+                Area!
+            </Text>
             <StyledView className="flex-col">
-                <BasicButtonWithIcon
-                    title="Login"
+                <Button
+                    mode="contained"
+                    icon="login"
                     onPress={() => {
                         router.push("/login");
                     }}
-                    iconName="login"
-                />
-                <BasicButtonWithIcon
-                    title="Sign up"
+                    style={{ marginVertical: 8 }}
+                >
+                    Login
+                </Button>
+                <Button
+                    mode="contained"
+                    icon="account-plus"
                     onPress={() => {
                         router.push("/sign-up");
                     }}
-                    iconName="group-add"
-                />
+                    style={{ marginVertical: 8 }}
+                >
+                    Sign up
+                </Button>
             </StyledView>
-        </StyledView>
+        </SafeAreaView>
     );
 }

@@ -48,6 +48,7 @@ const MenuPage: React.FC = () => {
                 color: "#F9F9F8",
               },
             }}
+            //onClick={() => (oauthUser("google"))}
             onClick={() => (window.location.href = "/login")}
           >
             Log in

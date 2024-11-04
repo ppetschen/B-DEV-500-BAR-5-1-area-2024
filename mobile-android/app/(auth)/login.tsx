@@ -1,25 +1,20 @@
 /*
- ** EPITECH PROJECT, 2024
- ** mobile
- ** File description:
- ** login page
- */
+** EPITECH PROJECT, 2024
+** stupidArea
+** File description:
+** login
+*/
 
-import { Text, View } from "react-native";
-import { styled } from "nativewind";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
-
-import { TextInput } from "@components/TextInput";
-import { BasicButton } from "@components/BasicButton";
 import { login } from "@/services/user-management";
-
-const StyledView = styled(View);
-const StyledText = styled(Text);
+import { Text, Button, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native";
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
 
@@ -40,7 +35,11 @@ export default function LoginPage() {
         }
         if (valid) {
             console.log("Logging in with:", { email, password });
-            const response = await login({ email, password });
+            const response = await login({
+                email,
+                password,
+                method: "credentials",
+            });
             if (response) {
                 console.log("Response:", response);
                 router.push("/dashboard");
@@ -49,30 +48,71 @@ export default function LoginPage() {
             }
         }
     };
+
     return (
-        <StyledView className="flex-1 justify-center items-center bg-white px-6">
-            <StyledText className="text-3xl font-bold text-gray-800 mb-8">
+        <SafeAreaView
+            style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 24,
+            }}
+        >
+            <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
                 Login
-            </StyledText>
+            </Text>
 
             <TextInput
+                label="Email"
                 value={email}
-                placeholder="Email"
-                onChangeText={setEmail}
-                onChange={() => setEmailError(null)}
+                onChangeText={(text) => {
+                    setEmail(text);
+                    setEmailError(null);
+                }}
                 keyboardType="email-address"
-                error={emailError}
+                error={!!emailError}
+                style={{ width: "80%", marginBottom: 16 }}
+                mode="outlined"
             />
-            <TextInput
-                value={password}
-                placeholder="Password"
-                secureTextEntry
-                onChangeText={setPassword}
-                onChange={() => setPasswordError(null)}
-                error={passwordError}
-            />
+            {emailError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {emailError}
+                </Text>
+            )}
 
-            <BasicButton title="Login" onPress={handleLogin} />
-        </StyledView>
+            <TextInput
+                label="Password"
+                value={password}
+                onChangeText={(text) => {
+                    setPassword(text);
+                    setPasswordError(null);
+                }}
+                secureTextEntry={!showPassword}
+                error={!!passwordError}
+                style={{ width: "80%", marginBottom: 16 }}
+                mode="outlined"
+                right={
+                    <TextInput.Icon
+                        icon={showPassword ? "eye-off" : "eye"}
+                        onPress={() => setShowPassword(!showPassword)}
+                    />
+                }
+            />
+            {passwordError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {passwordError}
+                </Text>
+            )}
+
+            <Button
+                mode="contained"
+                onPress={handleLogin}
+                contentStyle={{ height: 50 }}
+                labelStyle={{ fontSize: 16 }}
+                style={{ width: "80%", marginTop: 16 }}
+            >
+                Login
+            </Button>
+        </SafeAreaView>
     );
 }

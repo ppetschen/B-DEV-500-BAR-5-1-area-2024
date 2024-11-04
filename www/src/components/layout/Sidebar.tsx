@@ -9,7 +9,7 @@ const links = [
 
 const Sidebar: React.FC = () => {
   return (
-    <nav className="w-64 h-screen p-5 bg-white border-r border-gray-200 shadow-lg">
+    <nav className="w-64 h-screen p-5 bg-white border-r border-gray-200 shadow-lg hidden sm:block">
       <h2 className="p-6 text-3xl font-bold text-[#5A6ACF]">AREA</h2>
       <ul className="space-y-2">
         {links.map(({ path, label }) => (

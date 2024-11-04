@@ -2,8 +2,8 @@
 # Api routes documentation
 
 > [!IMPORTANT]
-> This documentation was automatically generated using `Bun` version `1.1.33` on
-> GitHub actions, commit hash `404b6484cd9b6cb2e18c53840f9be3ebb7d8b0ec`.
+> This documentation was automatically generated using `Bun` version `1.1.34` on
+> GitHub actions, commit hash `3351974bbb75c0f53aacf634380b0235dff737a8`.
 
 ## user-management
 
@@ -16,6 +16,14 @@ POST /user-management/register
     email: string;
     password?: string;
 }
+```
+
+```http
+GET /user-management/auth/callback
+```
+```ts
+// This route is internal, won't be exposed
+any
 ```
 
 ```http
@@ -56,6 +64,14 @@ GET /user-management/get-user
 ```ts
 // This route is internal, won't be exposed
 any
+```
+
+```http
+GET /user-management/auth
+```
+```ts
+// This route is internal, won't be exposed
+never
 ```
 
 
@@ -119,6 +135,16 @@ POST /service-management/get-service-subscription
 ```
 
 ```http
+POST /service-management/get-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
 DELETE /service-management/delete-oauth-session
 ```
 ```ts
@@ -147,6 +173,7 @@ POST /service-management/create-oauth-session
     code_verifier: string;
     state: string;
     user_email: string;
+    service: string;
 }
 ```
 
@@ -178,6 +205,16 @@ POST /user-management/get-user-by-id
 // This route is internal, won't be exposed
 {
     consumer: number;
+}
+```
+
+```http
+DELETE /user-management/delete-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
 }
 ```
 
@@ -214,6 +251,19 @@ PUT /user-management/update-user
     first_name: string;
     last_name: string;
     description: string;
+}
+```
+
+```http
+POST /user-management/create-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    code_verifier: string;
+    state: string;
+    user_email?: string;
+    service?: string;
 }
 ```
 

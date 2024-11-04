@@ -13,6 +13,8 @@ import { View } from "react-native";
 const StyledView = styled(View);
 
 interface WorkflowDetailsProps {
+    labelSmallInput: string;
+    labelBigInput: string;
     name: string;
     setName: React.Dispatch<React.SetStateAction<string>>;
     description: string;
@@ -20,6 +22,8 @@ interface WorkflowDetailsProps {
 }
 
 export const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({
+    labelSmallInput,
+    labelBigInput,
     name,
     setName,
     description,
@@ -28,14 +32,14 @@ export const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({
     return (
         <StyledView>
             <TextInput
-                label="Workflow Name"
+                label={labelSmallInput}
                 value={name}
                 onChangeText={setName}
                 mode="outlined"
             />
 
             <TextInput
-                label="Description"
+                label={labelBigInput}
                 value={description}
                 onChangeText={setDescription}
                 mode="outlined"
