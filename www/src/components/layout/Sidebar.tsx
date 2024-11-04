@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import new_logo from "../../../public/new_logo.png";
 
 const links = [
   { path: "/dashboard", label: "Dashboard" },
@@ -9,11 +10,17 @@ const links = [
 
 const Sidebar: React.FC = () => {
   return (
-    <nav className="w-64 h-screen p-5 bg-white border-r border-gray-200 shadow-lg hidden sm:block">
-      <h2 className="p-6 text-3xl font-bold text-[#5A6ACF]">AREA</h2>
-      <ul className="space-y-2">
+    <nav className="w-64 h-screen bg-white border-r border-gray-200 shadow-lg hidden sm:flex sm:flex-col">
+      <div className="w-full h-32 flex justify-center items-center">
+        <img 
+          src={new_logo} 
+          alt="AREA Logo" 
+          className="w-full h-auto object-contain"
+        />
+      </div>
+      <ul className="flex-1 px-5">
         {links.map(({ path, label }) => (
-          <li key={path}>
+          <li key={path} className="mb-2">
             <NavLink
               to={path}
               className={({ isActive }) =>
@@ -21,7 +28,8 @@ const Sidebar: React.FC = () => {
                   isActive
                     ? "bg-[#EDEEF1] text-[#5A6ACF] font-bold"
                     : "text-[#273240] hover:bg-[#EDEEF1] hover:text-[#5A6ACF]"
-                }`}
+                }`
+              }
             >
               {label}
             </NavLink>
