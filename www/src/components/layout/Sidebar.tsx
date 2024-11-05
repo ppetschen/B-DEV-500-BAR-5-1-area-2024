@@ -32,7 +32,6 @@ const Sidebar: React.FC = () => {
 
   return (
     <div>
-      {/* Toggle button positioned at top left for smaller screens */}
       {!isSidebarOpen && (
         <button
           onClick={toggleSidebar}
@@ -42,14 +41,12 @@ const Sidebar: React.FC = () => {
         </button>
       )}
 
-      {/* Sidebar */}
       <nav
         className={`fixed md:static top-0 left-0 w-64 h-screen bg-white border-r border-gray-200 shadow-lg flex flex-col justify-between transition-transform duration-300 z-40 ${
           isSidebarOpen ? "transform translate-x-0" : "transform -translate-x-full"
         } md:translate-x-0`}
       >
         <div className="relative">
-          {/* Close button positioned within the sidebar */}
           {isSidebarOpen && (
             <button
               onClick={toggleSidebar}
@@ -109,7 +106,6 @@ const Sidebar: React.FC = () => {
         </div>
       </nav>
 
-      {/* Overlay for sidebar on medium screens and below */}
       {isSidebarOpen && (
         <div
           onClick={toggleSidebar}
