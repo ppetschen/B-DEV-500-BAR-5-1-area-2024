@@ -14,7 +14,6 @@
     "start": "bun run sources/index.ts"
   },
   "dependencies": {
-    "@discordjs/rest": "^2.4.0",
     "@octokit/rest": "^21.0.2",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
