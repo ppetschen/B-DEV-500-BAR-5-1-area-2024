@@ -69,7 +69,7 @@ const ServiceSubscribed: React.FC = () => {
                   <Tooltip title={service.name}>
                     <IconButton
                       sx={{
-                        bgcolor: "#7901f1",
+                        bgcolor: "#5c1ed6",
                         color: "#fff",
                         p: 2,
                         mr: 2,
@@ -77,7 +77,7 @@ const ServiceSubscribed: React.FC = () => {
                         transition: "transform 0.3s ease",
                         "&:hover": {
                           transform: "scale(1.2)",
-                          bgcolor: "#5c1ed6",
+                          bgcolor: "#7901f1",
                         },
                       }}
                       size="small"

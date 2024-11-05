@@ -102,13 +102,13 @@ const ServicesPage: React.FC = () => {
               <Tooltip title={service.name} arrow>
                 <IconButton
                   sx={{
-                    bgcolor: "#7901f1",
+                    bgcolor: "#5c1ed6",
                     color: "#fff",
                     p: 2,
                     mb: 2,
                     transition: "background-color 0.3s",
                     "&:hover": {
-                      bgcolor: "#5c1ed6",
+                      bgcolor: "#7901f1",
                     },
                   }}
                   onClick={() => handleServiceClick(service.name)}
