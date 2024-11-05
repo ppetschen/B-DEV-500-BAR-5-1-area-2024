@@ -5,7 +5,7 @@ import { fromError } from "zod-validation-error";
 import { client } from "./utils";
 import process from "node:process";
 
-const glob = new Glob("routes/**/{*,v2/*}.ts");
+const glob = new Glob("routes/**/{*,v2}/*.ts");
 const result = glob.scan({
   cwd: new URL(".", import.meta.url).pathname,
   absolute: true,

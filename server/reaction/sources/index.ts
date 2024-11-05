@@ -11,7 +11,7 @@ if (process.env["KONG_DELAY_MS"]) {
   );
 }
 
-const glob = new Glob("routes/{v2/,google/}*.ts");
+const glob = new Glob("routes/{v2,google}/*.ts");
 const result = glob.scan({
   cwd: new URL(".", import.meta.url).pathname,
   absolute: true,
