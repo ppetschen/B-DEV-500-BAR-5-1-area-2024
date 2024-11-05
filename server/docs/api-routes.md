@@ -3,339 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `d6aed92f57ff2b6273704919d05f28035f998705`.
-
-## user-management
-
-```http
-POST /user-management/register
-```
-```ts
-// This route is internal, won't be exposed
-{
-    email: string;
-    password?: string;
-}
-```
-
-```http
-GET /user-management/auth/callback
-```
-```ts
-// This route is internal, won't be exposed
-any
-```
-
-```http
-POST /user-management/login
-```
-```ts
-// This route is internal, won't be exposed
-{
-    email: string;
-    password?: string;
-}
-```
-
-```http
-DELETE /user-management/delete-user
-```
-```ts
-// This route is internal, won't be exposed
-never
-```
-
-```http
-PUT /user-management/update-user
-```
-```ts
-// This route is internal, won't be exposed
-{
-    new_password?: string;
-    first_name?: string;
-    last_name?: string;
-    description?: string;
-}
-```
-
-```http
-GET /user-management/get-user
-```
-```ts
-// This route is internal, won't be exposed
-any
-```
-
-```http
-GET /user-management/auth
-```
-```ts
-// This route is internal, won't be exposed
-never
-```
-
-
-## action
-
-```http
-POST /create
-```
-```ts
-// This route is internal, won't be exposed
-{
-    service_name: string;
-    event_type: string;
-    payload: {
-        [x: string]: unknown;
-    };
-    owner_id: number;
-}
-```
-
-
-## database
-
-```http
-POST /service-management/create-service-subscription
-```
-```ts
-// This route is internal, won't be exposed
-{
-    user_id: number;
-    service: string;
-    access_token: string;
-    refresh_token: string;
-    expires_in?: any;
-}
-```
-
-```http
-PUT /service-management/update-service-subscription
-```
-```ts
-// This route is internal, won't be exposed
-{
-    user_id: number;
-    service: string;
-    access_token: string;
-    refresh_token: string;
-    expires_in?: any;
-}
-```
-
-```http
-POST /service-management/get-service-subscription
-```
-```ts
-// This route is internal, won't be exposed
-{
-    user_id: number;
-    service: string;
-}
-```
-
-```http
-POST /service-management/get-oauth-session
-```
-```ts
-// This route is internal, won't be exposed
-{
-    state: string;
-}
-```
-
-```http
-DELETE /service-management/delete-oauth-session
-```
-```ts
-// This route is internal, won't be exposed
-{
-    state: string;
-}
-```
-
-```http
-POST /service-management/get-services-by-user
-```
-```ts
-// This route is internal, won't be exposed
-{
-    user_id: number;
-}
-```
-
-```http
-POST /service-management/create-oauth-session
-```
-```ts
-// This route is internal, won't be exposed
-{
-    code_verifier: string;
-    state: string;
-    user_email: string;
-    service: string;
-}
-```
-
-```http
-DELETE /service-management/delete-service-subscription
-```
-```ts
-// This route is internal, won't be exposed
-{
-    user_id: number;
-    service: string;
-}
-```
-
-```http
-POST /user-management/get-user-by-email
-```
-```ts
-// This route is internal, won't be exposed
-{
-    email: string;
-}
-```
-
-```http
-POST /user-management/get-user-by-id
-```
-```ts
-// This route is internal, won't be exposed
-{
-    consumer: number;
-}
-```
-
-```http
-DELETE /user-management/delete-oauth-session
-```
-```ts
-// This route is internal, won't be exposed
-{
-    state: string;
-}
-```
-
-```http
-POST /user-management/create-user
-```
-```ts
-// This route is internal, won't be exposed
-{
-    email: string;
-    hashedPassword: string;
-}
-```
-
-```http
-DELETE /user-management/delete-user
-```
-```ts
-// This route is internal, won't be exposed
-{
-    id: number;
-}
-```
-
-```http
-PUT /user-management/update-user
-```
-```ts
-// This route is internal, won't be exposed
-{
-    id: number;
-    email: string;
-    password_hash: string;
-    first_name: string;
-    last_name: string;
-    description: string;
-}
-```
-
-```http
-POST /user-management/create-oauth-session
-```
-```ts
-// This route is internal, won't be exposed
-{
-    code_verifier: string;
-    state: string;
-    user_email?: string;
-    service?: string;
-}
-```
-
-```http
-POST /reaction/resolve
-```
-```ts
-// This route is internal, won't be exposed
-{
-    id: string;
-}
-```
-
-```http
-POST /reaction/create
-```
-```ts
-// This route is internal, won't be exposed
-{
-    action_id: string;
-    service_name: string;
-    execution_endpoint: string;
-    status: "pending" | "failure" | "success";
-}
-```
-
-```http
-POST /action/resolve
-```
-```ts
-// This route is internal, won't be exposed
-{
-    id: string;
-}
-```
-
-```http
-POST /action/create
-```
-```ts
-// This route is internal, won't be exposed
-{
-    service_name: string;
-    event_type: string;
-    payload: {
-        [x: string]: unknown;
-    };
-    owner_id: number;
-}
-```
-
-```http
-POST /area-composition/list-areas
-```
-```ts
-// This route is internal, won't be exposed
-{
-    userId: number;
-}
-```
-
-```http
-POST /area-composition/update-state
-```
-```ts
-// This route is internal, won't be exposed
-{
-    id: string;
-    status: "success" | "failure" | "pending";
-}
-```
-
+> GitHub actions, commit hash `026e2ef73f1b589eeffb6933b4ce11ce63a21861`.
 
 ## reaction
 
@@ -367,64 +35,90 @@ POST /google/upload-to-drive
 ```
 
 
-## service-management
+## user-management
 
 ```http
-GET /service-management/auth/callback
+POST /user-management/register
 ```
 ```ts
-// Authorization: Bearer $AUTH_TOKEN
+// This route is internal, won't be exposed
+{
+    email: string;
+    password?: string;
+}
+```
+
+```http
+PUT /user-management/update-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    new_password?: string;
+    first_name?: string;
+    last_name?: string;
+    description?: string;
+}
+```
+
+```http
+DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+never
+```
+
+```http
+GET /user-management/get-user
+```
+```ts
+// This route is internal, won't be exposed
 any
 ```
 
 ```http
-GET /service-management/auth
+POST /user-management/login
 ```
 ```ts
-// Authorization: Bearer $AUTH_TOKEN
+// This route is internal, won't be exposed
 {
-    headers: {
-        authorization: string;
+    email: string;
+    password?: string;
+}
+```
+
+```http
+GET /user-management/auth
+```
+```ts
+// This route is internal, won't be exposed
+never
+```
+
+```http
+GET /user-management/auth/callback
+```
+```ts
+// This route is internal, won't be exposed
+any
+```
+
+
+## action
+
+```http
+POST /create
+```
+```ts
+// This route is internal, won't be exposed
+{
+    service_name: string;
+    event_type: string;
+    payload: {
+        [x: string]: unknown;
     };
-}
-```
-
-```http
-POST /service-management/auth/get-service-subscription
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-{
-    service: string;
-    user_id: number;
-}
-```
-
-```http
-POST /service-management/auth/is-user-subscribed
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-{
-    service: string;
-}
-```
-
-```http
-GET /service-management/auth/get-services-by-user
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-any
-```
-
-```http
-DELETE /service-management/auth/delete-service-subscription
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-{
-    service: string;
+    owner_id: number;
 }
 ```
 
@@ -432,15 +126,7 @@ DELETE /service-management/auth/delete-service-subscription
 ## area-composition
 
 ```http
-GET /area-composition/list
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-any
-```
-
-```http
-POST /area-composition/execute
+POST /area-composition/test/google-drive
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
@@ -464,10 +150,324 @@ POST /area-composition/create
 ```
 
 ```http
-POST /area-composition/test/google-drive
+GET /area-composition/list
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
 any
+```
+
+```http
+POST /area-composition/execute
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
+```
+
+
+## service-management
+
+```http
+GET /service-management/auth
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    headers: {
+        authorization: string;
+    };
+}
+```
+
+```http
+GET /service-management/auth/callback
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
+```
+
+```http
+POST /service-management/auth/is-user-subscribed
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    service: string;
+}
+```
+
+```http
+DELETE /service-management/auth/delete-service-subscription
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    service: string;
+}
+```
+
+```http
+GET /service-management/auth/get-services-by-user
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
+```
+
+```http
+POST /service-management/auth/get-service-subscription
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    service: string;
+    user_id: number;
+}
+```
+
+
+## database
+
+```http
+POST /action/resolve
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: string;
+}
+```
+
+```http
+POST /action/create
+```
+```ts
+// This route is internal, won't be exposed
+{
+    service_name: string;
+    event_type: string;
+    payload: {
+        [x: string]: unknown;
+    };
+    owner_id: number;
+}
+```
+
+```http
+PUT /user-management/update-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: number;
+    email: string;
+    password_hash: string;
+    first_name: string;
+    last_name: string;
+    description: string;
+}
+```
+
+```http
+DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: number;
+}
+```
+
+```http
+POST /user-management/create-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    code_verifier: string;
+    state: string;
+    user_email?: string;
+    service?: string;
+}
+```
+
+```http
+POST /user-management/get-user-by-id
+```
+```ts
+// This route is internal, won't be exposed
+{
+    consumer: number;
+}
+```
+
+```http
+POST /user-management/create-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    email: string;
+    hashedPassword: string;
+}
+```
+
+```http
+POST /user-management/get-user-by-email
+```
+```ts
+// This route is internal, won't be exposed
+{
+    email: string;
+}
+```
+
+```http
+DELETE /user-management/delete-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
+DELETE /service-management/delete-service-subscription
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+    service: string;
+}
+```
+
+```http
+POST /service-management/create-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    code_verifier: string;
+    state: string;
+    user_email: string;
+    service: string;
+}
+```
+
+```http
+POST /service-management/create-service-subscription
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+    service: string;
+    access_token: string;
+    refresh_token: string;
+    expires_in?: any;
+}
+```
+
+```http
+POST /service-management/get-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
+POST /service-management/get-services-by-user
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+}
+```
+
+```http
+PUT /service-management/update-service-subscription
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+    service: string;
+    access_token: string;
+    refresh_token: string;
+    expires_in?: any;
+}
+```
+
+```http
+POST /service-management/get-service-subscription
+```
+```ts
+// This route is internal, won't be exposed
+{
+    user_id: number;
+    service: string;
+}
+```
+
+```http
+DELETE /service-management/delete-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
+}
+```
+
+```http
+POST /area-composition/update-state
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: string;
+    status: "success" | "failure" | "pending";
+}
+```
+
+```http
+POST /area-composition/list-areas
+```
+```ts
+// This route is internal, won't be exposed
+{
+    userId: number;
+}
+```
+
+```http
+POST /reaction/create
+```
+```ts
+// This route is internal, won't be exposed
+{
+    action_id: string;
+    service_name: string;
+    execution_endpoint: string;
+    status: "pending" | "failure" | "success";
+}
+```
+
+```http
+POST /reaction/resolve
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: string;
+}
 ```
 
