@@ -149,7 +149,7 @@ const ProfilePage: React.FC = () => {
                   setEditDescription(userData.description);
                 }}
               >
-                <EditIcon sx={{color:"#7901f1"}} />
+                <EditIcon sx={{ color: "#7901f1" }} />
               </IconButton>
             </Box>
           )}
@@ -228,7 +228,10 @@ const ProfilePage: React.FC = () => {
         Delete Account
       </Button>
 
-      <DeleteAccountDialog open={openDialog} onClose={() => setOpenDialog(false)} />
+      <DeleteAccountDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+      />
     </Box>
   );
 };
