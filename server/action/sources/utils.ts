@@ -37,21 +37,25 @@ const createGithubIssueWebhook = async (
   const client = new Octokit({ auth });
   const owner = getKey<string>(context, "owner");
   const repo = getKey<string>(context, "repo");
+  const events = getKey<string[]>(context, "events");
+
+  if (!events.length) {
+    throw new Error("No events provided, required at least one");
+  }
 
   await client.repos.createWebhook({
     owner,
     repo,
-    // TODO(jabolo): support dynamic events
-    events: ["issues"],
+    events,
     config: {
-      url: host("ACTION", `/action/execute?id=${reaction_id}`),
+      url: `${process.env["PUBLIC_URL"]}/action/execute?id=${reaction_id}`,
       content_type: "json",
     },
   });
 };
 
 const createWebHookMap = {
-  "GITHUB": createGithubIssueWebhook,
+  "github": createGithubIssueWebhook,
 } as const;
 
 export const create = async (
