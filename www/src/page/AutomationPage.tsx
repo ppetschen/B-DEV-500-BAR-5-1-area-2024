@@ -1,6 +1,6 @@
 import React from "react";
 import { setupArea } from "@/services/areaComposition";
-import AppSelector from "./appSelector";
+import AppSelector from "./AppSelector";
 import { Typography, Box } from "@mui/material";
 
 type One = Parameters<Parameters<typeof AppSelector>[0]["onComplete"]>;
