@@ -77,8 +77,26 @@ services:
       - kong-gateway
 ```
 
-Finally, run `docker compose up` to start the services and Kong. You should now
-be able to access the service at `http://localhost:8000/example`.
+Since we need to interact with external services, we need to get a public URL,
+using [`cloudflared`](https://github.com/cloudflare/cloudflared). To do this,
+run the following command:
+
+```sh
+cloudflared tunnel --url localhost:8000
+
+2024-11-05T14:53:02Z INF +--------------------------------------------------------------------------------------------+
+2024-11-05T14:53:02Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2024-11-05T14:53:02Z INF |  https://your-unique-url.trycloudflare.com                                                 |
+2024-11-05T14:53:02Z INF +--------------------------------------------------------------------------------------------+
+```
+
+Finally, run the following command to start the services and Kong. You should
+now be able to access the service at
+`https://your-unique-url.trycloudflare.com/example`.
+
+```sh
+PUBLIC_URL=https://your-unique-url.trycloudflare.com docker compose up
+```
 
 ## debugging
 
@@ -93,7 +111,7 @@ If you are unsure of the exposed routes for each service, you can use the
 following command:
 
 ```sh
-curl http://localhost:8000/my-service/info |jq
+curl https://your-unique-url.trycloudflare.com/my-service/info |jq
 ```
 
 This will return the service's information, including the available routes.
