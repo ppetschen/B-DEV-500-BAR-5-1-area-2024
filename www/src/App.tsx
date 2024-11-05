@@ -16,7 +16,7 @@ import MenuPage from "./page/MenuPage";
 import Settings from "./page/Settings";
 import theme from "./style/theme";
 import { ThemeProvider } from "@mui/material/styles";
-import ServicesPage from "./page/ServicesPage";
+import ServicesPage from "./page/servicesPage";
 
 const ProtectedRoute: React.FC = () => {
   const isAuthenticated = !!localStorage.getItem("currentUser");
