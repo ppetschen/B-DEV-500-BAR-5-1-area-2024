@@ -8,7 +8,7 @@ const route: Route<typeof schema> = {
   method: "GET",
   schema,
   handler: async (_request, _server) => {
-    // TODO(jabolo): centralize to/from available services
+    // TODO(jabolo): expose available services from action/reaction
     return new Response("Not implemented", { status: 501 });
   },
 };
