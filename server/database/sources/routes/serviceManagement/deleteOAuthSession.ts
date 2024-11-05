@@ -21,7 +21,6 @@ const route: Route<typeof schema> = {
     if (!result) {
       return new Response("User not found", { status: 404 });
     }
-
     return new Response(JSON.stringify(result), {
       headers: {
         "Content-Type": "application/json",

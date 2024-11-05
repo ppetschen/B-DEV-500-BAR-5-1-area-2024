@@ -46,6 +46,7 @@ export const saveSession = async (
   state: string,
   user_email: string,
   service: string,
+  client_type: string,
 ) => {
   const response = await fetch(
     host("DATABASE", "/service-management/create-oauth-session"),
@@ -59,6 +60,7 @@ export const saveSession = async (
         state,
         user_email,
         service,
+        client_type
       }),
     },
   );

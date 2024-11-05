@@ -1,29 +1,46 @@
 /*
-** EPITECH PROJECT, 2024
-** stupidArea
-** File description:
-** service-management
-*/
+ ** EPITECH PROJECT, 2024
+ ** stupidArea
+ ** File description:
+ ** service-management
+ */
+import * as WebBrowser from "expo-web-browser";
+import { apiClient, setAuthorizationHeader } from "./api";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {API_BASE_URL} from "@/asyncStorageLibrary/basicRequestVars";
-
-export const authenticateToService = async (service: string): Promise<string | null> => {
-    const baseUrl = await AsyncStorage.getItem(API_BASE_URL) || "http://localhost:8000";
-    try {
-        const response = await fetch(`${baseUrl}/service-management/auth?service=${service}`, {
-            method: "GET",
-        });
-        if (!response.ok) {
-            console.log("Response:", response);
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("##########################################Data:\n", data);
-        return data;
-    } catch (error) {
-        console.error(`Failed to authenticate with ${service}:`, error);
-        return null;
+export const authenticateToService = async (
+  service: string,
+): Promise<boolean> => {
+  try {
+    await setAuthorizationHeader();
+    const response = await apiClient.get(
+      `/service-management/auth?service=${service}`,
+    );
+    if (response.status != 200) {
+      throw new Error(`Failed to authenticate with ${service}`);
     }
+    if (typeof response.data != "string") {
+      throw new Error(`Expected a string, got ${typeof response.data}`);
+    }
+    const url = response.data;
+    const { type } = await WebBrowser.openBrowserAsync(url);
+    return type === "opened";
+  } catch (error) {
+    console.error(`Failed to authenticate with ${service}:`, error);
+    return false;
+  }
+};
+
+export const isUserSubscribedToService = async (service: string) => {
+  try {
+    await setAuthorizationHeader();
+    const response = await apiClient.post(
+      `/service-management/auth/is_user_subscribed`,
+      { service },
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      `Failed to check if user is subscribed to ${service}: ${error}`,
+    );
+  }
 };
