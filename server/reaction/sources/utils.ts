@@ -1,6 +1,4 @@
 import process from "node:process";
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v10";
 import type { InternalConfig } from "./types";
 import ejs from "ejs";
 
@@ -32,26 +30,22 @@ function getKey<T>(
 const createDiscordWebhook = async (
   context: unknown,
 ) => {
-  const { access_token: auth } = getKey<InternalConfig>(
+  const { webhook_url } = getKey<InternalConfig>(
     context,
     "_internal",
   );
-  const rest = new REST({ version: "10" }).setToken(auth);
-  const channel_id = getKey<string>(context, "channel_id");
-  const avatar_url = getKey<string>(context, "avatar_url");
 
-  const webhook = await rest.post(Routes.channelWebhooks(channel_id), {
-    body: {
-      name: "AREA WebHook",
-      avatar: avatar_url,
-    },
-  });
+  if (!webhook_url) {
+    throw new Error("No webhook url provided");
+  }
 
-  return webhook as { url: string };
+  return {
+    url: webhook_url,
+  };
 };
 
 const createWebHookMap = {
-  "DISCORD": createDiscordWebhook,
+  "discord": createDiscordWebhook,
 } as const;
 
 export const create = async (
@@ -82,7 +76,7 @@ const sendDiscordWebhook = async (content: string, url: string) => {
 };
 
 const sendWebHookMap = {
-  "DISCORD": sendDiscordWebhook,
+  "discord": sendDiscordWebhook,
 } as const;
 
 export const send = async (
