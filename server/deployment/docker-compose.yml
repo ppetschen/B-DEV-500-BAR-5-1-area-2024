@@ -117,6 +117,8 @@ services:
       - kong-gateway
       - database-service
     restart: on-failure:10
+    env_file:
+      - ../user-management/.env
 
   service-management-service:
     build:
@@ -164,6 +166,7 @@ services:
       DATABASE_HOST: database-service:3000
       SERVICE_MANAGEMENT_HOST: service-management-service:3000
       KONG_DELAY_MS: 10000
+      PUBLIC_URL: ${PUBLIC_URL}
     networks:
       - kong-net
     depends_on:
