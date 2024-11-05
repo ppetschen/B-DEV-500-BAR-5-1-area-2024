@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { create, host } from "../../utils";
 
 const schema = z.object({
-  type: z.enum(["DISCORD"]),
+  type: z.enum(["discord"]),
   context: z.unknown(),
   markup: z.string(),
 });
@@ -18,13 +18,15 @@ const route: Route<typeof schema> = {
     const [, token] = authToken.split("Bearer ");
 
     if (!token) {
-      return new Response("Unauthorized", { status: 401 });
+      return new Response("Unauthorized, no token", { status: 401 });
     }
 
     const decoded = jwt.decode(token);
 
     if (!(decoded instanceof Object)) {
-      return new Response("Unauthorized", { status: 401 });
+      return new Response(`Expected object, got ${JSON.stringify(decoded)}`, {
+        status: 401,
+      });
     }
 
     const { consumer } = decoded;
@@ -53,6 +55,7 @@ const route: Route<typeof schema> = {
       refresh_token,
       expires_in,
       updated_at,
+      webhook_url,
     } = await serviceSubscriptionRequest.json();
 
     if (Date.now() > updated_at + expires_in) {
@@ -67,6 +70,7 @@ const route: Route<typeof schema> = {
         _internal: {
           access_token,
           refresh_token,
+          webhook_url,
         },
       });
 
@@ -83,6 +87,10 @@ const route: Route<typeof schema> = {
           }),
         },
       );
+
+      if (!insertRequest.ok) {
+        return new Response("Failed to create webhook", { status: 500 });
+      }
 
       const { id } = await insertRequest.json();
 

@@ -4,11 +4,11 @@ import { z } from "zod";
 
 const schema = z.object({
   from: z.object({
-    type: z.enum(["GITHUB"]),
+    type: z.enum(["github"]),
     context: z.unknown(),
   }),
   to: z.object({
-    type: z.enum(["DISCORD"]),
+    type: z.enum(["discord"]),
     context: z.unknown(),
   }),
   markup: z.string(),
@@ -22,7 +22,7 @@ const route: Route<typeof schema> = {
     const { from, to, markup } = await request.json();
 
     const reactionRequest = await fetch(host("REACTION", "/create"), {
-      headers: { ...request.headers },
+      headers: request.headers,
       method: "POST",
       body: JSON.stringify({
         type: to.type,
@@ -38,7 +38,7 @@ const route: Route<typeof schema> = {
     const { id: reactionId } = await reactionRequest.json();
 
     const actionRequest = await fetch(host("ACTION", "/create"), {
-      headers: { ...request.headers },
+      headers: request.headers,
       method: "POST",
       body: JSON.stringify({
         type: from.type,

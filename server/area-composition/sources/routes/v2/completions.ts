@@ -4,8 +4,8 @@ import jwt from "jsonwebtoken";
 import { complete, host } from "../../utils";
 
 const schema = z.object({
-  from: z.enum(["GITHUB"]),
-  to: z.enum(["DISCORD"]),
+  from: z.enum(["github"]),
+  to: z.enum(["discord"]),
 });
 
 const route: Route<typeof schema> = {

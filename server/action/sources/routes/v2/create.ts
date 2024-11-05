@@ -4,7 +4,7 @@ import { create, host } from "../../utils";
 import jwt from "jsonwebtoken";
 
 const schema = z.object({
-  type: z.enum(["GITHUB"]),
+  type: z.enum(["github"]),
   context: z.unknown(),
   reaction_id: z.string(),
 });
