@@ -91,7 +91,7 @@ const getDiscordStrategy = () => {
     // so we can retrieve it when we need to send a message
     // nullable `webhook_url` in service_subscription
     // https://discord.com/developers/docs/topics/oauth2#webhooks-url-example
-    scope: "identify email",
+    scope: "identify email webhook.incoming",
     userinfo_endpoint: "https://discord.com/api/users/@me",
     token_endpoint: "https://discord.com/api/oauth2/token",
     client_auth_method: "",

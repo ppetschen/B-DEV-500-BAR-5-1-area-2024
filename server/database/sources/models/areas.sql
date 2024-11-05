@@ -40,5 +40,6 @@ CREATE TABLE IF NOT EXISTS service_subscriptions (
     refresh_token TEXT NOT NULL,
     expires_in TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()  
+    updated_at TIMESTAMP DEFAULT NOW(),
+    webhook_url VARCHAR(255)
 );

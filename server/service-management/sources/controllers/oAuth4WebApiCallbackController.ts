@@ -72,7 +72,7 @@ export const authorizeServiceCallback = async (
       },
     });
 
-    const result = await oauth.processAuthorizationCodeResponse(
+    const result: any = await oauth.processAuthorizationCodeResponse(
       as,
       client,
       response,
@@ -95,6 +95,7 @@ export const authorizeServiceCallback = async (
       expires_in: expirationDate.toISOString(),
       user_id: user.id,
       service,
+      webhook_url: result.webhook ? result.webhook.url : "",
     };
     const storeStatus = serviceSubscription
       ? await updateServiceSubscription(data)
