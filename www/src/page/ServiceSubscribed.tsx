@@ -3,7 +3,6 @@ import {
   Box,
   Card,
   Typography,
-  Stack,
   CircularProgress,
   Alert,
   IconButton,
@@ -63,16 +62,23 @@ const ServiceSubscribed: React.FC = () => {
         ) : errorMessage ? (
           <Alert severity="error">{errorMessage}</Alert>
         ) : subscribedServices.length > 0 ? (
-          <Stack spacing={2}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
             {subscribedServiceIcons.map((service, index) =>
               service ? (
                 <Box key={index} display="flex" alignItems="center">
                   <Tooltip title={service.name}>
                     <IconButton
-                      sx={{ bgcolor: "#5A6ACF", color: "#fff", p: 2, mr: 2,  transform: "scale(1)", transition: "transform 0.3s ease", "&:hover": {
-                        transform: "scale(1.2)",
-                        bgcolor: "#3B4DB7",
-                      },
+                      sx={{
+                        bgcolor: "#7901f1",
+                        color: "#fff",
+                        p: 2,
+                        mr: 2,
+                        transform: "scale(1)",
+                        transition: "transform 0.3s ease",
+                        "&:hover": {
+                          transform: "scale(1.2)",
+                          bgcolor: "#5c1ed6",
+                        },
                       }}
                       size="small"
                     >
@@ -82,7 +88,7 @@ const ServiceSubscribed: React.FC = () => {
                 </Box>
               ) : null
             )}
-          </Stack>
+          </Box>
         ) : (
           <Typography variant="body2" color="error">
             You have no subscribed services

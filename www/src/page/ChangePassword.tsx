@@ -84,7 +84,7 @@ const ChangePassword: React.FC = () => {
           onClick={handlePasswordSave}
           variant="contained"
           sx={{
-            bgcolor: "#273240",
+            bgcolor: "#5c1ed6",
             color: "#FFFFFF",
             "&:hover": {
               bgcolor: "#EDEEF1",

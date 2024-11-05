@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import { getUser, updateUser } from "@/services/userManagement";
+import DeleteAccountDialog from "../components/layout/DeleteAccount";
 
 type UserData = {
   first_name: string;
@@ -27,13 +28,13 @@ const ProfilePage: React.FC = () => {
     email: "",
     description: "",
   });
-
   const [isEditing, setIsEditing] = useState(false);
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -86,8 +87,8 @@ const ProfilePage: React.FC = () => {
   return (
     <Box sx={{ p: 4, bgcolor: "#F5F7FA", minHeight: "100vh" }}>
       <Typography
-      variant="h4"
-      sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 4 }}
+        variant="h4"
+        sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 4 }}
       >
         PROFILE INFORMATION
       </Typography>
@@ -104,8 +105,8 @@ const ProfilePage: React.FC = () => {
       >
         <Avatar
           sx={{ width: 90, height: 90, mr: 3, border: "1px solid #5c1ed6" }}
-          >
-            {getInitials(userData.first_name, userData.last_name)}
+        >
+          {getInitials(userData.first_name, userData.last_name)}
         </Avatar>
         <Box sx={{ flexGrow: 1 }}>
           {isEditing ? (
@@ -148,7 +149,7 @@ const ProfilePage: React.FC = () => {
                   setEditDescription(userData.description);
                 }}
               >
-                <EditIcon color="primary" />
+                <EditIcon sx={{color:"#7901f1"}} />
               </IconButton>
             </Box>
           )}
@@ -158,7 +159,6 @@ const ProfilePage: React.FC = () => {
         </Box>
       </Box>
       <Divider sx={{ mb: 4 }} />
-
       <Card
         sx={{
           p: 3,
@@ -208,16 +208,27 @@ const ProfilePage: React.FC = () => {
           </Typography>
         )}
         {errorMessage && (
-          <Alert severity="error" sx={{mt: 2}}>
+          <Alert severity="error" sx={{ mt: 2 }}>
             {errorMessage}
           </Alert>
         )}
         {successMessage && (
-          <Alert severity="success" sx={{mt: 2}}>
+          <Alert severity="success" sx={{ mt: 2 }}>
             {successMessage}
           </Alert>
         )}
       </Card>
+
+      <Button
+        onClick={() => setOpenDialog(true)}
+        variant="contained"
+        color="error"
+        sx={{ mt: 2 }}
+      >
+        Delete Account
+      </Button>
+
+      <DeleteAccountDialog open={openDialog} onClose={() => setOpenDialog(false)} />
     </Box>
   );
 };

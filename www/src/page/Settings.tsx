@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ProfilePage from "./Profile";
 import ChangePassword from "./ChangePassword";
 import ServiceSubscribed from "./ServiceSubscribed";
-import DeleteAccount from "./DeleteAccount";
 interface SettingsNavigatorProps {
   value: TabKey;
   setValue: (value: TabKey) => void;
@@ -17,7 +16,6 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
     { label: "Profile", value: "profile" },
     { label: "Change Password", value: "changePassword" },
     { label: "Services Subscribed", value: "serviceSubscribed" },
-    { label: "Delete Account", value: "deleteAccount" },
   ];
 
   return (
@@ -49,8 +47,7 @@ const SettingsNavigator: React.FC<SettingsNavigatorProps> = ({
 type TabKey =
   | "profile"
   | "changePassword"
-  | "serviceSubscribed"
-  | "deleteAccount";
+  | "serviceSubscribed";
 
 const Settings = () => {
   const [tab, setTab] = useState<TabKey>("profile");
@@ -58,7 +55,6 @@ const Settings = () => {
     profile: <ProfilePage />,
     changePassword: <ChangePassword />,
     serviceSubscribed: <ServiceSubscribed />,
-    deleteAccount: <DeleteAccount />,
   };
 
   return (
