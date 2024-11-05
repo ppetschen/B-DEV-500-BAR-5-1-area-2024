@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `026e2ef73f1b589eeffb6933b4ce11ce63a21861`.
+> GitHub actions, commit hash `4f55009c980c959df2e1ff8228b9c138ceeb06fe`.
 
 ## reaction
 
@@ -146,6 +146,19 @@ POST /area-composition/create
     };
     to_service_name: string;
     to_execution_endpoint: string;
+}
+```
+
+```http
+POST /area-composition/send-google-mail
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    to: string;
+    subject: string;
+    content: string;
+    access_token: string;
 }
 ```
 
@@ -355,6 +368,7 @@ POST /service-management/create-oauth-session
     state: string;
     user_email: string;
     service: string;
+    client_type: string;
 }
 ```
 
