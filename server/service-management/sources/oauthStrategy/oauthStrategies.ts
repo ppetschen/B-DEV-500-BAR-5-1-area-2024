@@ -41,27 +41,27 @@ const getGoogleStrategy = () => {
 const getGmailStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_MAIL_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/gmail.send";
+    strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/gmail.send";
   return strategy;
 };
 
 const getGoogleDriveStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_DRIVE_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/drive.file";
+    strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/drive.file";
   return strategy;
 };
 
 const getGoogleCalendarStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_CALENDAR_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/calendar.events";
+    strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/calendar.events";
   return strategy;
 };
 
@@ -87,6 +87,10 @@ const getDiscordStrategy = () => {
     algorithm: "oauth2",
     client_id: process.env.DISCORD_CLIENT_ID!,
     client_secret: process.env.DISCORD_CLIENT_SECRET!,
+    // TODO(tim): add webhook.incoming and save it in the database
+    // so we can retrieve it when we need to send a message
+    // nullable `webhook_url` in service_subscription
+    // https://discord.com/developers/docs/topics/oauth2#webhooks-url-example
     scope: "identify email",
     userinfo_endpoint: "https://discord.com/api/users/@me",
     token_endpoint: "https://discord.com/api/oauth2/token",
