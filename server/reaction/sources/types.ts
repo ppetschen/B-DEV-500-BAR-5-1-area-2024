@@ -34,4 +34,5 @@ export type JWTResponse = {
 export type InternalConfig = {
   access_token: string;
   refresh_token: string;
+  webhook_url?: string;
 };
