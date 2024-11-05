@@ -239,7 +239,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
         {activeStep > 0 && (
           <Button
             onClick={handleBack}
-            sx={{ 
+            sx={{
               mr: 2,
               bgcolor: "#5c1ed6",
               color: "#FFFFFF",
