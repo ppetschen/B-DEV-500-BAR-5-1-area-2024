@@ -58,17 +58,37 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     );
 
     const handleSave = () => {
+        let valid = true;
+        if (!newPassword) {
+            setPasswordError("Password is required");
+            valid = false;
+        } else if (newPassword === oldPassword) {
+            setPasswordError(
+                "New password must be different from old password"
+            );
+            valid = false;
+        }
+        if (newPassword !== confirmNewPassword) {
+            setConfirmPasswordError(
+                "Password confirmation must match password"
+            );
+            valid = false;
+        }
         console.log("Saving new password", {
             oldPassword,
             newPassword,
             confirmNewPassword,
         });
-        //TODO: add: Request to change password here
-        hideModal();
+        if (valid) {
+            //TODO: add: Request to change password here
+            hideModal();
+        }
     };
     const handleCancel = () => {
         setNewPassword("");
         setConfirmNewPassword("");
+        setPasswordError(null);
+        setConfirmPasswordError(null);
         hideModal();
     };
 
@@ -102,7 +122,10 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                         label="New Password"
                         mode="outlined"
                         value={newPassword}
-                        onChangeText={setNewPassword}
+                        onChangeText={(text) => {
+                            setNewPassword(text);
+                            setPasswordError(null);
+                        }}
                         secureTextEntry={!showNewPassword}
                         right={
                             <TextInput.Icon
@@ -112,13 +135,22 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                                 }
                             />
                         }
+                        error={!!passwordError}
                         style={{ marginBottom: 8 }}
                     />
+                    {passwordError && (
+                        <Text style={{ color: "red", marginBottom: 8 }}>
+                            {passwordError}
+                        </Text>
+                    )}
                     <TextInput
                         label="Confirm New Password"
                         mode="outlined"
                         value={confirmNewPassword}
-                        onChangeText={setConfirmNewPassword}
+                        onChangeText={(text) => {
+                            setConfirmNewPassword(text);
+                            setConfirmPasswordError(null);
+                        }}
                         secureTextEntry={!showConfirmNewPassword}
                         right={
                             <TextInput.Icon
@@ -132,8 +164,14 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                                 }
                             />
                         }
+                        error={!!confirmPasswordError}
                         style={{ marginBottom: 8 }}
                     />
+                    {confirmPasswordError && (
+                        <Text style={{ color: "red", marginBottom: 8 }}>
+                            {confirmPasswordError}
+                        </Text>
+                    )}
                     <View
                         style={{
                             flexDirection: "row",
