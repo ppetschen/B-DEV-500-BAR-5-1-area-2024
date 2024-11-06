@@ -1,5 +1,7 @@
 import process from "node:process";
 import { Octokit } from "@octokit/rest";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v10";
 
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
@@ -26,18 +28,12 @@ const getGitHubCompletions = async (
 const getDiscordCompletions = async (
   accessToken: string,
 ): Promise<Record<string, unknown>> => {
-  const baseUrl = "https://discord.com/api/v10";
-  const headers = {
-    "Authorization": `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-  };
+  const rest = new REST({ authPrefix: "Bearer" }).setToken(
+    accessToken,
+  );
+  const guilds = await rest.get(Routes.userGuilds()) as { id: string }[];
 
-  const guildsResponse = await fetch(`${baseUrl}/users/@me/guilds`, {
-    headers,
-  });
-  const guilds = await guildsResponse.json();
-
-  return { data: guilds.map(({ id }: { id: string }) => ({ guildId: id })) };
+  return { data: guilds.map(({ id }) => ({ guildId: id })) };
 };
 
 const completionsMap = {
