@@ -10,6 +10,8 @@ import { styled } from "nativewind";
 import { BasicButton } from "@components/BasicButton";
 import { TextInput } from "@components/TextInput";
 import { TextBox } from "@components/TextBox";
+import { ChangePasswordModal } from "@components/ChangePasswordModal";
+import { Button } from "react-native-paper";
 
 const StyledImage = styled(Image);
 
@@ -26,6 +28,8 @@ export default function ProfilePage() {
     });
     const [isEditing, setIsEditing] = useState(false);
     const [tempUser, setTempUser] = useState(user); // state when in edit
+    const [showChangePasswordModal, setShowChangePasswordModal] =
+        useState(false);
 
     // button handlers
     const handleEdit = () => setIsEditing(true);
@@ -36,6 +40,9 @@ export default function ProfilePage() {
     const handleSave = () => {
         setUser(tempUser);
         setIsEditing(false);
+    };
+    const handleChangePassword = () => {
+        setShowChangePasswordModal(true);
     };
     return (
         <StyledView className="flex-1 justify-center items-center bg-white px-6">
@@ -68,6 +75,9 @@ export default function ProfilePage() {
                     <Text>
                         {user.name} {user.surname}
                     </Text>
+                    <Button mode="outlined" onPress={handleChangePassword}>
+                        Change Password
+                    </Button>
                 </StyledView>
             )}
 
@@ -97,6 +107,10 @@ export default function ProfilePage() {
             ) : (
                 <BasicButton title="Edit" onPress={handleEdit} />
             )}
+            <ChangePasswordModal
+                visible={showChangePasswordModal}
+                hideModal={() => setShowChangePasswordModal(false)}
+            />
         </StyledView>
     );
 }
