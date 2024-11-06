@@ -102,6 +102,11 @@ export default function SignUpPage() {
                 keyboardType="email-address"
                 error={!!emailError}
             />
+            {emailError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {emailError}
+                </Text>
+            )}
             <TextInput
                 label="Password"
                 mode="outlined"
@@ -120,6 +125,11 @@ export default function SignUpPage() {
                     />
                 }
             />
+            {passwordError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {passwordError}
+                </Text>
+            )}
             <TextInput
                 label="Confirm Password"
                 mode="outlined"
@@ -140,6 +150,11 @@ export default function SignUpPage() {
                     />
                 }
             />
+            {confirmPasswordError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {confirmPasswordError}
+                </Text>
+            )}
             <Button
                 mode="contained"
                 onPress={handleSignUp}
