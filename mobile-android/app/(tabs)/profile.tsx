@@ -5,8 +5,8 @@
  ** profile
  */
 
+import React, { useCallback, useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
-import React, { useCallback, useState } from "react";
 import { ChangePasswordModal } from "@components/ChangePasswordModal";
 import {
     Avatar,
@@ -18,19 +18,13 @@ import {
     TextInput,
 } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
+import { getUser, updateUser } from "@/services/user-management"; // Import updateUser function
+import { User } from "@/services/types";
 
 export default function ProfilePage() {
-    // Mock user data and services
-    const [user, setUser] = useState({
-        name: "Jane",
-        surname: "Doe",
-        description: "Passionate mobile developer",
-        avatar: "https://i.pravatar.cc/300",
-        email: "jane.doe@example.com",
-        password: "password",
-    });
+    const [user, setUser] = useState<User | null>(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [tempUser, setTempUser] = useState(user);
+    const [tempUser, setTempUser] = useState<User | null>(null);
     const [services] = useState([
         { id: 1, name: "Service 1", description: "Description of Service 1" },
         { id: 2, name: "Service 2", description: "Description of Service 2" },
@@ -38,26 +32,54 @@ export default function ProfilePage() {
     const [showChangePasswordModal, setShowChangePasswordModal] =
         useState(false);
 
+    // Fetch user data from the server
+    const fetchUser = async () => {
+        const fetchedUser = await getUser();
+        if (fetchedUser) {
+            setUser(fetchedUser);
+            setTempUser(fetchedUser);
+        }
+    };
+
+    useEffect(() => {
+        fetchUser();
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchUser();
+        }, [])
+    );
+
     const handleEdit = () => setIsEditing(true);
+
     const handleCancel = () => {
         setTempUser(user);
         setIsEditing(false);
     };
-    const handleSave = () => {
-        setUser(tempUser);
-        setIsEditing(false);
+
+    const handleSave = async () => {
+        if (tempUser) {
+            const originalUser = user; // backup of the original user data
+            setUser(tempUser); // Update UI with new data
+
+            const success = await updateUser(tempUser);
+            if (success) {
+                setIsEditing(false);
+            } else {
+                setUser(originalUser); // Revert to original user data on failure
+                console.log("Failed to save user data.");
+            }
+        }
     };
+
     const handleChangePassword = () => {
         setShowChangePasswordModal(true);
     };
 
-    useFocusEffect(
-        useCallback(() => {
-            return () => {
-                if (isEditing) handleCancel();
-            };
-        }, [isEditing])
-    );
+    if (!user) {
+        return <Text>Loading...</Text>;
+    }
 
     return (
         <ScrollView
@@ -75,15 +97,23 @@ export default function ProfilePage() {
             </Text>
             <Card style={{ marginBottom: 16, padding: 16 }}>
                 <View style={{ alignItems: "center", paddingBottom: 16 }}>
-                    <Avatar.Image size={128} source={{ uri: user.avatar }} />
+                    <Avatar.Image
+                        size={128}
+                        source={{
+                            uri: "https://i.pravatar.cc/300",
+                        }}
+                    />
                 </View>
                 <View>
                     <TextInput
                         label="Name"
                         mode="outlined"
-                        value={tempUser.name}
+                        value={tempUser?.first_name || ""}
                         onChangeText={(value) =>
-                            setTempUser({ ...tempUser, name: value })
+                            setTempUser({
+                                ...tempUser,
+                                first_name: value,
+                            } as User)
                         }
                         editable={isEditing}
                         style={{ marginBottom: 8 }}
@@ -91,9 +121,12 @@ export default function ProfilePage() {
                     <TextInput
                         label="Surname"
                         mode="outlined"
-                        value={tempUser.surname}
+                        value={tempUser?.last_name || ""}
                         onChangeText={(value) =>
-                            setTempUser({ ...tempUser, surname: value })
+                            setTempUser({
+                                ...tempUser,
+                                last_name: value,
+                            } as User)
                         }
                         editable={isEditing}
                         style={{ marginBottom: 8 }}
@@ -101,9 +134,12 @@ export default function ProfilePage() {
                     <TextInput
                         label="Description"
                         mode="outlined"
-                        value={tempUser.description}
+                        value={tempUser?.description || ""}
                         onChangeText={(value) =>
-                            setTempUser({ ...tempUser, description: value })
+                            setTempUser({
+                                ...tempUser,
+                                description: value,
+                            } as User)
                         }
                         multiline
                         editable={isEditing}
