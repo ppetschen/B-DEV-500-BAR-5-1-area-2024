@@ -72,7 +72,7 @@ const getGithubStrategy = () => {
     algorithm: "oauth2",
     client_id: process.env.GITHUB_CLIENT_ID!,
     client_secret: process.env.GITHUB_CLIENT_SECRET!,
-    scope: "user repo",
+    scope: "user:email write:repo_hook",
     userinfo_endpoint: "https://api.github.com/user/emails",
     token_endpoint: "https://github.com/login/oauth/access_token",
     client_auth_method: "",
@@ -87,10 +87,6 @@ const getDiscordStrategy = () => {
     algorithm: "oauth2",
     client_id: process.env.DISCORD_CLIENT_ID!,
     client_secret: process.env.DISCORD_CLIENT_SECRET!,
-    // TODO(tim): add webhook.incoming and save it in the database
-    // so we can retrieve it when we need to send a message
-    // nullable `webhook_url` in service_subscription
-    // https://discord.com/developers/docs/topics/oauth2#webhooks-url-example
     scope: "identify email webhook.incoming",
     userinfo_endpoint: "https://discord.com/api/users/@me",
     token_endpoint: "https://discord.com/api/oauth2/token",
