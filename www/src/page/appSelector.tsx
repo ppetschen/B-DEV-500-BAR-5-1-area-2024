@@ -53,6 +53,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
     Github: ["Issue Created", "Pull Request Created", "Commit Added"],
     Outlook: ["Email Dispatched"],
     Jira: ["Issue Created", "Issue Updated", "Issue Deleted"],
+    Twitch: ["Stream Started", "Stream Ended", "Clip Created", "Subscription"],
   };
 
   const handleNext = () => {
@@ -116,6 +117,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
                   <MenuItem value="Github">Github</MenuItem>
                   <MenuItem value="Outlook">Outlook</MenuItem>
                   <MenuItem value="Jira">Jira</MenuItem>
+                  <MenuItem value="Twitch">Twitch</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
