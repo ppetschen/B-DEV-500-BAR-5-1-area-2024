@@ -21,6 +21,8 @@ import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommun
 import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import { authenticateToService } from "@/services/service-management";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -106,8 +108,8 @@ export default function ServicesPage() {
                                 marginRight: 8,
                                 backgroundColor:
                                     selectedCategory === category ||
-                                    (category === "All" &&
-                                        selectedCategory === null)
+                                        (category === "All" &&
+                                            selectedCategory === null)
                                         ? "#5A6ACF"
                                         : "transparent",
                             }}
@@ -117,8 +119,8 @@ export default function ServicesPage() {
                                     fontSize: 14,
                                     color:
                                         selectedCategory === category ||
-                                        (category === "All" &&
-                                            selectedCategory === null)
+                                            (category === "All" &&
+                                                selectedCategory === null)
                                             ? "#fff"
                                             : "#5A6ACF",
                                 }}
@@ -137,14 +139,9 @@ export default function ServicesPage() {
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             onPress={async () => {
-                                const url = await authenticateToService(
-                                    item.name.toLowerCase()
-                                );
-                                if (url) {
-                                  //* Open the URL
-                                    console.log("URL:", url);
-                                    console.log(`Next step: Open the URL`);
-                                } else {
+                                const service = item.name.toLowerCase();
+                                const result = await authenticateToService(service);
+                                if (!result) {
                                     console.log(
                                         `Failed to authenticate to ${item.name}`
                                     );

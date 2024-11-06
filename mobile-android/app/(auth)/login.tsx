@@ -7,7 +7,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
-import { login } from "@/services/user-management";
+import { deleteUser, getUser, login, updateUser } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native";
 
@@ -34,14 +34,8 @@ export default function LoginPage() {
             valid = false;
         }
         if (valid) {
-            console.log("Logging in with:", { email, password });
-            const response = await login({
-                email,
-                password,
-                method: "credentials",
-            });
+            const response = await login({ email, password }, "credentials");
             if (response) {
-                console.log("Response:", response);
                 router.push("/dashboard");
             } else {
                 console.log("Login failed");

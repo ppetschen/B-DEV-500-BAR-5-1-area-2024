@@ -13,8 +13,6 @@ import { useRouter } from "expo-router";
 import { register } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
 export default function SignUpPage() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -30,7 +28,6 @@ export default function SignUpPage() {
 
     const router = useRouter();
     const handleSignUp = async () => {
-        console.log("Signing handleSignUp");
         let valid = true;
 
         setEmailError(null);
@@ -56,20 +53,9 @@ export default function SignUpPage() {
         }
 
         if (valid) {
-            console.log("Valid\n");
-
-            const response = await register({
-                email,
-                password,
-                method: "credentials",
-            });
+            const response = await register({ email, password }, "credentials");
 
             if (response) {
-                console.log("Response:", response);
-                console.log("Signing up with:", { email, password });
-                console.log("TOKEN: ", await AsyncStorage.getItem("token"));
-
-                // Navigate to dashboard if registration is successful
                 router.push("/dashboard");
             } else {
                 console.log("Error: Registration failed");

@@ -8,6 +8,7 @@ const schema = z.object({
   access_token: z.string(),
   refresh_token: z.string(),
   expires_in: z.any(),
+  webhook_url: z.string().optional(),
 });
 
 const route: Route<typeof schema> = {
@@ -15,13 +16,19 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    const { user_id, service, access_token, refresh_token, expires_in } =
-      await request.json();
+    const {
+      user_id,
+      service,
+      access_token,
+      refresh_token,
+      expires_in,
+      webhook_url,
+    } = await request.json();
     const { rows: [result] } = await client.query(
-      `INSERT INTO service_subscriptions (user_id, service, access_token, refresh_token, expires_in) 
-                 VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO service_subscriptions (user_id, service, access_token, refresh_token, expires_in, webhook_url) 
+                 VALUES ($1, $2, $3, $4, $5, $6)
                  RETURNING *`,
-      [user_id, service, access_token, refresh_token, expires_in],
+      [user_id, service, access_token, refresh_token, expires_in, webhook_url],
     );
     return new Response(JSON.stringify(result), {
       headers: {

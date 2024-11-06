@@ -20,15 +20,14 @@ const route: Route<typeof schema> = {
       let service = new URLSearchParams(request.url.split("?")[1]).get(
         "service",
       );
+      const state = new URLSearchParams(request.url.split("?")[1]).get("state");
+      const session = await getSession(state!);
+      const client_type = session.client_type;
       if (!service) {
-        const state = new URLSearchParams(request.url.split("?")[1]).get(
-          "state",
-        );
-        const session = await getSession(state!);
         service = session.service;
-      }
-      if (!service) {
-        throw new Error(`Service: ${service} not found`);
+        if (!service) {
+          throw Error("Service not found");
+        }
       }
 
       const email = await authorizeServiceCallback(service, request.url);
@@ -76,9 +75,7 @@ const route: Route<typeof schema> = {
       }
       const jwt = await createJWT();
       const token = craftJWTFromResponse("USER", jwt, user.id);
-      const frontend_redirect_url =
-        `http://localhost:5173/login?token=${token}`;
-      return Response.redirect(frontend_redirect_url);
+      return responseToClient(client_type, token);
     } catch (error) {
       console.log("Error in service callback", error);
       return new Response(
@@ -89,6 +86,15 @@ const route: Route<typeof schema> = {
       );
     }
   },
+};
+
+const responseToClient = (client_type: string, token: string) => {
+  if (client_type === "mobile") {
+    const frontend_redirect_url = `http://localhost:5173/login?token=${token}`;
+    return Response.redirect(frontend_redirect_url);
+  }
+  const frontend_redirect_url = `http://localhost:5173/login?token=${token}`;
+  return Response.redirect(frontend_redirect_url);
 };
 
 export default route;
