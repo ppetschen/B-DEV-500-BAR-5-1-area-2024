@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `4f55009c980c959df2e1ff8228b9c138ceeb06fe`.
+> GitHub actions, commit hash `64f2832f1b814c641efd3cab75dfc6f3e4a538b7`.
 
 ## reaction
 
@@ -303,6 +303,17 @@ POST /user-management/create-oauth-session
     state: string;
     user_email?: string;
     service?: string;
+    client_type: string;
+}
+```
+
+```http
+POST /user-management/get-oauth-session
+```
+```ts
+// This route is internal, won't be exposed
+{
+    state: string;
 }
 ```
 
