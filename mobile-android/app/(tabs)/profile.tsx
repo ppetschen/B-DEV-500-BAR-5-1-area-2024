@@ -4,34 +4,40 @@
  ** File description:
  ** profile
  */
-import { Text, View, Image } from "react-native";
-import React, { useState } from "react";
-import { styled } from "nativewind";
-import { BasicButton } from "@components/BasicButton";
-import { TextInput } from "@components/TextInput";
-import { TextBox } from "@components/TextBox";
+
+import { View, ScrollView } from "react-native";
+import React, { useCallback, useState } from "react";
 import { ChangePasswordModal } from "@components/ChangePasswordModal";
-import { Button } from "react-native-paper";
-
-const StyledImage = styled(Image);
-
-const StyledText = styled(Text);
-const StyledView = styled(View);
+import {
+    Avatar,
+    Button,
+    Card,
+    Divider,
+    List,
+    Text,
+    TextInput,
+} from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function ProfilePage() {
-    // Mock user data
+    // Mock user data and services
     const [user, setUser] = useState({
         name: "Jane",
         surname: "Doe",
-        avatar: "https://i.pravatar.cc/300", // email avatar??
+        description: "Passionate mobile developer",
+        avatar: "https://i.pravatar.cc/300",
         email: "jane.doe@example.com",
+        password: "password",
     });
     const [isEditing, setIsEditing] = useState(false);
-    const [tempUser, setTempUser] = useState(user); // state when in edit
+    const [tempUser, setTempUser] = useState(user);
+    const [services] = useState([
+        { id: 1, name: "Service 1", description: "Description of Service 1" },
+        { id: 2, name: "Service 2", description: "Description of Service 2" },
+    ]);
     const [showChangePasswordModal, setShowChangePasswordModal] =
         useState(false);
 
-    // button handlers
     const handleEdit = () => setIsEditing(true);
     const handleCancel = () => {
         setTempUser(user);
@@ -44,73 +50,131 @@ export default function ProfilePage() {
     const handleChangePassword = () => {
         setShowChangePasswordModal(true);
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                if (isEditing) handleCancel();
+            };
+        }, [isEditing])
+    );
+
     return (
-        <StyledView className="flex-1 justify-center items-center bg-white px-6">
-            <StyledText className="text-3xl">Profile</StyledText>
-            <StyledView className="items-center pb-6">
-                <StyledImage
-                    source={{ uri: user.avatar }}
-                    className="w-32 h-32 rounded-full border-4 border-white mt-8"
-                />
-            </StyledView>
-            {isEditing ? (
-                <StyledView>
+        <ScrollView
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 16,
+                backgroundColor: "#ffffff",
+            }}
+        >
+            <Text
+                variant="headlineLarge"
+                style={{ textAlign: "center", marginBottom: 16 }}
+            >
+                Profile
+            </Text>
+            <Card style={{ marginBottom: 16, padding: 16 }}>
+                <View style={{ alignItems: "center", paddingBottom: 16 }}>
+                    <Avatar.Image size={128} source={{ uri: user.avatar }} />
+                </View>
+                <View>
                     <TextInput
+                        label="Name"
+                        mode="outlined"
                         value={tempUser.name}
-                        placeholder="Name"
                         onChangeText={(value) =>
                             setTempUser({ ...tempUser, name: value })
                         }
+                        editable={isEditing}
+                        style={{ marginBottom: 8 }}
                     />
                     <TextInput
+                        label="Surname"
+                        mode="outlined"
                         value={tempUser.surname}
-                        placeholder="Surname"
                         onChangeText={(value) =>
                             setTempUser({ ...tempUser, surname: value })
                         }
+                        editable={isEditing}
+                        style={{ marginBottom: 8 }}
                     />
-                </StyledView>
-            ) : (
-                <StyledView>
-                    <Text>
-                        {user.name} {user.surname}
-                    </Text>
-                    <Button mode="outlined" onPress={handleChangePassword}>
-                        Change Password
-                    </Button>
-                </StyledView>
-            )}
+                    <TextInput
+                        label="Description"
+                        mode="outlined"
+                        value={tempUser.description}
+                        onChangeText={(value) =>
+                            setTempUser({ ...tempUser, description: value })
+                        }
+                        multiline
+                        editable={isEditing}
+                        style={{ marginBottom: 8 }}
+                    />
+                </View>
+                <Divider style={{ marginVertical: 8 }} />
+                <Text variant="bodyLarge">Email: {user.email}</Text>
 
-            <StyledView className="px-6 py-4">
-                <StyledText className="text-lg text-gray-800 font-semibold">
-                    Contact Information
-                </StyledText>
-                <StyledText className="text-gray-600 mt-2">
-                    Email: {user.email}
-                </StyledText>
-            </StyledView>
+                {isEditing ? (
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            marginTop: 16,
+                            justifyContent: "space-around",
+                        }}
+                    >
+                        <Button
+                            mode="contained"
+                            onPress={handleCancel}
+                            buttonColor="#FF6B6B"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            mode="contained"
+                            onPress={handleSave}
+                            buttonColor="#4CAF50"
+                        >
+                            Save
+                        </Button>
+                    </View>
+                ) : (
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            marginTop: 16,
+                            justifyContent: "space-around",
+                        }}
+                    >
+                        <Button mode="contained" onPress={handleEdit}>
+                            Edit
+                        </Button>
+                        <Button mode="outlined" onPress={handleChangePassword}>
+                            Change Password
+                        </Button>
+                    </View>
+                )}
+            </Card>
 
-            {isEditing ? (
-                <StyledView className="flex-row space-x-4 mt-6">
-                    <BasicButton
-                        title="Cancel"
-                        onPress={handleCancel}
-                        bgTailwind="bg-softRed"
+            <Card style={{ padding: 16 }}>
+                <Text
+                    variant="titleLarge"
+                    style={{ fontWeight: "bold", marginBottom: 16 }}
+                >
+                    Added Services
+                </Text>
+                <Divider style={{ marginBottom: 16 }} />
+                {services.map((service) => (
+                    <List.Item
+                        key={service.id}
+                        title={service.name}
+                        description={service.description}
+                        left={(props) => <List.Icon {...props} icon="folder" />}
                     />
-                    <StyledView></StyledView>
-                    <BasicButton
-                        title="Save"
-                        onPress={handleSave}
-                        bgTailwind="bg-softGreen"
-                    />
-                </StyledView>
-            ) : (
-                <BasicButton title="Edit" onPress={handleEdit} />
-            )}
+                ))}
+            </Card>
             <ChangePasswordModal
                 visible={showChangePasswordModal}
                 hideModal={() => setShowChangePasswordModal(false)}
             />
-        </StyledView>
+        </ScrollView>
     );
 }
