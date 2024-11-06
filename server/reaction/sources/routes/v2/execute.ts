@@ -37,7 +37,7 @@ const route: Route<typeof schema> = {
 
     const view = await renderEjs(markup, body);
 
-    await send(service_name, execution_endpoint, view);
+    await send(service_name, view, execution_endpoint);
 
     const updateStateRequest = await fetch(
       host("DATABASE", "/area-composition/update-state"),
