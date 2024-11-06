@@ -44,7 +44,7 @@ const createDiscordWebhook = async (
   };
 };
 
-const createWebHookMap = {
+export const createWebHookMap = {
   "discord": createDiscordWebhook,
 } as const;
 

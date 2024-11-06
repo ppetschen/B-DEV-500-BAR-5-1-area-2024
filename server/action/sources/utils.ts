@@ -54,7 +54,7 @@ const createGithubIssueWebhook = async (
   });
 };
 
-const createWebHookMap = {
+export const createWebHookMap = {
   "github": createGithubIssueWebhook,
 } as const;
 
