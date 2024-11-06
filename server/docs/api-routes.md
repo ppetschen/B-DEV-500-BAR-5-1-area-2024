@@ -3,12 +3,12 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `64f2832f1b814c641efd3cab75dfc6f3e4a538b7`.
+> GitHub actions, commit hash `2707397c2c1bdc7e9f30d3c547d6a95f4560b1ab`.
 
 ## reaction
 
 ```http
-POST /create
+POST /reaction/execute/create
 ```
 ```ts
 // This route is internal, won't be exposed
@@ -21,7 +21,27 @@ POST /create
 ```
 
 ```http
-POST /google/upload-to-drive
+POST /reaction/execute/create
+```
+```ts
+// This route is internal, won't be exposed
+{
+    type: "discord";
+    context?: unknown;
+    markup: string;
+}
+```
+
+```http
+POST /reaction/execute/execute
+```
+```ts
+// This route is internal, won't be exposed
+unknown
+```
+
+```http
+POST /reaction/execute/google/upload-to-drive
 ```
 ```ts
 // This route is internal, won't be exposed
@@ -122,6 +142,18 @@ POST /create
 }
 ```
 
+```http
+POST /create
+```
+```ts
+// This route is internal, won't be exposed
+{
+    type: "github";
+    context?: unknown;
+    reaction_id: string;
+}
+```
+
 
 ## area-composition
 
@@ -172,6 +204,43 @@ any
 
 ```http
 POST /area-composition/execute
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
+```
+
+```http
+POST /area-composition/compose
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    from: {
+        type: "github";
+        context?: unknown;
+    };
+    to: {
+        type: "discord";
+        context?: unknown;
+    };
+    markup: string;
+}
+```
+
+```http
+POST /area-composition/completions
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+{
+    from: "github";
+    to: "discord";
+}
+```
+
+```http
+GET /area-composition/available
 ```
 ```ts
 // Authorization: Bearer $AUTH_TOKEN
@@ -255,6 +324,21 @@ POST /action/resolve
 
 ```http
 POST /action/create
+```
+```ts
+// This route is internal, won't be exposed
+{
+    service_name: string;
+    event_type: string;
+    payload: {
+        [x: string]: unknown;
+    };
+    owner_id: number;
+}
+```
+
+```http
+POST /action/new
 ```
 ```ts
 // This route is internal, won't be exposed
@@ -394,6 +478,7 @@ POST /service-management/create-service-subscription
     access_token: string;
     refresh_token: string;
     expires_in?: any;
+    webhook_url?: string | undefined;
 }
 ```
 
@@ -428,6 +513,7 @@ PUT /service-management/update-service-subscription
     access_token: string;
     refresh_token: string;
     expires_in?: any;
+    webhook_url?: string | undefined;
 }
 ```
 
@@ -493,6 +579,29 @@ POST /reaction/resolve
 // This route is internal, won't be exposed
 {
     id: string;
+}
+```
+
+```http
+POST /reaction/find
+```
+```ts
+// This route is internal, won't be exposed
+{
+    id: string;
+}
+```
+
+```http
+POST /reaction/new
+```
+```ts
+// This route is internal, won't be exposed
+{
+    service_name: string;
+    execution_endpoint: string;
+    markup: string;
+    status: "pending" | "failure" | "success";
 }
 ```
 
