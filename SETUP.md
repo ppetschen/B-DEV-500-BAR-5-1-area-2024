@@ -23,6 +23,9 @@ vim server/service-management/.env
 
 cp server/user-management/.env.example server/user-management/.env
 vim server/user-management/.env
+
+cp server/action/.env.example server/action/.env
+vim server/action/.env
 ```
 
 3. Fill in the `frontend` configuration file.
