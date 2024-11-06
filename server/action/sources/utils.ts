@@ -48,7 +48,7 @@ const createGithubIssueWebhook = async (
     repo,
     events,
     config: {
-      url: `${process.env["PUBLIC_URL"]}/action/execute?id=${reaction_id}`,
+      url: `${process.env["PUBLIC_URL"]}/reaction/execute?id=${reaction_id}`,
       content_type: "json",
     },
   });
