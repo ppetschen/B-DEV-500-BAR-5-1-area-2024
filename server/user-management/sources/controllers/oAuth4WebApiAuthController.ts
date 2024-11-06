@@ -4,6 +4,7 @@ import { saveSession } from "./sessionController";
 
 export const authorizeService = async (
   service: string,
+  client_type: string,
 ): Promise<URL | boolean> => {
   try {
     const strategy = getOauthStrategy(service);
@@ -46,6 +47,7 @@ export const authorizeService = async (
     const response = await saveSession(
       code_verifier,
       state,
+      client_type,
     );
     if (!response) {
       throw Error("Failed to save session");

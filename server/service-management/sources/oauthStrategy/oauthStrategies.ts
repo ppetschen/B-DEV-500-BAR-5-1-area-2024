@@ -41,27 +41,27 @@ const getGoogleStrategy = () => {
 const getGmailStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_MAIL_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/gmail.send";
+    strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/gmail.send";
   return strategy;
 };
 
 const getGoogleDriveStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_DRIVE_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/drive.file";
+    strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/drive.file";
   return strategy;
 };
 
 const getGoogleCalendarStrategy = () => {
   const strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_CALENDAR_REDIRECT_URI!,
-  strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
-  strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
-  strategy.scope += "https://www.googleapis.com/auth/calendar.events";
+    strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
+    strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
+    strategy.scope += "https://www.googleapis.com/auth/calendar.events";
   return strategy;
 };
 

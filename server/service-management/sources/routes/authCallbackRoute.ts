@@ -47,8 +47,11 @@ const route: Route<typeof schema> = {
 const responseToClient = (client_type: string, auth_status: boolean) => {
   if (client_type === "mobile") {
     const color = auth_status ? "green" : "red";
-    const message = auth_status ? "Successfully authorized to service" : "Failed to authorize to service";
-    return new Response(`
+    const message = auth_status
+      ? "Successfully authorized to service"
+      : "Failed to authorize to service";
+    return new Response(
+      `
       <html>
         <head>
           <style>
@@ -78,15 +81,18 @@ const responseToClient = (client_type: string, auth_status: boolean) => {
           <h2>You can now close this window and return to the app.</h2>
         </body>
       </html>
-    `, {
-      headers: {
-        "Content-Type": "text/html",
+    `,
+      {
+        headers: {
+          "Content-Type": "text/html",
+        },
       },
-    });
-  }
-  else {
+    );
+  } else {
     const FRONT_REDIRECT_SERVICES_URI = process.env.FRONT_REDIRECT_SERVICES_URI;
-    return Response.redirect(`${FRONT_REDIRECT_SERVICES_URI}?auth_status=${auth_status}`!);
+    return Response.redirect(
+      `${FRONT_REDIRECT_SERVICES_URI}?auth_status=${auth_status}`!,
+    );
   }
 };
 

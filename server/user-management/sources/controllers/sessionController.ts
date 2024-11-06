@@ -44,6 +44,7 @@ export const getSession = async (state: string) => {
 export const saveSession = async (
   code_verifier: string,
   state: string,
+  client_type: string,
 ) => {
   const response = await fetch(
     host("DATABASE", "/user-management/create-oauth-session"),
@@ -55,6 +56,7 @@ export const saveSession = async (
       body: JSON.stringify({
         code_verifier,
         state,
+        client_type,
       }),
     },
   );

@@ -23,7 +23,7 @@ const route: Route<typeof schema> = {
         throw Error("Token or service not found");
       }
       const client_type = request.headers.get("Client-Type") || "web"; // default to web
-      
+
       const user = await getUserByToken(token!);
       if (!user) {
         throw Error("User not found");
@@ -42,4 +42,3 @@ const route: Route<typeof schema> = {
 };
 
 export default route;
- 

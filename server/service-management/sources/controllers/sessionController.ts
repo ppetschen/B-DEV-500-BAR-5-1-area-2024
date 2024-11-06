@@ -60,7 +60,7 @@ export const saveSession = async (
         state,
         user_email,
         service,
-        client_type
+        client_type,
       }),
     },
   );

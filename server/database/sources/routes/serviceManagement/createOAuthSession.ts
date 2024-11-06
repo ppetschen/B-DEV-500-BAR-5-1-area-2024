@@ -16,8 +16,9 @@ const route: Route<typeof schema> = {
   schema,
   handler: async (request, _server) => {
     try {
-      const { code_verifier, state, user_email, service, client_type } = await request
-        .json();
+      const { code_verifier, state, user_email, service, client_type } =
+        await request
+          .json();
       const { rows: [result] } = await client.query(
         `INSERT INTO oauth_sessions (code_verifier, state, user_email, service, client_type) 
                  VALUES ($1, $2, $3, $4, $5)
