@@ -1,6 +1,9 @@
 import process from "node:process";
 import type { HookContext, InternalConfig } from "./types";
 import ejs from "ejs";
+import { googleSendEmail } from "./controllers/sendGoogleMail";
+import { getServiceSubscription } from "./controllers/serviceController";
+
 
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
@@ -80,44 +83,35 @@ const sendDiscordWebhook = async (
 const sendGoogleMail = async (
   { reaction_id, view }: HookContext,
 ) => {
-  // Here i would need a TO, SUBJECT and a BODY for the email
-  // I would also need the access_token to this function.
-  // Everything else will be the same for all emails sent
-  // Can you guide me on how to implement this for this architecture
+  console.log("Sending email");
   const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: reaction_id }),
   });
 
+  console.log("test1");
   if (!findRequest.ok) {
     throw new Error("Failed to find reaction");
   }
 
   const { owner_id } = await findRequest.json();
-
-  const userRequest = await fetch(
-    host("DATABASE", "/user-management/get-user-by-id"),
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ consumer: owner_id }),
-    },
-  );
-
-  if (!userRequest.ok) {
-    throw new Error("Failed to find user");
-  }
-
-  const { email } = await userRequest.json();
-
-  const _emailContext = {
-    to: email,
+  console.log("test2");
+  const findServiceSubscription = await getServiceSubscription("google-mail", owner_id);
+  const { access_token } = findServiceSubscription;
+  console.log("test3");
+  const emailContext = {
+    access_token: access_token, 
     subject: `New Notification from ${reaction_id}`,
     body: view,
-  };
-
+  }
+  console.log("test4");
   // TODO(tim): Implement sending email
+  const response = await googleSendEmail(emailContext);
+  if(!response) {
+    throw new Error("Failed to send email");
+  }
+  console.log("Complete, you should have receieved an email");
 };
 
 const sendWebHookMap = {

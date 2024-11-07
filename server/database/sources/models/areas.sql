@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS reactions (
     service_name VARCHAR(255),
     execution_endpoint VARCHAR(500),
     status VARCHAR(50) NOT NULL DEFAULT 'pending',
-    executed_at TIMESTAMP DEFAULT NULL
+    executed_at TIMESTAMP DEFAULT NULL,
     owner_id INT REFERENCES users(id) ON DELETE CASCADE
 );
 

@@ -8,7 +8,7 @@ const schema = z.object({
     context: z.unknown(),
   }),
   to: z.object({
-    type: z.enum(["discord"]),
+    type: z.enum(["discord", "google-mail"]),
     context: z.unknown(),
   }),
   markup: z.string(),
