@@ -13,6 +13,11 @@ export const getUserByEmail = async (email: string): Promise<UserInfo> => {
       body: JSON.stringify({ email }),
     },
   );
+
+  if (!response.ok) {
+    throw new customError(`Failed to fetch user with email: ${email}`, 404);
+  }
+
   const user = await response.json();
   return user;
 };

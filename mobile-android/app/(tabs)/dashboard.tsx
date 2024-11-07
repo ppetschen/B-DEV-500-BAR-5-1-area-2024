@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
 import {
-    View,
     ActivityIndicator,
     Dimensions,
     SafeAreaView,
+    View,
 } from "react-native";
-import { Card, Text, IconButton } from "react-native-paper";
+import { Card, IconButton, Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
 import PagerView from "react-native-pager-view";
 import { useRouter } from "expo-router";
-import {
-    areaInList,
-    getListAreas,
-    responseAreaInList,
-} from "@/services/area-composition";
+import { areaInList } from "@/services/area-composition";
 import AreaInListCard from "@components/AreaInListCard";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const iconMapping: Record<string, string> = {
     github: "github",
@@ -74,46 +69,24 @@ const Dashboard = () => {
     useEffect(() => {
         const loadData = () => {
             setTimeout(async () => {
-                console.log("Areas:", areas);
-                const fetchedAreas: Array<areaInList> | null =
-                    await getListAreas().then(async (areas) =>
-                        areas
-                            ? await Promise.all(
-                                  areas.map(async (area) => ({
-                                      name: area.service_name,
-                                      //TODO: CLEANUP
-                                      services: [
-                                          <Icon
-                                              name={
-                                                  iconMapping[
-                                                      area.service_name.toLowerCase()
-                                                  ] || "question-circle"
-                                              }
-                                              size={24}
-                                              color="#5A6ACF"
-                                          />,
-                                      ],
-                                      status: area.event_type,
-                                      date: area.created_at,
-                                      url: `${await AsyncStorage.getItem(
-                                          "api_base_url"
-                                      )}/area-composition/execute?id=${
-                                          area.id
-                                      }`,
-                                  }))
-                              )
-                            : []
-                    );
-                setAreas(fetchedAreas || []);
+                // TODO: Fetch data from the server
+                const { actions, reactions } = {
+                    actions: [],
+                    reactions: [],
+                };
+
                 if (areas !== null) {
                     setCompletedCount(
-                        areas.filter((area) => area.status === "success").length
+                        areas.filter((area) => area.status === "success")
+                            .length,
                     );
                     setPendingCount(
-                        areas.filter((area) => area.status === "pending").length
+                        areas.filter((area) => area.status === "pending")
+                            .length,
                     );
                     setFailedCount(
-                        areas.filter((area) => area.status === "failure").length
+                        areas.filter((area) => area.status === "failure")
+                            .length,
                     );
                 } else {
                     setCompletedCount(0);
@@ -141,7 +114,7 @@ const Dashboard = () => {
                     },
                     {
                         label: "Total Automations",
-                        value: (fetchedAreas || []).length,
+                        value: [].length,
                         icon: "bar-chart",
                         color: "#5A6ACF",
                     },
@@ -159,7 +132,7 @@ const Dashboard = () => {
     };
 
     const handleAddWorkflow = () => {
-        router.push("/new-workflow");
+        router.push("/workflow-v2");
     };
     // Render the dashboard page
     return (
@@ -171,66 +144,64 @@ const Dashboard = () => {
                         color: "#5A6ACF",
                         marginBottom: 20,
                         fontWeight: "bold",
-                        marginTop: 20,
-                        textAlign: "center",
                     }}
                 >
                     Metrics Overview
                 </Text>
-                {loading ? (
-                    <ActivityIndicator size="large" color="#5A6ACF" />
-                ) : (
-                    <PagerView
-                        style={{
-                            height: 150,
-                            width: viewportWidth,
-                            alignContent: "center",
-                        }}
-                        initialPage={0}
-                    >
-                        {metrics.map((metric, index) => (
-                            <View
-                                key={index}
-                                style={{
-                                    alignContent: "center",
-                                    width: viewportWidth,
-                                }}
-                            >
-                                <Card
+                {loading
+                    ? <ActivityIndicator size="large" color="#5A6ACF" />
+                    : (
+                        <PagerView
+                            style={{
+                                height: 150,
+                                width: viewportWidth,
+                                alignContent: "center",
+                            }}
+                            initialPage={0}
+                        >
+                            {metrics.map((metric, index) => (
+                                <View
+                                    key={index}
                                     style={{
-                                        width: viewportWidth * 0.75,
-                                        alignItems: "center",
-                                        alignSelf: "center",
-                                        padding: "auto",
+                                        alignContent: "center",
+                                        width: viewportWidth,
                                     }}
                                 >
-                                    <Card.Content
+                                    <Card
                                         style={{
+                                            width: viewportWidth * 0.75,
                                             alignItems: "center",
-                                            alignContent: "center",
+                                            alignSelf: "center",
+                                            padding: "auto",
                                         }}
                                     >
-                                        <Icon
-                                            name={metric.icon}
-                                            size={30}
-                                            color={metric.color}
-                                        />
-                                        <Text
-                                            variant="headlineMedium"
+                                        <Card.Content
                                             style={{
-                                                fontWeight: "bold",
-                                                marginTop: 10,
+                                                alignItems: "center",
+                                                alignContent: "center",
                                             }}
                                         >
-                                            {metric.value}
-                                        </Text>
-                                        <Text>{metric.label}</Text>
-                                    </Card.Content>
-                                </Card>
-                            </View>
-                        ))}
-                    </PagerView>
-                )}
+                                            <Icon
+                                                name={metric.icon}
+                                                size={30}
+                                                color={metric.color}
+                                            />
+                                            <Text
+                                                variant="headlineMedium"
+                                                style={{
+                                                    fontWeight: "bold",
+                                                    marginTop: 10,
+                                                }}
+                                            >
+                                                {metric.value}
+                                            </Text>
+                                            <Text>{metric.label}</Text>
+                                        </Card.Content>
+                                    </Card>
+                                </View>
+                            ))}
+                        </PagerView>
+                    )}
             </View>
             <View>
                 <Text
@@ -239,44 +210,34 @@ const Dashboard = () => {
                         color: "#5A6ACF",
                         marginBottom: 20,
                         fontWeight: "bold",
-                        marginTop: 20,
-                        textAlign: "center",
                     }}
                 >
                     Recent Activities
                 </Text>
 
-                {loading ? (
-                    <ActivityIndicator size="large" color="#5A6ACF" />
-                ) : (
-                    <View>
-                        {areas.length === 0 ? (
-                            <Text
-                                variant="titleMedium"
-                                style={{
-                                    textAlign: "center",
-                                    marginTop: 20,
-                                }}
-                            >
-                                No activities found
-                            </Text>
-                        ) : (
-                            areas.map((activity, index) =>
-                                AreaInListCard(
-                                    {
-                                        name: activity.name,
-                                        date: activity.date,
-                                        url: activity.url,
-                                        services: activity.services,
-                                        status: activity.status,
-                                        onTest: testArea,
-                                    },
-                                    index.toString()
-                                )
-                            )
-                        )}
-                    </View>
-                )}
+                {loading
+                    ? <ActivityIndicator size="large" color="#5A6ACF" />
+                    : (
+                        <View>
+                            {areas.length === 0
+                                ? <Text>No activities found</Text>
+                                : (
+                                    areas.map((activity, index) =>
+                                        AreaInListCard(
+                                            {
+                                                name: activity.name,
+                                                date: activity.date,
+                                                url: activity.url,
+                                                services: activity.services,
+                                                status: activity.status,
+                                                onTest: testArea,
+                                            },
+                                            index.toString(),
+                                        )
+                                    )
+                                )}
+                        </View>
+                    )}
             </View>
             <IconButton
                 icon="plus"

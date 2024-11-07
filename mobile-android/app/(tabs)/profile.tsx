@@ -7,10 +7,10 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import {
-    View,
-    ScrollView,
     ActivityIndicator,
     SafeAreaView,
+    ScrollView,
+    View,
 } from "react-native";
 import { ChangePasswordModal } from "@components/ChangePasswordModal";
 import {
@@ -41,8 +41,9 @@ export default function ProfilePage() {
         }>
     >([]);
     const availableServices = ServicesList();
-    const [showChangePasswordModal, setShowChangePasswordModal] =
-        useState(false);
+    const [showChangePasswordModal, setShowChangePasswordModal] = useState(
+        false,
+    );
 
     const [loadingUser, setLoadingUser] = useState(true);
     const [loadingServices, setLoadingServices] = useState(true);
@@ -62,7 +63,7 @@ export default function ProfilePage() {
         const connectedServices = await getServicesConnectedInUser();
         if (connectedServices) {
             const filteredServices = availableServices.filter((service) =>
-                connectedServices.includes(service.name)
+                connectedServices.includes(service.name.toLowerCase())
             );
             setServices(filteredServices);
         } else {
@@ -79,7 +80,7 @@ export default function ProfilePage() {
         useCallback(() => {
             fetchUser();
             fetchConnectedServices();
-        }, [])
+        }, []),
     );
 
     const handleEdit = () => setIsEditing(true);
@@ -132,103 +133,104 @@ export default function ProfilePage() {
                         User details
                     </Text>
                     <Divider style={{ marginBottom: 16 }} />
-                    {/* <View style={{ alignItems: "center", paddingBottom: 16 }}>
+                    {
+                        /* <View style={{ alignItems: "center", paddingBottom: 16 }}>
                     <Avatar.Image
                         size={128}
                         source={{ uri: "https://i.pravatar.cc/300" }}
                     />
-                </View> */}
-                    {loadingUser ? (
-                        <ActivityIndicator size="large" color="#5A6ACF" />
-                    ) : (
-                        <View>
-                            <TextInput
-                                label="Name"
-                                mode="outlined"
-                                value={tempUser?.first_name || ""}
-                                onChangeText={(value) =>
-                                    setTempUser({
-                                        ...tempUser,
-                                        first_name: value,
-                                    } as User)
-                                }
-                                editable={isEditing}
-                                style={{ marginBottom: 8 }}
-                            />
-                            <TextInput
-                                label="Surname"
-                                mode="outlined"
-                                value={tempUser?.last_name || ""}
-                                onChangeText={(value) =>
-                                    setTempUser({
-                                        ...tempUser,
-                                        last_name: value,
-                                    } as User)
-                                }
-                                editable={isEditing}
-                                style={{ marginBottom: 8 }}
-                            />
-                            <TextInput
-                                label="Description"
-                                mode="outlined"
-                                value={tempUser?.description || ""}
-                                onChangeText={(value) =>
-                                    setTempUser({
-                                        ...tempUser,
-                                        description: value,
-                                    } as User)
-                                }
-                                multiline
-                                editable={isEditing}
-                                style={{ marginBottom: 8 }}
-                            />
-                        </View>
-                    )}
+                </View> */
+                    }
+                    {loadingUser
+                        ? <ActivityIndicator size="large" color="#5A6ACF" />
+                        : (
+                            <View>
+                                <TextInput
+                                    label="Name"
+                                    mode="outlined"
+                                    value={tempUser?.first_name || ""}
+                                    onChangeText={(value) =>
+                                        setTempUser({
+                                            ...tempUser,
+                                            first_name: value,
+                                        } as User)}
+                                    editable={isEditing}
+                                    style={{ marginBottom: 8 }}
+                                />
+                                <TextInput
+                                    label="Surname"
+                                    mode="outlined"
+                                    value={tempUser?.last_name || ""}
+                                    onChangeText={(value) =>
+                                        setTempUser({
+                                            ...tempUser,
+                                            last_name: value,
+                                        } as User)}
+                                    editable={isEditing}
+                                    style={{ marginBottom: 8 }}
+                                />
+                                <TextInput
+                                    label="Description"
+                                    mode="outlined"
+                                    value={tempUser?.description || ""}
+                                    onChangeText={(value) =>
+                                        setTempUser({
+                                            ...tempUser,
+                                            description: value,
+                                        } as User)}
+                                    multiline
+                                    editable={isEditing}
+                                    style={{ marginBottom: 8 }}
+                                />
+                            </View>
+                        )}
                     <Divider style={{ marginVertical: 8 }} />
                     <Text variant="bodyLarge">Email: {user?.email}</Text>
 
-                    {isEditing ? (
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                marginTop: 16,
-                                justifyContent: "space-around",
-                            }}
-                        >
-                            <Button
-                                mode="contained"
-                                onPress={handleCancel}
-                                buttonColor="#FF6B6B"
+                    {isEditing
+                        ? (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    marginTop: 16,
+                                    justifyContent: "space-around",
+                                }}
                             >
-                                Cancel
-                            </Button>
-                            <Button
-                                mode="contained"
-                                onPress={handleSave}
-                                buttonColor="#4CAF50"
+                                <Button
+                                    mode="contained"
+                                    onPress={handleCancel}
+                                    buttonColor="#FF6B6B"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    mode="contained"
+                                    onPress={handleSave}
+                                    buttonColor="#4CAF50"
+                                >
+                                    Save
+                                </Button>
+                            </View>
+                        )
+                        : (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    marginTop: 16,
+                                    justifyContent: "space-around",
+                                }}
                             >
-                                Save
-                            </Button>
-                        </View>
-                    ) : (
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                marginTop: 16,
-                                justifyContent: "space-around",
-                            }}
-                        >
-                            <Button mode="contained" onPress={handleEdit}>
-                                Edit
-                            </Button>
-                            <Button
-                                mode="outlined"
-                                onPress={handleChangePassword}
-                            >
-                                Change Password
-                            </Button>
-                        </View>
-                    )}
+                                <Button mode="contained" onPress={handleEdit}>
+                                    Edit
+                                </Button>
+                                <Button
+                                    mode="outlined"
+                                    onPress={handleChangePassword}
+                                >
+                                    Change Password
+                                </Button>
+                            </View>
+                        )}
                 </Card>
 
                 <Card style={{ padding: 16 }}>
@@ -239,43 +241,45 @@ export default function ProfilePage() {
                         Added Services
                     </Text>
                     <Divider style={{ marginBottom: 16 }} />
-                    {loadingServices ? (
-                        <ActivityIndicator size="large" color="#5A6ACF" />
-                    ) : services.length > 0 ? (
-                        services.map((service) => (
-                            <List.Item
-                                key={service.name}
-                                title={service.name}
-                                description={service.description}
-                                left={(props) => (
-                                    <View
-                                        style={{
-                                            backgroundColor: "#5A6ACF",
-                                            borderRadius: 100,
-                                            padding: 12,
-                                            marginBottom: 8,
-                                            width: 60,
-                                            height: 60,
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        {service.icon}
-                                    </View>
-                                )}
-                            />
-                        ))
-                    ) : (
-                        <Text
-                            variant="titleMedium"
-                            style={{
-                                textAlign: "center",
-                                marginTop: 20,
-                            }}
-                        >
-                            No Services connected
-                        </Text>
-                    )}
+                    {loadingServices
+                        ? <ActivityIndicator size="large" color="#5A6ACF" />
+                        : services.length > 0
+                        ? (
+                            services.map((service) => (
+                                <List.Item
+                                    key={service.name}
+                                    title={service.name}
+                                    description={service.description}
+                                    left={(props) => (
+                                        <View
+                                            style={{
+                                                backgroundColor: "#5A6ACF",
+                                                borderRadius: 100,
+                                                padding: 12,
+                                                marginBottom: 8,
+                                                width: 60,
+                                                height: 60,
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            {service.icon}
+                                        </View>
+                                    )}
+                                />
+                            ))
+                        )
+                        : (
+                            <Text
+                                variant="titleMedium"
+                                style={{
+                                    textAlign: "center",
+                                    marginTop: 20,
+                                }}
+                            >
+                                No Services connected
+                            </Text>
+                        )}
                 </Card>
                 <ChangePasswordModal
                     visible={showChangePasswordModal}
