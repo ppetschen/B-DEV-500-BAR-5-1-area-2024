@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2024
+** area
+** File description:
+** types
+*/
+
 export type UserAndServices = {
     email: string;
     password_hash: string;
@@ -7,7 +14,7 @@ export type UserAndServices = {
     services: string[];
     created_at: Date;
     updated_at: Date;
-  };  
+};
 
 export type User = {
     id: number;
@@ -21,4 +28,4 @@ export type User = {
     last_login: Date;
     is_active: boolean;
     token: string;
-}
+};

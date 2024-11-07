@@ -7,7 +7,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
-import { deleteUser, getUser, login, updateUser } from "@/services/user-management";
+import { login } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native";
 
