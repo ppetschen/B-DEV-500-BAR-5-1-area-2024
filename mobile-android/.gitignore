@@ -13,9 +13,9 @@ web-build/
 # macOS
 .DS_Store
 
-expo-env.d.ts
-
 # services
 .api.*
 
 .env
+.idea/
+.vscode/
