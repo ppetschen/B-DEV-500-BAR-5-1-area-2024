@@ -18,21 +18,27 @@ import {
     TextInput,
 } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
-import { getUser, updateUser } from "@/services/user-management"; // Import updateUser function
+import { getUser, updateUser } from "@/services/user-management";
+import { getServicesConnectedInUser } from "@/services/service-management";
 import { User } from "@/services/types";
+import { ServicesList } from "@/components/ServicesList";
 
 export default function ProfilePage() {
     const [user, setUser] = useState<User | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [tempUser, setTempUser] = useState<User | null>(null);
-    const [services] = useState([
-        { id: 1, name: "Service 1", description: "Description of Service 1" },
-        { id: 2, name: "Service 2", description: "Description of Service 2" },
-    ]);
+    const [services, setServices] = useState<
+        Array<{
+            name: string;
+            description: string;
+            icon: React.JSX.Element;
+            category: string;
+        }>
+    >([]);
+    const availableServices = ServicesList();
     const [showChangePasswordModal, setShowChangePasswordModal] =
         useState(false);
 
-    // Fetch user data from the server
     const fetchUser = async () => {
         const fetchedUser = await getUser();
         if (fetchedUser) {
@@ -41,38 +47,47 @@ export default function ProfilePage() {
         }
     };
 
+    const fetchConnectedServices = async () => {
+        const connectedServices = await getServicesConnectedInUser();
+        if (connectedServices) {
+            const filteredServices = availableServices.filter((service) =>
+                connectedServices.includes(service.name)
+            );
+            setServices(filteredServices);
+        }
+    };
+
     useEffect(() => {
         fetchUser();
+        fetchConnectedServices();
     }, []);
 
     useFocusEffect(
         useCallback(() => {
             fetchUser();
+            fetchConnectedServices();
         }, [])
     );
 
     const handleEdit = () => setIsEditing(true);
-
     const handleCancel = () => {
         setTempUser(user);
         setIsEditing(false);
     };
-
     const handleSave = async () => {
         if (tempUser) {
-            const originalUser = user; // backup of the original user data
-            setUser(tempUser); // Update UI with new data
+            const originalUser = user;
+            setUser(tempUser);
 
             const success = await updateUser(tempUser);
             if (success) {
                 setIsEditing(false);
             } else {
-                setUser(originalUser); // Revert to original user data on failure
+                setUser(originalUser);
                 console.log("Failed to save user data.");
             }
         }
     };
-
     const handleChangePassword = () => {
         setShowChangePasswordModal(true);
     };
@@ -99,9 +114,7 @@ export default function ProfilePage() {
                 <View style={{ alignItems: "center", paddingBottom: 16 }}>
                     <Avatar.Image
                         size={128}
-                        source={{
-                            uri: "https://i.pravatar.cc/300",
-                        }}
+                        source={{ uri: "https://i.pravatar.cc/300" }}
                     />
                 </View>
                 <View>
@@ -198,14 +211,33 @@ export default function ProfilePage() {
                     Added Services
                 </Text>
                 <Divider style={{ marginBottom: 16 }} />
-                {services.map((service) => (
-                    <List.Item
-                        key={service.id}
-                        title={service.name}
-                        description={service.description}
-                        left={(props) => <List.Icon {...props} icon="folder" />}
-                    />
-                ))}
+                {services.length > 0 ? (
+                    services.map((service) => (
+                        <List.Item
+                            key={service.name}
+                            title={service.name}
+                            description={service.description}
+                            left={(props) => (
+                                <View
+                                    style={{
+                                        backgroundColor: "#5A6ACF",
+                                        borderRadius: 100,
+                                        padding: 12,
+                                        marginBottom: 8,
+                                        width: 60,
+                                        height: 60,
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    {service.icon}
+                                </View>
+                            )}
+                        />
+                    ))
+                ) : (
+                    <Text>No services connected.</Text>
+                )}
             </Card>
             <ChangePasswordModal
                 visible={showChangePasswordModal}
