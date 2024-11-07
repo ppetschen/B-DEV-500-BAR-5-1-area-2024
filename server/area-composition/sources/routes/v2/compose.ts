@@ -30,7 +30,7 @@ const route: Route<typeof schema> = {
         markup,
       }),
     });
-
+    console.log("reactionRequest", await reactionRequest.text());
     if (!reactionRequest.ok) {
       return new Response("Failed to create reaction", { status: 500 });
     }
