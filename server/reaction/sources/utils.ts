@@ -121,7 +121,7 @@ const sendGoogleMail = async (
     subject: `New Notification from ${reaction_id}`,
     body: view,
   };
-
+  
   const response = await googleSendEmail(emailContext);
   if (!response) {
     throw new Error("Failed to send email");
