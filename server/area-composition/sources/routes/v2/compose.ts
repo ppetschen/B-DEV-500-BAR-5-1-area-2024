@@ -35,7 +35,6 @@ const route: Route<typeof schema> = {
     }
 
     const { id: reactionId } = await reactionRequest.json();
-    console.log("id", reactionId);
     const actionRequest = await fetch(host("ACTION", "/create"), {
       headers: request.headers,
       method: "POST",

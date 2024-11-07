@@ -117,7 +117,6 @@ const sendGoogleMail = async (
   if (!response) {
     throw new Error("Failed to send email");
   }
-  console.log("Complete, you should have receieved an email");
 };
 
 const sendWebHookMap = {
