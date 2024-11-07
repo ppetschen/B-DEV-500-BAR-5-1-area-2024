@@ -36,3 +36,9 @@ export type InternalConfig = {
   refresh_token: string;
   webhook_url?: string;
 };
+
+export type HookContext = {
+  reaction_id: string;
+  view: string;
+  execution_endpoint: string;
+};
