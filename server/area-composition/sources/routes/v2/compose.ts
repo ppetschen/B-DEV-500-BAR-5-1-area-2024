@@ -30,13 +30,12 @@ const route: Route<typeof schema> = {
         markup,
       }),
     });
-    console.log("reactionRequest", await reactionRequest.text());
     if (!reactionRequest.ok) {
       return new Response("Failed to create reaction", { status: 500 });
     }
 
     const { id: reactionId } = await reactionRequest.json();
-
+    console.log("id", reactionId);
     const actionRequest = await fetch(host("ACTION", "/create"), {
       headers: request.headers,
       method: "POST",
@@ -46,7 +45,7 @@ const route: Route<typeof schema> = {
         reaction_id: reactionId,
       }),
     });
-
+    
     if (!actionRequest.ok) {
       return new Response("Failed to create action", { status: 500 });
     }

@@ -46,8 +46,17 @@ const createDiscordWebhook = async (
   };
 };
 
+const createGoogleMailWebhook = async (
+  _context: unknown,
+) => {
+  return {
+    url: "",
+  }
+};
+
 export const createWebHookMap = {
   "discord": createDiscordWebhook,
+  "google-mail": createGoogleMailWebhook,
 } as const;
 
 export const create = async (
@@ -82,32 +91,27 @@ const sendDiscordWebhook = async (
 const sendGoogleMail = async (
   { reaction_id, view }: HookContext,
 ) => {
-  console.log("Sending email");
   const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id: reaction_id }),
   });
 
-  console.log("test1");
   if (!findRequest.ok) {
     throw new Error("Failed to find reaction");
   }
 
-  const { owner_id } = await findRequest.json();
-  console.log("test2");
+  const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "google-mail",
-    owner_id,
+    user_id,
   );
-  const { access_token } = findServiceSubscription;
-  console.log("test3");
+  const serviceSubscription = findServiceSubscription;
   const emailContext = {
-    access_token: access_token,
+    access_token: serviceSubscription.data.access_token,
     subject: `New Notification from ${reaction_id}`,
     body: view,
   };
-  console.log("test4");
   // TODO(tim): Implement sending email
   const response = await googleSendEmail(emailContext);
   if (!response) {
