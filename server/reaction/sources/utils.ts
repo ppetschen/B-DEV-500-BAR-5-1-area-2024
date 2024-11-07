@@ -1,7 +1,7 @@
 import process from "node:process";
 import type { HookContext, InternalConfig } from "./types";
 import ejs from "ejs";
-import { googleSendEmail } from "./controllers/sendGoogleMail";
+import { googleCreateDriveFile, googleSendEmail } from "./controllers/sendGoogleMail";
 import { getServiceSubscription } from "./controllers/serviceController";
 
 const HOSTS = {
@@ -54,9 +54,18 @@ const createGoogleMailWebhook = async (
   };
 };
 
+const createGoogleDriveWebhook = async (
+  _context: unknown,
+) => {
+  return {
+    url: "",
+  };
+};
+
 export const createWebHookMap = {
   "discord": createDiscordWebhook,
   "google-mail": createGoogleMailWebhook,
+  "google-drive": createGoogleDriveWebhook,
 } as const;
 
 export const create = async (
@@ -112,16 +121,48 @@ const sendGoogleMail = async (
     subject: `New Notification from ${reaction_id}`,
     body: view,
   };
-  // TODO(tim): Implement sending email
+  
   const response = await googleSendEmail(emailContext);
   if (!response) {
     throw new Error("Failed to send email");
   }
 };
 
+const createGoogleDriveFile = async (
+  { reaction_id, view }: HookContext,
+) => {
+  const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: reaction_id }),
+  });
+
+  if (!findRequest.ok) {
+    throw new Error("Failed to find reaction");
+  }
+
+  const { owner_id: user_id } = await findRequest.json();
+  const findServiceSubscription = await getServiceSubscription(
+    "google-drive",
+    user_id,
+  );
+  
+  const serviceSubscription = findServiceSubscription;
+  const driveContext = {
+    access_token: serviceSubscription.data.access_token,
+    file_name: `New Notification from ${reaction_id}`,
+    file_content: view,
+  };
+  const response = await googleCreateDriveFile(driveContext);
+  if (!response) {
+    throw new Error("Failed to create file");
+  }
+};
+
 const sendWebHookMap = {
   "discord": sendDiscordWebhook,
   "google-mail": sendGoogleMail,
+  "google-drive": createGoogleDriveFile,
 } as const;
 
 export const send = async (

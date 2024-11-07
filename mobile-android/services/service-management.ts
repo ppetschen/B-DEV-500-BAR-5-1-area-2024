@@ -44,3 +44,20 @@ export const isUserSubscribedToService = async (service: string) => {
     );
   }
 };
+
+export const getServicesConnectedInUser = async (): Promise<
+  Array<string> | null
+> => {
+  try {
+    await setAuthorizationHeader();
+    const response = await apiClient.get<{ services: string[] }>(
+      `/service-management/auth/get-services-by-user`,
+    );
+    if (response.status != 200) {
+      throw new Error(`LIST HTTP error! Status: ${response.status}`);
+    }
+    return response.data.services;
+  } catch (error) {
+    throw new Error(`Failed to get services connected to the user: ${error}`);
+  }
+};

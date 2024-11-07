@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 
 const gmail = google.gmail("v1");
+const drive = google.drive("v3");
 
 export const googleSendEmail = async (
   emailContext: { access_token: string; subject: string; body: any },
@@ -42,5 +43,30 @@ export const googleSendEmail = async (
       raw: encodedMessage,
     },
   });
+  if( !res ) {
+    throw new Error("Failed to send email");
+  };
   return res;
+};
+
+export const googleCreateDriveFile = async ( 
+   driveContext: { access_token: string, file_name: string, file_content: string },
+) => {
+  const auth = new google.auth.OAuth2();
+  auth.setCredentials({ access_token: driveContext.access_token });
+  google.options({ auth });
+
+  const fileMetaData = {
+    name: driveContext.file_name,
+  }
+  const media = {
+    mimeType: "text/plain",
+    body: driveContext.file_content,
+  }
+
+  const file = await drive.files.create({
+    requestBody: fileMetaData,
+    media: media,
+  });
+  return file;
 };

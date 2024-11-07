@@ -5,14 +5,14 @@
  ** index - landing page
  */
 
-import { View, SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import { styled } from "nativewind";
 // @ts-ignore - no types for expo-router
 import { useRouter } from "expo-router";
 
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button, Text, Surface } from "react-native-paper";
+import { Button, Surface, Text } from "react-native-paper";
 
 import Constants from "expo-constants";
 

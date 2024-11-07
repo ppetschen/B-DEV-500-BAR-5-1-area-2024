@@ -23,6 +23,7 @@ import { authenticateToService } from "@/services/service-management";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as WebBrowser from "expo-web-browser";
 import * as AuthSession from "expo-auth-session";
+import {ServicesList} from "@/components/ServicesList";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -32,44 +33,7 @@ export default function ServicesPage() {
         null
     );
 
-    const services = [
-        {
-            name: "Google",
-            description: "Google is a search engine",
-            icon: <IconFontAwesome name="google" size={32} color="#fff" />,
-            category: "Productivity",
-        },
-        {
-            name: "GitHub",
-            description: "GitHub is a code hosting platform",
-            icon: <IconFontAwesome name="github" size={32} color="#fff" />,
-            category: "Developer Tools",
-        },
-        {
-            name: "Facebook",
-            description: "Facebook is a social media platform",
-            icon: <IconFontAwesome name="facebook" size={32} color="#fff" />,
-            category: "Advertising",
-        },
-        {
-            name: "Outlook",
-            description: "Outlook is an email service",
-            icon: (
-                <IconMaterialCommunityIcons
-                    name="microsoft-outlook"
-                    size={32}
-                    color="#fff"
-                />
-            ),
-            category: "Productivity",
-        },
-        {
-            name: "Discord",
-            description: "Discord is a communication platform",
-            icon: <IconMaterial name="discord" size={32} color="#fff" />,
-            category: "Communication",
-        },
-    ];
+    const services = ServicesList();
 
     const filteredServices = selectedCategory
         ? services.filter((service) => service.category === selectedCategory)
@@ -93,6 +57,7 @@ export default function ServicesPage() {
                         "Productivity",
                         "Communication",
                         "Developer Tools",
+                        "Live Streaming",
                     ].map((category) => (
                         <Pressable
                             key={category}

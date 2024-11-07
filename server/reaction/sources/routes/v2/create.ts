@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { create, host } from "../../utils";
 
 const schema = z.object({
-  type: z.enum(["discord", "google-mail"]),
+  type: z.enum(["discord", "google-mail", "google-drive"]),
   context: z.unknown(),
   markup: z.string(),
 });

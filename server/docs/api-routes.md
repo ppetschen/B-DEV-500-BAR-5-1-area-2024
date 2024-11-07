@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `cfc6f1a2a3c91cb4ba25b8daa78555b6e086e6e4`.
+> GitHub actions, commit hash `91bfd6e17f4001c51b299f41b237f12b299a99b4`.
 
 ## reaction
 
@@ -26,7 +26,7 @@ POST /reaction/execute/create
 ```ts
 // This route is internal, won't be exposed
 {
-    type: "discord";
+    type: "discord" | "google-mail" | "google-drive";
     context?: unknown;
     markup: string;
 }
@@ -237,7 +237,7 @@ POST /area-composition/compose
         context?: unknown;
     };
     to: {
-        type: "discord";
+        type: "discord" | "google-mail" | "google-drive";
         context?: unknown;
     };
     markup: string;
@@ -618,6 +618,7 @@ POST /reaction/new
     execution_endpoint: string;
     markup: string;
     status: "pending" | "failure" | "success";
+    owner_id: number;
 }
 ```
 
