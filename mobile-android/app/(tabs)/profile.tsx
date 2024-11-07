@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback, useEffect, useState } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, ActivityIndicator } from "react-native";
 import { ChangePasswordModal } from "@components/ChangePasswordModal";
 import {
     Avatar,
@@ -39,22 +39,30 @@ export default function ProfilePage() {
     const [showChangePasswordModal, setShowChangePasswordModal] =
         useState(false);
 
+    const [loadingUser, setLoadingUser] = useState(true);
+    const [loadingServices, setLoadingServices] = useState(true);
+
     const fetchUser = async () => {
+        setLoadingUser(true);
         const fetchedUser = await getUser();
         if (fetchedUser) {
             setUser(fetchedUser);
             setTempUser(fetchedUser);
         }
+        setLoadingUser(false);
     };
 
     const fetchConnectedServices = async () => {
+        setLoadingServices(true);
         const connectedServices = await getServicesConnectedInUser();
         if (connectedServices) {
             const filteredServices = availableServices.filter((service) =>
                 connectedServices.includes(service.name)
             );
             setServices(filteredServices);
+        } else {
         }
+        setLoadingServices(false);
     };
 
     useEffect(() => {
@@ -92,10 +100,6 @@ export default function ProfilePage() {
         setShowChangePasswordModal(true);
     };
 
-    if (!user) {
-        return <Text>Loading...</Text>;
-    }
-
     return (
         <ScrollView
             contentContainerStyle={{
@@ -106,61 +110,78 @@ export default function ProfilePage() {
         >
             <Text
                 variant="headlineLarge"
-                style={{ textAlign: "center", marginBottom: 16 }}
+                style={{
+                    color: "#5A6ACF",
+                    marginBottom: 20,
+                    fontWeight: "bold",
+                    marginTop: 20,
+                    textAlign: "center",
+                }}
             >
                 Profile
             </Text>
             <Card style={{ marginBottom: 16, padding: 16 }}>
-                <View style={{ alignItems: "center", paddingBottom: 16 }}>
+                <Text
+                    variant="titleLarge"
+                    style={{ fontWeight: "bold", marginBottom: 16 }}
+                >
+                    User details
+                </Text>
+                <Divider style={{ marginBottom: 16 }} />
+                {/* <View style={{ alignItems: "center", paddingBottom: 16 }}>
                     <Avatar.Image
                         size={128}
                         source={{ uri: "https://i.pravatar.cc/300" }}
                     />
-                </View>
-                <View>
-                    <TextInput
-                        label="Name"
-                        mode="outlined"
-                        value={tempUser?.first_name || ""}
-                        onChangeText={(value) =>
-                            setTempUser({
-                                ...tempUser,
-                                first_name: value,
-                            } as User)
-                        }
-                        editable={isEditing}
-                        style={{ marginBottom: 8 }}
-                    />
-                    <TextInput
-                        label="Surname"
-                        mode="outlined"
-                        value={tempUser?.last_name || ""}
-                        onChangeText={(value) =>
-                            setTempUser({
-                                ...tempUser,
-                                last_name: value,
-                            } as User)
-                        }
-                        editable={isEditing}
-                        style={{ marginBottom: 8 }}
-                    />
-                    <TextInput
-                        label="Description"
-                        mode="outlined"
-                        value={tempUser?.description || ""}
-                        onChangeText={(value) =>
-                            setTempUser({
-                                ...tempUser,
-                                description: value,
-                            } as User)
-                        }
-                        multiline
-                        editable={isEditing}
-                        style={{ marginBottom: 8 }}
-                    />
-                </View>
+                </View> */}
+                {loadingUser ? (
+                    <ActivityIndicator size="large" color="#5A6ACF" />
+                ) : (
+                    <View>
+                        <TextInput
+                            label="Name"
+                            mode="outlined"
+                            value={tempUser?.first_name || ""}
+                            onChangeText={(value) =>
+                                setTempUser({
+                                    ...tempUser,
+                                    first_name: value,
+                                } as User)
+                            }
+                            editable={isEditing}
+                            style={{ marginBottom: 8 }}
+                        />
+                        <TextInput
+                            label="Surname"
+                            mode="outlined"
+                            value={tempUser?.last_name || ""}
+                            onChangeText={(value) =>
+                                setTempUser({
+                                    ...tempUser,
+                                    last_name: value,
+                                } as User)
+                            }
+                            editable={isEditing}
+                            style={{ marginBottom: 8 }}
+                        />
+                        <TextInput
+                            label="Description"
+                            mode="outlined"
+                            value={tempUser?.description || ""}
+                            onChangeText={(value) =>
+                                setTempUser({
+                                    ...tempUser,
+                                    description: value,
+                                } as User)
+                            }
+                            multiline
+                            editable={isEditing}
+                            style={{ marginBottom: 8 }}
+                        />
+                    </View>
+                )}
                 <Divider style={{ marginVertical: 8 }} />
-                <Text variant="bodyLarge">Email: {user.email}</Text>
+                <Text variant="bodyLarge">Email: {user?.email}</Text>
 
                 {isEditing ? (
                     <View
@@ -211,7 +232,9 @@ export default function ProfilePage() {
                     Added Services
                 </Text>
                 <Divider style={{ marginBottom: 16 }} />
-                {services.length > 0 ? (
+                {loadingServices ? (
+                    <ActivityIndicator size="large" color="#5A6ACF" />
+                ) : services.length > 0 ? (
                     services.map((service) => (
                         <List.Item
                             key={service.name}
@@ -236,7 +259,15 @@ export default function ProfilePage() {
                         />
                     ))
                 ) : (
-                    <Text>No services connected.</Text>
+                    <Text
+                        variant="titleMedium"
+                        style={{
+                            textAlign: "center",
+                            marginTop: 20,
+                        }}
+                    >
+                        No Services connected
+                    </Text>
                 )}
             </Card>
             <ChangePasswordModal

@@ -171,6 +171,8 @@ const Dashboard = () => {
                         color: "#5A6ACF",
                         marginBottom: 20,
                         fontWeight: "bold",
+                        marginTop: 20,
+                        textAlign: "center",
                     }}
                 >
                     Metrics Overview
@@ -237,6 +239,8 @@ const Dashboard = () => {
                         color: "#5A6ACF",
                         marginBottom: 20,
                         fontWeight: "bold",
+                        marginTop: 20,
+                        textAlign: "center",
                     }}
                 >
                     Recent Activities
@@ -247,7 +251,15 @@ const Dashboard = () => {
                 ) : (
                     <View>
                         {areas.length === 0 ? (
-                            <Text>No activities found</Text>
+                            <Text
+                                variant="titleMedium"
+                                style={{
+                                    textAlign: "center",
+                                    marginTop: 20,
+                                }}
+                            >
+                                No activities found
+                            </Text>
                         ) : (
                             areas.map((activity, index) =>
                                 AreaInListCard(

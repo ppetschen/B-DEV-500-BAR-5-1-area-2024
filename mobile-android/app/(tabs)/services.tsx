@@ -57,6 +57,7 @@ export default function ServicesPage() {
                         "Productivity",
                         "Communication",
                         "Developer Tools",
+                        "Live Streaming",
                     ].map((category) => (
                         <Pressable
                             key={category}

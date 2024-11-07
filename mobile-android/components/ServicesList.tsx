@@ -62,13 +62,13 @@ export function ServicesList(): {
         {
             name: "Google-Mail",
             description: "Google Mail is an email service",
-            icon: <IconFontAwesome name="google" size={32} color="#fff" />,
+            icon: <IconMaterialCommunityIcons name="gmail" size={32} color="#fff" />,
             category: "Productivity",
         },
         {
             name: "Google-Drive",
             description: "Google drive is a cloud storage service",
-            icon: <IconFontAwesome name="google" size={32} color="#fff" />,
+            icon: <IconMaterialCommunityIcons name="google-drive" size={32} color="#fff" />,
             category: "Productivity",
         },
         {
