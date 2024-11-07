@@ -60,7 +60,6 @@ const route: Route<typeof schema> = {
         status: 403,
       });
     }
-
     try {
       await create(type, {
         ...(typeof context === "object" ? context : {}),
@@ -73,7 +72,6 @@ const route: Route<typeof schema> = {
     } catch (e) {
       return new Response("Failed to create webhook", { status: 500 });
     }
-
     const insertRequest = await fetch(
       host("DATABASE", "/action/new"),
       {
@@ -87,13 +85,11 @@ const route: Route<typeof schema> = {
         }),
       },
     );
-
     if (!insertRequest.ok) {
       return new Response("Failed to save to database", { status: 500 });
     }
 
     const { id } = await insertRequest.json();
-
     return new Response(JSON.stringify({ id }), { status: 201 });
   },
 };

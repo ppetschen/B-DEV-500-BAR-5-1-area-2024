@@ -38,11 +38,9 @@ const createGithubIssueWebhook = async (
   const owner = getKey<string>(context, "owner");
   const repo = getKey<string>(context, "repo");
   const events = getKey<string[]>(context, "events");
-
   if (!events.length) {
     throw new Error("No events provided, required at least one");
   }
-
   await client.repos.createWebhook({
     owner,
     repo,

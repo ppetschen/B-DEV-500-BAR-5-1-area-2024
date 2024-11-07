@@ -8,7 +8,7 @@ const schema = z.object({
     context: z.unknown(),
   }),
   to: z.object({
-    type: z.enum(["discord"]),
+    type: z.enum(["discord", "google-mail", "google-drive"]),
     context: z.unknown(),
   }),
   markup: z.string(),
@@ -30,13 +30,11 @@ const route: Route<typeof schema> = {
         markup,
       }),
     });
-
     if (!reactionRequest.ok) {
       return new Response("Failed to create reaction", { status: 500 });
     }
 
     const { id: reactionId } = await reactionRequest.json();
-
     const actionRequest = await fetch(host("ACTION", "/create"), {
       headers: request.headers,
       method: "POST",
