@@ -24,12 +24,12 @@ CREATE TABLE IF NOT EXISTS actions (
 
 CREATE TABLE IF NOT EXISTS reactions (
     id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
-    -- action_id UUID REFERENCES actions(id) ON DELETE CASCADE,
     markup TEXT,
     service_name VARCHAR(255),
     execution_endpoint VARCHAR(500),
     status VARCHAR(50) NOT NULL DEFAULT 'pending',
     executed_at TIMESTAMP DEFAULT NULL
+    owner_id INT REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS service_subscriptions (
