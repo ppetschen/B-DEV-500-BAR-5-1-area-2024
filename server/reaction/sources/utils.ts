@@ -4,7 +4,6 @@ import ejs from "ejs";
 import { googleSendEmail } from "./controllers/sendGoogleMail";
 import { getServiceSubscription } from "./controllers/serviceController";
 
-
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
   SERVICE_MANAGEMENT: process.env["SERVICE_MANAGEMENT_HOST"],
@@ -97,18 +96,21 @@ const sendGoogleMail = async (
 
   const { owner_id } = await findRequest.json();
   console.log("test2");
-  const findServiceSubscription = await getServiceSubscription("google-mail", owner_id);
+  const findServiceSubscription = await getServiceSubscription(
+    "google-mail",
+    owner_id,
+  );
   const { access_token } = findServiceSubscription;
   console.log("test3");
   const emailContext = {
-    access_token: access_token, 
+    access_token: access_token,
     subject: `New Notification from ${reaction_id}`,
     body: view,
-  }
+  };
   console.log("test4");
   // TODO(tim): Implement sending email
   const response = await googleSendEmail(emailContext);
-  if(!response) {
+  if (!response) {
     throw new Error("Failed to send email");
   }
   console.log("Complete, you should have receieved an email");
