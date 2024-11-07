@@ -51,7 +51,7 @@ const createGoogleMailWebhook = async (
 ) => {
   return {
     url: "",
-  }
+  };
 };
 
 export const createWebHookMap = {

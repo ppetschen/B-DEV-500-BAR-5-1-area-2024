@@ -43,7 +43,8 @@ const getGmailStrategy = () => {
   strategy.redirect_uri = process.env.GOOGLE_MAIL_REDIRECT_URI!,
     strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
     strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
-    strategy.scope += "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly";
+    strategy.scope +=
+      "https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/gmail.readonly";
   return strategy;
 };
 

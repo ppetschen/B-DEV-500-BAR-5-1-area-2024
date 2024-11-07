@@ -44,7 +44,7 @@ const route: Route<typeof schema> = {
         reaction_id: reactionId,
       }),
     });
-    
+
     if (!actionRequest.ok) {
       return new Response("Failed to create action", { status: 500 });
     }

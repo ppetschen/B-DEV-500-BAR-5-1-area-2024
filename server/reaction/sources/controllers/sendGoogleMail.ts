@@ -9,7 +9,9 @@ export const googleSendEmail = async (
   auth.setCredentials({ access_token: emailContext.access_token });
   google.options({ auth });
 
-  const utf8Subject = `=?utf-8?B?${Buffer.from(emailContext.subject).toString("base64")}?=`;
+  const utf8Subject = `=?utf-8?B?${
+    Buffer.from(emailContext.subject).toString("base64")
+  }?=`;
 
   const profile = await gmail.users.getProfile({ userId: "me" });
   const userEmail = profile.data.emailAddress;
