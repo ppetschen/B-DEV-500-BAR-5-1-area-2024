@@ -74,6 +74,16 @@ const sendDiscordWebhook = async (content: string, url: string) => {
     throw new Error("Failed to send webhook");
   }
 };
+/**
+ * Since this is not a webhook, we dont need the createWebHook function? 
+ * Also is there a need to put this in either the createWebHookMap or sendWebHookMap?
+ */
+const sendGoogleMail = async (content: string, url: string) => {
+  // Here i would need a TO, SUBJECT and a BODY for the email
+  // I would also need the access_token to this function.
+  // Everything else will be the same for all emails sent
+  // Can you guide me on how to implement this for this architecture
+};
 
 const sendWebHookMap = {
   "discord": sendDiscordWebhook,
