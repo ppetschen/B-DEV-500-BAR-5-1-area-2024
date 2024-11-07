@@ -62,13 +62,25 @@ export function ServicesList(): {
         {
             name: "Google-Mail",
             description: "Google Mail is an email service",
-            icon: <IconMaterialCommunityIcons name="gmail" size={32} color="#fff" />,
+            icon: (
+                <IconMaterialCommunityIcons
+                    name="gmail"
+                    size={32}
+                    color="#fff"
+                />
+            ),
             category: "Productivity",
         },
         {
             name: "Google-Drive",
             description: "Google drive is a cloud storage service",
-            icon: <IconMaterialCommunityIcons name="google-drive" size={32} color="#fff" />,
+            icon: (
+                <IconMaterialCommunityIcons
+                    name="google-drive"
+                    size={32}
+                    color="#fff"
+                />
+            ),
             category: "Productivity",
         },
         {
@@ -77,17 +89,17 @@ export function ServicesList(): {
             icon: <IconFontAwesome name="google" size={32} color="#fff" />,
             category: "Productivity",
         },
-        {
-            name: "Notion",
-            description: "Notion is a versatile workspace tool",
-            icon: (
-                <IconMaterialCommunityIcons
-                    name="notion"
-                    size={32}
-                    color="#fff"
-                />
-            ),
-            category: "Productivity",
-        },
+        // {
+        //     name: "Notion",
+        //     description: "Notion is a versatile workspace tool",
+        //     icon: (
+        //         <IconMaterialCommunityIcons
+        //             name="notion"
+        //             size={32}
+        //             color="#fff"
+        //         />
+        //     ),
+        //     category: "Productivity",
+        // },
     ];
 }
