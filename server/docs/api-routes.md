@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `2707397c2c1bdc7e9f30d3c547d6a95f4560b1ab`.
+> GitHub actions, commit hash `cfc6f1a2a3c91cb4ba25b8daa78555b6e086e6e4`.
 
 ## reaction
 
@@ -30,6 +30,14 @@ POST /reaction/execute/create
     context?: unknown;
     markup: string;
 }
+```
+
+```http
+GET /reaction/execute/list
+```
+```ts
+// This route is internal, won't be exposed
+any
 ```
 
 ```http
@@ -152,6 +160,14 @@ POST /create
     context?: unknown;
     reaction_id: string;
 }
+```
+
+```http
+GET /list
+```
+```ts
+// This route is internal, won't be exposed
+any
 ```
 
 
