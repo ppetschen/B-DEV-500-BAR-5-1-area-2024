@@ -30,7 +30,6 @@ function getKey<T>(
 const createGithubIssueWebhook = async (
   context: unknown,
 ) => {
-  console.log("createGithubIssueWebhook");
   const { access_token: auth, reaction_id } = getKey<InternalConfig>(
     context,
     "_internal",
@@ -42,7 +41,6 @@ const createGithubIssueWebhook = async (
   if (!events.length) {
     throw new Error("No events provided, required at least one");
   }
-  console.log("PUBLIC_URL", process.env["PUBLIC_URL"]);
   await client.repos.createWebhook({
     owner,
     repo,
