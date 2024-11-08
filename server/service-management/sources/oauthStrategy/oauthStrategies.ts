@@ -88,7 +88,7 @@ const getDiscordStrategy = () => {
     algorithm: "oauth2",
     client_id: process.env.DISCORD_CLIENT_ID!,
     client_secret: process.env.DISCORD_CLIENT_SECRET!,
-    scope: "identify email webhook.incoming",
+    scope: "identify email webhook.incoming guilds",
     userinfo_endpoint: "https://discord.com/api/users/@me",
     token_endpoint: "https://discord.com/api/oauth2/token",
     client_auth_method: "",

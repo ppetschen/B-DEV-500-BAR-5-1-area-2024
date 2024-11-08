@@ -7,13 +7,13 @@
 
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
-import { login } from "@/services/user-management";
+import { login, oauthUser } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native";
 
 export default function LoginPage() {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("area1.epitech@gmail.com");
+    const [password, setPassword] = useState<string>("ThisIsAPassword123");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -34,7 +34,8 @@ export default function LoginPage() {
             valid = false;
         }
         if (valid) {
-            const response = await login({ email, password }, "credentials");
+            // const response = await login({ email, password }, "credentials");
+            const response = await oauthUser("google");
             if (response) {
                 router.push("/dashboard");
             } else {
