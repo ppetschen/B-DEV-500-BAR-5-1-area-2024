@@ -34,8 +34,8 @@ export default function LoginPage() {
             valid = false;
         }
         if (valid) {
-            // const response = await login({ email, password }, "credentials");
-            const response = await oauthUser("google");
+            const response = await login({ email, password }, "credentials");
+            // const response = await oauthUser("google");
             if (response) {
                 router.push("/dashboard");
             } else {

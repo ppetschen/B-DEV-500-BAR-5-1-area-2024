@@ -88,10 +88,8 @@ const route: Route<typeof schema> = {
 };
 
 const responseToClient = (client_type: string, token: string) => {
-  console.log("Client type", client_type);
-  console.log("Token", token);
   if (client_type === "mobile") {
-    const PUBLIC_URL = "https://ladybird-immortal-anteater.ngrok-free.app";
+    const PUBLIC_URL = process.env["PUBLIC_URL"];
     const frontend_redirect_url = `${PUBLIC_URL}/user-management/auth/redirect?token=${token}`;
     console.log("Redirecting to", frontend_redirect_url);
     return Response.redirect(frontend_redirect_url);

@@ -6,11 +6,10 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiClient, setAuthorizationHeader } from "./api";
+import { apiClient, base_url, setAuthorizationHeader } from "./api";
 import { User } from "./types";
 import * as WebBrowser from "expo-web-browser";
 import { PASSWORD, TOKEN } from "@/asyncStorageLibrary/basicRequestVars";
-import { Linking } from "react-native";
 
 export const login = async (
     data: { email: string; password?: string },
@@ -101,9 +100,8 @@ export const deleteUser = async (): Promise<boolean> => {
 export const oauthUser = async (service: string) => {
     try {
         await setAuthorizationHeader();
-        const redirectUri = `https://ladybird-immortal-anteater.ngrok-free.app/user-management/auth/redirect`;
-
-        const response = await apiClient.get(`/user-management/auth?service=${service}`);
+        const redirectUri = `${base_url}/user-management/auth/redirect`;
+        const response = await apiClient.get(`${base_url}/user-management/auth?service=${service}`);
         if (!response) {
             return false;
         }
