@@ -6,11 +6,11 @@
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiClient, setAuthorizationHeader } from "./api";
-import { User, UserAndServices } from "./types";
+import { apiClient, base_url, setAuthorizationHeader } from "./api";
+import { User } from "./types";
+import * as WebBrowser from "expo-web-browser";
 import { PASSWORD, TOKEN } from "@/asyncStorageLibrary/basicRequestVars";
 
-// Checked WORKING
 export const login = async (
     data: { email: string; password?: string },
     method: string
@@ -21,8 +21,6 @@ export const login = async (
             data
         );
         AsyncStorage.setItem(TOKEN, response.data.token);
-        AsyncStorage.setItem(PASSWORD, data.password || "");
-        console.log("PASSWORD: ", data.password || "HELLO WORLD");
         return true;
     } catch (error) {
         console.log("Failed to login: ", error);
@@ -30,7 +28,6 @@ export const login = async (
     }
 };
 
-// Checked WORKING
 export const register = async (
     data: { email: string; password?: string },
     method: string
@@ -49,7 +46,6 @@ export const register = async (
     }
 };
 
-// Checked WORKING
 export const getUser = async (): Promise<User | null> => {
     try {
         await setAuthorizationHeader();
@@ -87,7 +83,6 @@ export const updateUser = async (data: {
     }
 };
 
-// Checked WORKING
 export const deleteUser = async (): Promise<boolean> => {
     try {
         await setAuthorizationHeader();
@@ -99,6 +94,36 @@ export const deleteUser = async (): Promise<boolean> => {
         return true;
     } catch (error) {
         console.log("Failed to delete user: ", error);
+        return false;
+    }
+};
+
+export const oauthUser = async (service: string) => {
+    try {
+        await setAuthorizationHeader();
+        const redirectUri = `${base_url}/user-management/auth/redirect`;
+        const response = await apiClient.get(`${base_url}/user-management/auth?service=${service}`);
+        if (!response) {
+            return false;
+        }
+
+        if (typeof response.data !== "string") {
+            throw new Error(`Expected a string, got ${typeof response.data}`);
+        }
+
+        const url = response.data;
+        const result = await WebBrowser.openAuthSessionAsync(url, redirectUri);
+
+        if (result.type === 'success' && result.url) {
+            console.log('OAuth successful:', result.url);
+            return true;
+        } else {
+            console.error('OAuth failed with unexpected result:', result);
+            return false;
+        }
+
+    } catch (error) {
+        console.error('OAuth error:', error);
         return false;
     }
 };
