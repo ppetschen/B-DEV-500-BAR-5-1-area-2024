@@ -15,11 +15,17 @@ git checkout staging
 git pull origin staging
 ```
 
-2. Fill in the `oauth2` configuration file.
+2. Fill in the `oauth2` configuration files.
 
 ```sh
 cp server/service-management/.env.example server/service-management/.env
 vim server/service-management/.env
+
+cp server/user-management/.env.example server/user-management/.env
+vim server/user-management/.env
+
+cp server/action/.env.example server/action/.env
+vim server/action/.env
 ```
 
 3. Fill in the `frontend` configuration file.
@@ -28,19 +34,31 @@ vim server/service-management/.env
 cp www/.env.example www/.env
 ```
 
-4. Initialize the server microservices.
+4. Create a tunnel using
+   [`cloudflared`](https://github.com/cloudflare/cloudflared).
 
 ```sh
-docker compose -f server/deployment/docker-compose.yml up --build -d
+cloudflared tunnel --url localhost:8000
+
+2024-11-05T14:53:02Z INF +--------------------------------------------------------------------------------------------+
+2024-11-05T14:53:02Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2024-11-05T14:53:02Z INF |  https://your-unique-url.trycloudflare.com                                                 |
+2024-11-05T14:53:02Z INF +--------------------------------------------------------------------------------------------+
 ```
 
-5. Initialize the client.
+5. Initialize the server microservices.
+
+```sh
+PUBLIC_URL=https://your-unique-url.trycloudflare.com docker compose -f server/deployment/docker-compose.yml up --build -d
+```
+
+6. Initialize the client.
 
 ```sh
 docker compose -f www/docker-compose.yml up --build -d
 ```
 
-6. Access the client at `http://localhost:5173`.
+7. Access the client at `http://localhost:5173`.
 
 ```sh
 open http://localhost:5173

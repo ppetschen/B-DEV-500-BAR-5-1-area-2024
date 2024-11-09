@@ -1,96 +1,104 @@
 /*
  ** EPITECH PROJECT, 2024
- ** safeArea
+ ** Area
  ** File description:
  ** user-management
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TOKEN } from "../asyncStorageLibrary/basicRequestVars";
+import { apiClient, setAuthorizationHeader } from "./api";
+import { User, UserAndServices } from "./types";
+import { PASSWORD, TOKEN } from "@/asyncStorageLibrary/basicRequestVars";
 
-// Define a key for AsyncStorage
-// const TOKEN = "token";
-
-// services/api.ts
-
-export interface RegisterAndLoginResponse {
-    id: number;
-    email: string;
-    password_hash: string;
-    created_at: string;
-    updated_at: string;
-    last_login: string | null;
-    is_active: boolean;
-    token: string;
-}
-
-interface RegisterRequest {
-    email: string;
-    password: string;
-    method: "third-party" | "credentials";
-}
-
-export async function register({
-    email,
-    password,
-    method,
-}: RegisterRequest): Promise<RegisterAndLoginResponse | null> {
-    const baseUrl: string = (await AsyncStorage.getItem("api_base_url"))
-        ? (await AsyncStorage.getItem("api_base_url")) +
-          `/user-management/register?method=${method}`
-        : `http://localhost:8000/user-management/register?method=${method}`;
-    console.log("BASE_URL:", baseUrl);
+// Checked WORKING
+export const login = async (
+    data: { email: string; password?: string },
+    method: string
+): Promise<boolean> => {
     try {
-        const response = await fetch(`${baseUrl}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data: RegisterAndLoginResponse = await response.json();
-
-        await AsyncStorage.setItem(TOKEN, data.token);
-        return data;
+        const response = await apiClient.post<User>(
+            `/user-management/login?method=${method}`,
+            data
+        );
+        AsyncStorage.setItem(TOKEN, response.data.token);
+        AsyncStorage.setItem(PASSWORD, data.password || "");
+        console.log("PASSWORD: ", data.password || "HELLO WORLD");
+        return true;
     } catch (error) {
-        console.error("Failed to register:", error);
+        console.log("Failed to login: ", error);
+        return false;
+    }
+};
+
+// Checked WORKING
+export const register = async (
+    data: { email: string; password?: string },
+    method: string
+): Promise<boolean> => {
+    try {
+        const response = await apiClient.post<User>(
+            `/user-management/register?method=${method}`,
+            data
+        );
+        AsyncStorage.setItem("token", response.data.token);
+        AsyncStorage.setItem(PASSWORD, data.password || "");
+        return true;
+    } catch (error) {
+        console.log("Failed to register: ", error);
+        return false;
+    }
+};
+
+// Checked WORKING
+export const getUser = async (): Promise<User | null> => {
+    try {
+        await setAuthorizationHeader();
+        const response = await apiClient.get<User>(
+            `/user-management/get-user`
+        );
+        // status 200 is OK
+        if (response.status != 200) {
+            throw new Error(`LIST HTTP error! Status: ${response.status}`);
+        }
+        console.log("USER: ", response.data);
+        return response.data;
+    } catch (error) {
+        console.log("Failed to get user: ", error);
         return null;
     }
-}
+};
 
-export async function login({
-    email,
-    password,
-    method,
-}: RegisterRequest): Promise<RegisterAndLoginResponse | null> {
-    const baseUrl: string = (await AsyncStorage.getItem("api_base_url"))
-        ? (await AsyncStorage.getItem("api_base_url")) +
-          `/user-management/login?method=${method}`
-        : `http://localhost:8000/user-management/login?method=${method}`;
+export const updateUser = async (data: {
+    new_password?: string;
+    first_name?: string;
+    last_name?: string;
+    description?: string;
+}): Promise<boolean> => {
     try {
-        const response = await fetch(`${baseUrl}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data: RegisterAndLoginResponse = await response.json();
-
-        await AsyncStorage.setItem(TOKEN, data.token);
-        return data;
+        await setAuthorizationHeader();
+        const response = await apiClient.put<User>(
+            `/user-management/update-user`,
+            data
+        );
+        return response.status === 200;
     } catch (error) {
-        console.error("Failed to login:", error);
-        return null;
+        console.log("Failed to update user: ", error);
+        return false;
     }
-}
+};
+
+// Checked WORKING
+export const deleteUser = async (): Promise<boolean> => {
+    try {
+        await setAuthorizationHeader();
+        const response = await apiClient.delete(`/user-management/delete-user`);
+        if (!response) {
+            return false;
+        }
+        AsyncStorage.removeItem("token");
+        return true;
+    } catch (error) {
+        console.log("Failed to delete user: ", error);
+        return false;
+    }
+};

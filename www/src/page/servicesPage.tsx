@@ -1,80 +1,11 @@
 import React, { useState } from "react";
 import { Box, Card, Chip, Grid, IconButton, Typography } from "@mui/material";
-import {
-  FaDiscord,
-  FaFacebook,
-  FaGithub,
-  FaGoogle,
-  FaTwitch,
-} from "react-icons/fa";
-import {
-  SiGmail,
-  SiGooglecalendar,
-  SiGoogledrive,
-  SiMicrosoftoutlook,
-} from "react-icons/si";
 import Tooltip from "@mui/material/Tooltip";
 import { authenticateToService } from "@/services/serviceManagement";
+import { services } from "@/components/layout/ServiceList";
 
 const ServicesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const services = [
-    {
-      name: "Google",
-      description: "Google is a search engine",
-      icon: FaGoogle,
-      category: "Productivity",
-    },
-    {
-      name: "GitHub",
-      description: "GitHub is a code hosting platform",
-      icon: FaGithub,
-      category: "Developer Tools",
-    },
-    {
-      name: "Facebook",
-      description: "Facebook is a social media platform",
-      icon: FaFacebook,
-      category: "Advertising",
-    },
-    {
-      name: "Outlook",
-      description: "Outlook is an email service",
-      icon: SiMicrosoftoutlook,
-      category: "Productivity",
-    },
-    {
-      name: "Discord",
-      description: "Discord is a communication platform",
-      icon: FaDiscord,
-      category: "Communication",
-    },
-    {
-      name: "Twitch",
-      description: "Twitch is a live-stream platform",
-      icon: FaTwitch,
-      category: "Live-streaming",
-    },
-    {
-      name: "Google-Mail",
-      description: "Google mail is an email service",
-      icon: SiGmail,
-      category: "Productivity",
-    },
-    {
-      name: "Google-Drive",
-      description: "Google drive is a cloud storage service",
-      icon: SiGoogledrive,
-      category: "Productivity",
-    },
-    {
-      name: "Google-Calendar",
-      description: "Google calendar is a calendar service",
-      icon: SiGooglecalendar,
-      category: "Productivity",
-    },
-  ];
 
   const handleServiceClick = (serviceName: string) => {
     const service = serviceName.toLowerCase();
@@ -86,15 +17,15 @@ const ServicesPage: React.FC = () => {
     : services;
 
   return (
-    <Box sx={{ p: 4, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
+    <Box sx={{ p: 4, pt: 6, bgcolor: "#F7F7F9", minHeight: "100vh" }}>
       <Typography
         variant="h4"
-        sx={{ fontWeight: "bold", color: "#5A6ACF", mb: 6 }}
+        sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 5 }}
       >
         SERVICES
       </Typography>
 
-      <Box sx={{ mb: 2 }}>
+      <Box sx={{ mb: 4 }}>
         {[
           "All",
           "Advertising",
@@ -106,7 +37,12 @@ const ServicesPage: React.FC = () => {
           <Chip
             key={category}
             label={category}
-            variant={selectedCategory === category ? "filled" : "outlined"}
+            variant={
+              selectedCategory === category ||
+              (category === "All" && selectedCategory === null)
+                ? "filled"
+                : "outlined"
+            }
             onClick={() =>
               setSelectedCategory(category === "All" ? null : category)
             }
@@ -114,13 +50,28 @@ const ServicesPage: React.FC = () => {
               mr: 1,
               transition: "background-color 0.3s, color 0.3s",
               cursor: "pointer",
-              bgcolor: selectedCategory === category
-                ? "#5A6ACF"
-                : "transparent",
-              color: selectedCategory === category ? "#fff" : "#5A6ACF",
+              bgcolor:
+                selectedCategory === category ||
+                (category === "All" && selectedCategory === null)
+                  ? "#5c1ed6"
+                  : "transparent",
+              color:
+                selectedCategory === category ||
+                (category === "All" && selectedCategory === null)
+                  ? "#fff"
+                  : "#5c1ed6",
+              className: "lexend-deca-bold",
               "&:hover": {
-                bgcolor: selectedCategory !== category ? "#E0E7FF" : "#5A6ACF",
-                color: selectedCategory !== category ? "#5A6ACF" : "#fff",
+                bgcolor:
+                  selectedCategory !== category &&
+                  !(category === "All" && selectedCategory === null)
+                    ? "#E0E7FF"
+                    : "#5c1ed6",
+                color:
+                  selectedCategory !== category &&
+                  !(category === "All" && selectedCategory === null)
+                    ? "#5c1ed6"
+                    : "#fff",
               },
             }}
           />
@@ -150,14 +101,21 @@ const ServicesPage: React.FC = () => {
             >
               <Tooltip title={service.name} arrow>
                 <IconButton
-                  sx={{ bgcolor: "#5A6ACF", color: "#fff", p: 2, mb: 2 }}
-                  onClick={() =>
-                    handleServiceClick(service.name)}
+                  sx={{
+                    bgcolor: "#5c1ed6",
+                    color: "#fff",
+                    p: 2,
+                    mb: 2,
+                    transition: "background-color 0.3s",
+                    "&:hover": {
+                      bgcolor: "#7901f1",
+                    },
+                  }}
+                  onClick={() => handleServiceClick(service.name)}
                 >
                   {React.createElement(service.icon, { size: 32 })}
                 </IconButton>
               </Tooltip>
-
               <Typography
                 variant="h6"
                 sx={{ color: "#273240", fontWeight: "bold", mb: 1 }}
@@ -176,3 +134,5 @@ const ServicesPage: React.FC = () => {
 };
 
 export default ServicesPage;
+
+//5c1ed6

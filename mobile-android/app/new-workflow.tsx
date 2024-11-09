@@ -12,7 +12,7 @@ import { Appbar, SegmentedButtons, Button, Snackbar } from "react-native-paper";
 import { StyleSheet } from "react-native";
 import { styled } from "nativewind";
 import { WorkflowDetails } from "@components/workflowDetails";
-import DropdownSelector from "@components/DropdownSelector"; // Import the new component
+import DropdownSelector from "@components/DropdownSelector";
 
 const StyledView = styled(View);
 

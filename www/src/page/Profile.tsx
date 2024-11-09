@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -8,38 +8,87 @@ import {
   IconButton,
   TextField,
   Button,
+  Alert,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { getUser, updateUser } from "@/services/userManagement";
+import DeleteAccountDialog from "../components/layout/DeleteAccount";
+
+type UserData = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  description: string;
+};
 
 const ProfilePage: React.FC = () => {
-  const [userData, setUserData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "JohnDoe@gmail.com",
-    avatar: "/static/images/avatar/1.jpg",
-    bio: "Software Engineer with a passion for building web applications. Loves coding and learning new technologies. Always excited to tackle new challenges and explore innovative solutions in the tech world.",
+  const [userData, setUserData] = useState<UserData>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    description: "",
   });
-
   const [isEditing, setIsEditing] = useState(false);
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
-  const [editBio, setEditBio] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const handleSaveProfile = () => {
-    setUserData((prev) => ({
-      ...prev,
-      firstName: editFirstName,
-      lastName: editLastName,
-      bio: editBio,
-    }));
-    setIsEditing(false);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = await getUser();
+      if (user && typeof user !== "boolean") {
+        setUserData({
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          description: user.description,
+        });
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const handleSaveProfile = async () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+    if (!editFirstName || !editLastName) {
+      setErrorMessage("Name and Surname are required.");
+      return;
+    }
+    const updatedUser = await updateUser({
+      first_name: editFirstName,
+      last_name: editLastName,
+      description: editDescription,
+    });
+
+    if (updatedUser && typeof updatedUser !== "boolean") {
+      setUserData({
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+        email: updatedUser.email,
+        description: updatedUser.description,
+      });
+      setIsEditing(false);
+      setSuccessMessage("Profile updated successfully!");
+    } else {
+      setErrorMessage("Failed to update profile.");
+    }
+  };
+
+  const getInitials = (firstLetterName: string, lastLetterName: string) => {
+    const firstInitial = firstLetterName ? firstLetterName.charAt(0) : "";
+    const lastInitial = lastLetterName ? lastLetterName.charAt(0) : "";
+    return `${firstInitial}${lastInitial}`.toUpperCase();
   };
 
   return (
     <Box sx={{ p: 4, bgcolor: "#F5F7FA", minHeight: "100vh" }}>
       <Typography
-      variant="h4"
-      sx={{ fontWeight: "bold", color: "#5A6ACF", mb: 6 }}
+        variant="h4"
+        sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 4 }}
       >
         PROFILE INFORMATION
       </Typography>
@@ -55,10 +104,10 @@ const ProfilePage: React.FC = () => {
         }}
       >
         <Avatar
-          alt={`${userData.firstName} ${userData.lastName}`}
-          src={userData.avatar}
-          sx={{ width: 90, height: 90, mr: 3, border: "1px solid #5A6ACF" }}
-        />
+          sx={{ width: 90, height: 90, mr: 3, border: "1px solid #5c1ed6" }}
+        >
+          {getInitials(userData.first_name, userData.last_name)}
+        </Avatar>
         <Box sx={{ flexGrow: 1 }}>
           {isEditing ? (
             <>
@@ -70,6 +119,7 @@ const ProfilePage: React.FC = () => {
                 value={editFirstName}
                 onChange={(e) => setEditFirstName(e.target.value)}
                 sx={{ mb: 1 }}
+                required
               />
               <TextField
                 margin="dense"
@@ -79,6 +129,7 @@ const ProfilePage: React.FC = () => {
                 value={editLastName}
                 onChange={(e) => setEditLastName(e.target.value)}
                 sx={{ mb: 1 }}
+                required
               />
             </>
           ) : (
@@ -87,18 +138,18 @@ const ProfilePage: React.FC = () => {
                 variant="h5"
                 sx={{ fontWeight: "bold", color: "#333", mr: 1 }}
               >
-                {`${userData.firstName} ${userData.lastName}`}
+                {`${userData.first_name} ${userData.last_name}`}
               </Typography>
               <IconButton
                 size="small"
                 onClick={() => {
                   setIsEditing(true);
-                  setEditFirstName(userData.firstName);
-                  setEditLastName(userData.lastName);
-                  setEditBio(userData.bio);
+                  setEditFirstName(userData.first_name);
+                  setEditLastName(userData.last_name);
+                  setEditDescription(userData.description);
                 }}
               >
-                <EditIcon color="primary" />
+                <EditIcon sx={{ color: "#7901f1" }} />
               </IconButton>
             </Box>
           )}
@@ -108,7 +159,6 @@ const ProfilePage: React.FC = () => {
         </Box>
       </Box>
       <Divider sx={{ mb: 4 }} />
-
       <Card
         sx={{
           p: 3,
@@ -122,30 +172,30 @@ const ProfilePage: React.FC = () => {
           variant="h6"
           sx={{ fontWeight: "bold", color: "#333", mb: 1 }}
         >
-          Bio
+          Description
         </Typography>
         {isEditing ? (
           <>
             <TextField
               margin="dense"
-              label="Bio"
+              label="Description"
               multiline
               rows={4}
               fullWidth
               variant="outlined"
-              value={editBio}
-              onChange={(e) => setEditBio(e.target.value)}
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
               sx={{ mb: 2 }}
             />
             <Button
               onClick={handleSaveProfile}
               variant="contained"
               sx={{
-                bgcolor: "#5A6ACF",
+                bgcolor: "#5c1ed6",
                 color: "#FFFFFF",
                 "&:hover": {
                   bgcolor: "#EDEEF1",
-                  color: "#5A6ACF",
+                  color: "#5c1ed6",
                 },
               }}
             >
@@ -154,10 +204,34 @@ const ProfilePage: React.FC = () => {
           </>
         ) : (
           <Typography variant="body2" color="textSecondary">
-            {userData.bio}
+            {userData.description}
           </Typography>
         )}
+        {errorMessage && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
+        {successMessage && (
+          <Alert severity="success" sx={{ mt: 2 }}>
+            {successMessage}
+          </Alert>
+        )}
       </Card>
+
+      <Button
+        onClick={() => setOpenDialog(true)}
+        variant="contained"
+        color="error"
+        sx={{ mt: 2 }}
+      >
+        Delete Account
+      </Button>
+
+      <DeleteAccountDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+      />
     </Box>
   );
 };

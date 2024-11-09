@@ -21,6 +21,9 @@ import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommun
 import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import { authenticateToService } from "@/services/service-management";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as WebBrowser from "expo-web-browser";
+import * as AuthSession from "expo-auth-session";
+import {ServicesList} from "@/components/ServicesList";
 
 const StyledText = styled(Text);
 const StyledView = styled(View);
@@ -30,44 +33,7 @@ export default function ServicesPage() {
         null
     );
 
-    const services = [
-        {
-            name: "Google",
-            description: "Google is a search engine",
-            icon: <IconFontAwesome name="google" size={32} color="#fff" />,
-            category: "Productivity",
-        },
-        {
-            name: "GitHub",
-            description: "GitHub is a code hosting platform",
-            icon: <IconFontAwesome name="github" size={32} color="#fff" />,
-            category: "Developer Tools",
-        },
-        {
-            name: "Facebook",
-            description: "Facebook is a social media platform",
-            icon: <IconFontAwesome name="facebook" size={32} color="#fff" />,
-            category: "Advertising",
-        },
-        {
-            name: "Outlook",
-            description: "Outlook is an email service",
-            icon: (
-                <IconMaterialCommunityIcons
-                    name="microsoft-outlook"
-                    size={32}
-                    color="#fff"
-                />
-            ),
-            category: "Productivity",
-        },
-        {
-            name: "Discord",
-            description: "Discord is a communication platform",
-            icon: <IconMaterial name="discord" size={32} color="#fff" />,
-            category: "Communication",
-        },
-    ];
+    const services = ServicesList();
 
     const filteredServices = selectedCategory
         ? services.filter((service) => service.category === selectedCategory)
@@ -91,6 +57,7 @@ export default function ServicesPage() {
                         "Productivity",
                         "Communication",
                         "Developer Tools",
+                        "Live Streaming",
                     ].map((category) => (
                         <Pressable
                             key={category}
@@ -106,8 +73,8 @@ export default function ServicesPage() {
                                 marginRight: 8,
                                 backgroundColor:
                                     selectedCategory === category ||
-                                    (category === "All" &&
-                                        selectedCategory === null)
+                                        (category === "All" &&
+                                            selectedCategory === null)
                                         ? "#5A6ACF"
                                         : "transparent",
                             }}
@@ -117,8 +84,8 @@ export default function ServicesPage() {
                                     fontSize: 14,
                                     color:
                                         selectedCategory === category ||
-                                        (category === "All" &&
-                                            selectedCategory === null)
+                                            (category === "All" &&
+                                                selectedCategory === null)
                                             ? "#fff"
                                             : "#5A6ACF",
                                 }}
@@ -137,14 +104,9 @@ export default function ServicesPage() {
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             onPress={async () => {
-                                const url = await authenticateToService(
-                                    item.name.toLowerCase()
-                                );
-                                if (url) {
-                                  //* Open the URL
-                                    console.log("URL:", url);
-                                    console.log(`Next step: Open the URL`);
-                                } else {
+                                const service = item.name.toLowerCase();
+                                const result = await authenticateToService(service);
+                                if (!result) {
                                     console.log(
                                         `Failed to authenticate to ${item.name}`
                                     );

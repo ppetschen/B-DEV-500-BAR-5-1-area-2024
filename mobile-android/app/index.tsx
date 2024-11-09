@@ -5,15 +5,14 @@
  ** index - landing page
  */
 
-import { View, SafeAreaView } from "react-native";
+import { SafeAreaView, View } from "react-native";
 import { styled } from "nativewind";
 // @ts-ignore - no types for expo-router
 import { useRouter } from "expo-router";
 
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_BASE_URL } from "@/asyncStorageLibrary/basicRequestVars";
-import { Button, Text, Surface } from "react-native-paper";
+import { Button, Surface, Text } from "react-native-paper";
 
 import Constants from "expo-constants";
 
@@ -29,11 +28,6 @@ export default function LandingPage() {
                 if (debuggerHost) {
                     const ipAddress = debuggerHost.split(":")[0]; // Extract the IP address
                     const base_url = `http://${ipAddress}:8000`;
-                    await AsyncStorage.setItem(API_BASE_URL, base_url);
-                    console.log(
-                        "BASE_URL:",
-                        await AsyncStorage.getItem(API_BASE_URL)
-                    );
                 } else {
                     console.error("No hostUri found in expoConfig.");
                 }

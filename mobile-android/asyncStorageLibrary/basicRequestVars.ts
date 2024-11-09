@@ -9,6 +9,7 @@
 /** The key for getting/setting the base URL from/to AsyncStorage */
 const API_BASE_URL = "api_base_url";
 const TOKEN = "token";
+const PASSWORD = "password";
 
 
-export { API_BASE_URL, TOKEN };
+export { API_BASE_URL, TOKEN, PASSWORD };

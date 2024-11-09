@@ -13,7 +13,15 @@ export const getUserByEmail = async (email: string): Promise<UserInfo> => {
       body: JSON.stringify({ email }),
     },
   );
+
+  if (!response.ok) {
+    throw new Error(`Failed to get user by email: ${response.statusText}`);
+  }
+
   const user = await response.json();
+  if (!user) {
+    throw new Error("User not found");
+  }
   return user;
 };
 

@@ -36,6 +36,13 @@ services:
             - paramName_2.2.x
           secret_is_base64: false
 
+  - name: reaction-service
+    url: http://reaction-service:3000/execute
+    routes:
+      - name: reaction-service
+        paths:
+          - /reaction/execute
+
 plugins:
   - name: cors
     config:

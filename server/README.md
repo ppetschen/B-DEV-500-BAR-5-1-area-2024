@@ -63,6 +63,8 @@ correct actions and reactions are triggered.
 We will use [temporal.io](https://github.com/temporalio) to manage the workflow
 and orchestration.
 
+![](./deployment/assets/area-composition.png)
+
 ### notification
 
 The Notification service is responsible for sending notifications to users when

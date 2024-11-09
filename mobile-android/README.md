@@ -1,6 +1,7 @@
 # Area Mobile
 
-- nodejs 22.9.0
+<!-- - nodejs 22.9.0 -->
+- nodejs 16.9.1 
 
 1. Install dependencies
 

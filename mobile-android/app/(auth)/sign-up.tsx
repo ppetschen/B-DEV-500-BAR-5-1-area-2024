@@ -12,8 +12,7 @@ import { useRouter } from "expo-router";
 
 import { register } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function SignUpPage() {
     const [email, setEmail] = useState<string>("");
@@ -30,7 +29,6 @@ export default function SignUpPage() {
 
     const router = useRouter();
     const handleSignUp = async () => {
-        console.log("Signing handleSignUp");
         let valid = true;
 
         setEmailError(null);
@@ -56,20 +54,9 @@ export default function SignUpPage() {
         }
 
         if (valid) {
-            console.log("Valid\n");
-
-            const response = await register({
-                email,
-                password,
-                method: "credentials",
-            });
+            const response = await register({ email, password }, "credentials");
 
             if (response) {
-                console.log("Response:", response);
-                console.log("Signing up with:", { email, password });
-                console.log("TOKEN: ", await AsyncStorage.getItem("token"));
-
-                // Navigate to dashboard if registration is successful
                 router.push("/dashboard");
             } else {
                 console.log("Error: Registration failed");
@@ -87,7 +74,10 @@ export default function SignUpPage() {
                 paddingHorizontal: 24,
             }}
         >
-            <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
+            <Text
+                variant="headlineLarge"
+                style={{ marginBottom: 16, color: "#5A6ACF" }}
+            >
                 Sign Up
             </Text>
             <TextInput
@@ -102,6 +92,11 @@ export default function SignUpPage() {
                 keyboardType="email-address"
                 error={!!emailError}
             />
+            {emailError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {emailError}
+                </Text>
+            )}
             <TextInput
                 label="Password"
                 mode="outlined"
@@ -120,6 +115,11 @@ export default function SignUpPage() {
                     />
                 }
             />
+            {passwordError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {passwordError}
+                </Text>
+            )}
             <TextInput
                 label="Confirm Password"
                 mode="outlined"
@@ -140,6 +140,11 @@ export default function SignUpPage() {
                     />
                 }
             />
+            {confirmPasswordError && (
+                <Text style={{ color: "red", marginBottom: 8 }}>
+                    {confirmPasswordError}
+                </Text>
+            )}
             <Button
                 mode="contained"
                 onPress={handleSignUp}
@@ -148,6 +153,26 @@ export default function SignUpPage() {
                 style={{ width: "80%", marginTop: 16 }}
             >
                 Sign Up
+            </Button>
+            <Button
+                mode="contained"
+                onPress={async () => {
+                    //TODO: Implement Google Sign Up
+                    console.log("Google Sign Up pressed");
+                }}
+                contentStyle={{ height: 50 }}
+                labelStyle={{ fontSize: 16 }}
+                style={{
+                    width: "80%",
+                    marginTop: 16,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                icon={() => (
+                    <IconFontAwesome name="google" size={32} color="#fff" />
+                )}
+            >
+                Sign up with Google
             </Button>
         </SafeAreaView>
     );

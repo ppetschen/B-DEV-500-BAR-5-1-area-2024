@@ -1,23 +1,50 @@
-import React, { useState } from "react";
-import { Box, Card, Typography, Stack } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Card,
+  Typography,
+  CircularProgress,
+  Alert,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import { getUser } from "@/services/userManagement";
+import { services } from "@/components/layout/ServiceList";
 
 const ServiceSubscribed: React.FC = () => {
-  const [userData] = useState({
-    subscribedServices: [
-      "Google Analytics",
-      "Slack",
-      "GitHub",
-      "Facebook Ads",
-      "Zoom",
-      "Dropbox",
-    ],
+  const [subscribedServices, setSubscribedServices] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const fetchUserServices = async () => {
+      setIsLoading(true);
+      setErrorMessage("");
+
+      const user = await getUser();
+      setIsLoading(false);
+
+      if (user && typeof user !== "boolean") {
+        setSubscribedServices(user.services || []);
+      } else {
+        setErrorMessage("Failed to load subscribed services.");
+        alert("Failed to load subscribed services.");
+      }
+    };
+    fetchUserServices();
+  }, []);
+
+  const subscribedServiceIcons = subscribedServices.map((serviceName) => {
+    return services.find(
+      (service) => service.name.toLowerCase() === serviceName.toLowerCase()
+    );
   });
 
   return (
     <Box sx={{ p: 4, bgcolor: "#F5F7FA", minHeight: "100vh" }}>
       <Typography
         variant="h4"
-        sx={{ fontWeight: "bold", color: "#5A6ACF", mb: 6 }}
+        sx={{ fontWeight: "bold", color: "#5c1ed6", mb: 4 }}
       >
         SERVICES SUBSCRIBED
       </Typography>
@@ -30,13 +57,43 @@ const ServiceSubscribed: React.FC = () => {
           mb: 4,
         }}
       >
-        <Stack spacing={1}>
-          {userData.subscribedServices.map((service, index) => (
-            <Typography key={index} variant="body2" color="textSecondary">
-              • {service}
-            </Typography>
-          ))}
-        </Stack>
+        {isLoading ? (
+          <CircularProgress />
+        ) : errorMessage ? (
+          <Alert severity="error">{errorMessage}</Alert>
+        ) : subscribedServices.length > 0 ? (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+            {subscribedServiceIcons.map((service, index) =>
+              service ? (
+                <Box key={index} display="flex" alignItems="center">
+                  <Tooltip title={service.name}>
+                    <IconButton
+                      sx={{
+                        bgcolor: "#5c1ed6",
+                        color: "#fff",
+                        p: 2,
+                        mr: 2,
+                        transform: "scale(1)",
+                        transition: "transform 0.3s ease",
+                        "&:hover": {
+                          transform: "scale(1.2)",
+                          bgcolor: "#7901f1",
+                        },
+                      }}
+                      size="small"
+                    >
+                      {React.createElement(service.icon, { size: 24 })}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              ) : null
+            )}
+          </Box>
+        ) : (
+          <Typography variant="body2" color="error">
+            You have no subscribed services
+          </Typography>
+        )}
       </Card>
     </Box>
   );

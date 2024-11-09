@@ -6,6 +6,7 @@ import { Github, Loader2 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { register } from "../../services/userManagement";
+import { oauthUser } from "@/services/userManagement";
 
 const Icons = {
   spinner: Loader2,
@@ -134,6 +135,7 @@ export default function SignupPage(
           <Button
             variant="outline"
             type="button"
+            onClick={() => (oauthUser("github"))}
             disabled={isLoading}
             className="flex items-center justify-center text-gray-400 transition-colors border border-gray-600 hover:bg-gray-700"
           >
@@ -147,6 +149,7 @@ export default function SignupPage(
           {/* Add the Google Login Button */}
           <Button
             variant="outline"
+            onClick={() => (oauthUser("google"))}
             type="button"
             disabled={isLoading}
             className="flex items-center justify-center space-x-2 text-gray-400 transition-colors border border-gray-600 hover:bg-gray-700"

@@ -33,9 +33,7 @@ export const authorizeServiceCallback = async (
       as = _as;
     }
     const client: oauth.Client = { client_id: strategy.client_id || "" };
-    const clientAuth = oauth.ClientSecretPost(
-      strategy.client_secret || "",
-    );
+    const clientAuth = oauth.ClientSecretPost(strategy.client_secret || "");
     const currentUrl = new URL(request_url);
     const state = currentUrl.searchParams.get("state");
     if (!state) {
@@ -46,15 +44,23 @@ export const authorizeServiceCallback = async (
       throw Error("Failed to get session");
     }
     const params = oauth.validateAuthResponse(as, client, currentUrl, state);
-    let response = await oauth.authorizationCodeGrantRequest(
-      as,
-      client,
-      clientAuth,
-      params,
-      strategy.redirect_uri || "",
-      session.code_verifier,
-    );
-    const scopeToString = await response.json();
+
+    let response;
+    if (strategy.client_auth_method === "Basic Auth") {
+      const code = currentUrl.searchParams.get("code");
+      response = await authorizationCodeGrantRequestBasicAuth(code!, strategy);
+    } else {
+      response = await oauth.authorizationCodeGrantRequest(
+        as,
+        client,
+        clientAuth,
+        params,
+        strategy.redirect_uri || "",
+        session.code_verifier,
+      );
+      response = await response.json();
+    }
+    const scopeToString = response;
     try {
       scopeToString.scope = scopeToString.scope.join(" ");
     } catch (error) {
@@ -66,56 +72,30 @@ export const authorizeServiceCallback = async (
       },
     });
 
-    const result = await oauth.processAuthorizationCodeResponse(
+    const result: any = await oauth.processAuthorizationCodeResponse(
       as,
       client,
       response,
     );
-    /** Retrieve user based of result fields, maybe by email sent back?? Then set user_id from the db */
-    const userResponse = await fetch(
-      strategy.userinfo_endpoint,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${result.access_token}`,
-          "Client-Id": strategy.client_id,
-        },
-      },
-    );
-    if (!userResponse.ok) {
-      console.log("Userinfo response: ", userResponse);
-      throw Error("Failed to retrieve user info");
-    }
-    let user = await userResponse.json();
-    if (!user) {
-      throw Error("Failed to retrieve user info");
-    }
-    let user_email;
-    if (service == "twitch") {
-      user_email = user.data[0].email;
-    } else {
-      user_email = user.email ? user.email : user[0].email;
-    }
 
-    if (user_email !== session.user_email) {
-      throw Error("User email does not match");
-    }
+    let user = await getUserFromService(strategy, result.access_token); // External user from service
 
-    user = await getUserByEmail(user_email);
+    const user_email = getEmailFromUser(user);
 
-    if (!user) {
-      throw Error("User not found");
-    }
+    user = await getUserByEmail(user_email); // Internal user from database
 
     const serviceSubscription = await getServiceSubscription(service, user.id);
 
-    const expirationDate = new Date(Date.now() + result.expires_in! * 1000);
+    const expirationDate = new Date(
+      Date.now() + (result.expires_in || 864000) * 1000,
+    );
     const data = {
       access_token: result.access_token,
-      refresh_token: result.refresh_token,
+      refresh_token: result.refresh_token || "",
       expires_in: expirationDate.toISOString(),
       user_id: user.id,
       service,
+      webhook_url: result.webhook ? result.webhook.url : "",
     };
     const storeStatus = serviceSubscription
       ? await updateServiceSubscription(data)
@@ -127,5 +107,80 @@ export const authorizeServiceCallback = async (
   } catch (error) {
     console.log("Failed to authorize service: ", error);
     return false;
+  }
+};
+
+const authorizationCodeGrantRequestBasicAuth = async (
+  code: string,
+  strategy: any,
+) => {
+  try {
+    const encoded = Buffer.from(
+      `${strategy.client_id}:${strategy.client_secret}`,
+    ).toString("base64");
+    const response = await fetch(strategy.token_endpoint, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Basic ${encoded}`,
+      },
+      body: JSON.stringify({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: strategy.redirect_uri,
+      }),
+    });
+    return await getjsonContent(response);
+  } catch (error) {
+    console.log("Failed to get authorization code request: ", error);
+    return { error: "Failed to get authorization code request" };
+  }
+};
+
+const getUserFromService = async (strategy: any, access_token: string) => {
+  try {
+    const response = await fetch(
+      strategy.userinfo_endpoint,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Client-Id": strategy.client_id,
+          "Notion-Version": "2022-06-28",
+        },
+      },
+    );
+    return await getjsonContent(response);
+  } catch (error) {
+    console.log("Failed to get user from service: ", error);
+    return {};
+  }
+};
+const getEmailFromUser = (user: any): string => {
+  try {
+    return (
+      user?.email ||
+      user?.[0]?.email ||
+      user?.data?.[0]?.email ||
+      user?.results?.[0]?.person?.email ||
+      ""
+    );
+  } catch (error) {
+    console.log("Failed to get email from user: ", error);
+    return "";
+  }
+};
+
+const getjsonContent = async (data: any) => {
+  try {
+    const jsonData = await data.json();
+    if (!jsonData) {
+      throw Error("Failed to get json content");
+    }
+    return jsonData;
+  } catch (error) {
+    console.log("Failed to get json content: ", error);
+    return {};
   }
 };

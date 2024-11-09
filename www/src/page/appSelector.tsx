@@ -237,11 +237,32 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
         {activeStep > 0 && (
-          <Button onClick={handleBack} sx={{ mr: 2 }}>
+          <Button
+            onClick={handleBack}
+            sx={{
+              mr: 2,
+              bgcolor: "#5c1ed6",
+              color: "#FFFFFF",
+              "&:hover": {
+                bgcolor: "#EDEEF1",
+                color: "#5c1ed6",
+              },
+            }}>
             Back
           </Button>
         )}
-        <Button variant="contained" onClick={handleNext}>
+        <Button
+          variant="contained"
+          onClick={handleNext}
+          sx={{
+            bgcolor: "#5c1ed6",
+            color: "#FFFFFF",
+            "&:hover": {
+              bgcolor: "#EDEEF1",
+              color: "#5c1ed6",
+            },
+          }}
+          >
           {activeStep === steps.length - 1 ? "Complete" : "Next"}
         </Button>
       </Box>

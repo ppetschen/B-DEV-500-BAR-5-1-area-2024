@@ -30,3 +30,9 @@ export type JWTResponse = {
   secret: string;
   tags: null;
 };
+
+export type InternalConfig = {
+  access_token: string;
+  refresh_token: string;
+  reaction_id: string;
+};
