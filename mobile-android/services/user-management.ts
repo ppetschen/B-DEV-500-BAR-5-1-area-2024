@@ -1,6 +1,6 @@
 /*
  ** EPITECH PROJECT, 2024
- ** safeArea
+ ** Area
  ** File description:
  ** user-management
  */
@@ -41,6 +41,7 @@ export const register = async (
             data
         );
         AsyncStorage.setItem("token", response.data.token);
+        AsyncStorage.setItem(PASSWORD, data.password || "");
         return true;
     } catch (error) {
         console.log("Failed to register: ", error);
@@ -66,33 +67,6 @@ export const getUser = async (): Promise<User | null> => {
         return null;
     }
 };
-
-// Checked WORKING
-// export const updateUser = async (data: {
-//     new_password?: string;
-//     first_name?: string;
-//     last_name?: string;
-//     description?: string;
-// }): Promise<boolean> => {
-//     try {
-//         await setAuthorizationHeader();
-//         const responseUser = await apiClient.put<User>(
-//             `/user-management/update-user`,
-//             data
-//         );
-//         const responseServices = await apiClient.get<any>(
-//             `/service-management/auth/get-services-by-user`
-//         );
-//         const user = {
-//             ...responseUser.data,
-//             ...responseServices.data,
-//         };
-//         return true;
-//     } catch (error) {
-//         console.log("Failed to update user: ", error);
-//         return false;
-//     }
-// };
 
 export const updateUser = async (data: {
     new_password?: string;
