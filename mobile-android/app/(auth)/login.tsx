@@ -1,15 +1,16 @@
 /*
-** EPITECH PROJECT, 2024
-** stupidArea
-** File description:
-** login
-*/
+ ** EPITECH PROJECT, 2024
+ ** AREA
+ ** File description:
+ ** login
+ */
 
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { login } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native";
+import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>("");
@@ -52,7 +53,10 @@ export default function LoginPage() {
                 paddingHorizontal: 24,
             }}
         >
-            <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
+            <Text
+                variant="headlineLarge"
+                style={{ marginBottom: 16, color: "#5A6ACF" }}
+            >
                 Login
             </Text>
 
@@ -106,6 +110,26 @@ export default function LoginPage() {
                 style={{ width: "80%", marginTop: 16 }}
             >
                 Login
+            </Button>
+            <Button
+                mode="contained"
+                onPress={async () => {
+                    //TODO: Implement Google login
+                    console.log("Google login pressed");
+                }}
+                contentStyle={{ height: 50 }}
+                labelStyle={{ fontSize: 16 }}
+                style={{
+                    width: "80%",
+                    marginTop: 16,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                icon={() => (
+                    <IconFontAwesome name="google" size={32} color="#fff" />
+                )}
+            >
+                Login with Google
             </Button>
         </SafeAreaView>
     );
