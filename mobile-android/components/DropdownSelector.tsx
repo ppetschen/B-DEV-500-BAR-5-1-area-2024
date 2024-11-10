@@ -1,6 +1,6 @@
 /*
  ** EPITECH PROJECT, 2024
- ** stupidArea
+ ** Area
  ** File description:
  ** DropdownModal
  */
@@ -73,35 +73,6 @@ interface DropdownSelectorProps {
     setModalVisible: (visible: boolean) => void;
 }
 
-// const DropdownSelector: React.FC<DropdownSelectorProps> = ({
-//     title,
-//     items,
-//     selectedItem,
-//     onSelect,
-//     modalVisible,
-//     setModalVisible,
-// }) => (
-//     <View>
-//         <TouchableOpacity
-//             onPress={() => setModalVisible(true)}
-//             style={{
-//                 padding: 12,
-//                 backgroundColor: "#ddd",
-//                 marginBottom: 10,
-//                 marginTop: 10,
-//             }}
-//         >
-//             <Text>{selectedItem ? selectedItem.label : title}</Text>
-//         </TouchableOpacity>
-//         <DropdownModal
-//             visible={modalVisible}
-//             items={items}
-//             onSelect={onSelect}
-//             onClose={() => setModalVisible(false)}
-//             title={title}
-//         />
-//     </View>
-// );
 const DropdownSelector: React.FC<DropdownSelectorProps> = ({
     title,
     items,
