@@ -6,6 +6,12 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "area",
+    "extra": {
+      "redirectUri": "https://ladybird-immortal-anteater.ngrok-free.app/user-management/auth",
+      "eas": {
+        "projectId": "d449c2cf-d1d8-4651-aed3-16341eb103a1"
+      }
+    },
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -22,10 +28,13 @@
     "intentFilters": [
       {
         "action": "VIEW",
-        "data": {
-          "scheme": "area",
-          "host": "auth-success"
-        },
+        "data": [
+          {
+            "scheme": "https",
+            "host": "ladybird-immortal-anteater.ngrok-free.app",
+            "pathPrefix": "/user-management/auth"
+          }
+        ],
         "category": [
           "BROWSABLE",
           "DEFAULT"

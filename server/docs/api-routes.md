@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `e707f21282d69f9fc9796528a2c228bc4feac241`.
+> GitHub actions, commit hash `8c47bcc046f93748056887c9712599e46af52b68`.
 
 ## reaction
 
@@ -91,6 +91,14 @@ PUT /user-management/update-user
 
 ```http
 DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+never
+```
+
+```http
+GET /user-management/auth/redirect
 ```
 ```ts
 // This route is internal, won't be exposed
