@@ -81,7 +81,7 @@ const route: Route<typeof schema> = {
       return new Response(await reactionRequest.text(), { status: 500 });
     }
 
-    const { id: reactionId } = await reactionRequest.json();
+    
 
     return new Response(
       JSON.stringify({
