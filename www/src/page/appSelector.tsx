@@ -30,13 +30,8 @@ type Reaction =
     }
   | {
     app: "Twitch";
-    trigger: "Subscription";
-    alert_message: string;
-  }
-| {
-    app: "Twitch";
-    trigger: "Clip Created";
-    clip_url: string;
+    trigger: string;
+    message_content: string;
     webhook_url: string;
   };
 
@@ -92,15 +87,10 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
         ? {
             app: "Twitch",
             trigger: "Subscription",
-            alert_message: reactionPayload,
-          }
-        : {
-            app: "Twitch",
-            trigger: "Clip Created",
-            clip_url: reactionPayload,
+            message_content: reactionPayload,
             webhook_url: webhookUrl,
           };
-  
+
       onComplete(
         { app: actionSource, event_type: actionKind, payload: reactionPayload },
         reactionData,
