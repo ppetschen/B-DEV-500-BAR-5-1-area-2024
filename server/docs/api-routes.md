@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `29303119f59419972af79e4ce154566e112eef58`.
+> GitHub actions, commit hash `8143bb8f2c50f9cc0a4938ceb19f137e84b9db36`.
 
 ## reaction
 
@@ -91,6 +91,14 @@ PUT /user-management/update-user
 
 ```http
 DELETE /user-management/delete-user
+```
+```ts
+// This route is internal, won't be exposed
+never
+```
+
+```http
+GET /user-management/auth/redirect
 ```
 ```ts
 // This route is internal, won't be exposed
@@ -211,14 +219,6 @@ POST /area-composition/send-google-mail
 ```
 
 ```http
-GET /area-composition/list
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-any
-```
-
-```http
 POST /area-composition/execute
 ```
 ```ts
@@ -253,6 +253,14 @@ POST /area-composition/completions
     from: "github";
     to: "discord";
 }
+```
+
+```http
+GET /area-composition/list
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
 ```
 
 ```http

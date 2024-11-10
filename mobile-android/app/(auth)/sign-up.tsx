@@ -12,6 +12,7 @@ import { useRouter } from "expo-router";
 
 import { register } from "@/services/user-management";
 import { Text, Button, TextInput } from "react-native-paper";
+import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function SignUpPage() {
     const [email, setEmail] = useState<string>("");
@@ -73,7 +74,10 @@ export default function SignUpPage() {
                 paddingHorizontal: 24,
             }}
         >
-            <Text variant="headlineMedium" style={{ marginBottom: 16 }}>
+            <Text
+                variant="headlineLarge"
+                style={{ marginBottom: 16, color: "#5A6ACF" }}
+            >
                 Sign Up
             </Text>
             <TextInput
@@ -149,6 +153,26 @@ export default function SignUpPage() {
                 style={{ width: "80%", marginTop: 16 }}
             >
                 Sign Up
+            </Button>
+            <Button
+                mode="contained"
+                onPress={async () => {
+                    //TODO: Implement Google Sign Up
+                    console.log("Google Sign Up pressed");
+                }}
+                contentStyle={{ height: 50 }}
+                labelStyle={{ fontSize: 16 }}
+                style={{
+                    width: "80%",
+                    marginTop: 16,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+                icon={() => (
+                    <IconFontAwesome name="google" size={32} color="#fff" />
+                )}
+            >
+                Sign up with Google
             </Button>
         </SafeAreaView>
     );

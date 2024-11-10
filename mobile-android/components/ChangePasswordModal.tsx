@@ -8,17 +8,18 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
     Modal,
-    Portal,
     Text,
     Button,
     TextInput,
     Card,
+    Snackbar,
 } from "react-native-paper";
 import { View } from "react-native";
 import { styled } from "nativewind";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PASSWORD } from "@/asyncStorageLibrary/basicRequestVars";
 import { useFocusEffect } from "@react-navigation/native";
+import { updateUser } from "@/services/user-management";
 
 const StyledView = styled(View);
 
@@ -31,12 +32,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     visible,
     hideModal,
 }) => {
-    const oldPassword = "password";
-    // TODO: add password to async storage before implementing this
-    // const oldPassword = async () => {
-    //     const password = await AsyncStorage.getItem(PASSWORD);
-    //     return password;
-    // }
+    const [oldPassword, setOldPassword] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
     const [showOldPassword, setShowOldPassword] = useState<boolean>(false);
@@ -49,6 +45,16 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     const [showConfirmNewPassword, setShowConfirmNewPassword] =
         useState<boolean>(false);
 
+    const [snakBarMessage, setSnackbarMessage] = useState<string>("");
+    const [snakbarVisible, setSnackbarVisible] = useState<boolean>(false);
+    useEffect(() => {
+        const getPassword = async () => {
+            const password = await AsyncStorage.getItem(PASSWORD);
+            setOldPassword(password || "");
+        };
+        getPassword();
+    });
+
     useFocusEffect(
         useCallback(() => {
             return () => {
@@ -57,7 +63,7 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
         }, [visible])
     );
 
-    const handleSave = () => {
+    const handleSave = async () => {
         let valid = true;
         if (!newPassword) {
             setPasswordError("Password is required");
@@ -80,8 +86,19 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             confirmNewPassword,
         });
         if (valid) {
-            //TODO: add: Request to change password here
-            hideModal();
+            const response = await updateUser({ new_password: newPassword });
+
+            if (response) {
+                setSnackbarMessage("Password updated successfully");
+                AsyncStorage.setItem(PASSWORD, newPassword || "");
+            } else {
+                setSnackbarMessage("Error updating password");
+            }
+            setSnackbarVisible(true);
+            setTimeout(() => {
+                setSnackbarVisible(false);
+                hideModal();
+            }, 3000);
         }
     };
     const handleCancel = () => {
@@ -188,6 +205,13 @@ export const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
                     </View>
                 </StyledView>
             </Card>
+            <Snackbar
+                visible={snakbarVisible}
+                onDismiss={() => setSnackbarVisible(false)}
+                duration={3000}
+            >
+                {snakBarMessage}
+            </Snackbar>
         </Modal>
     );
 };

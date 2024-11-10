@@ -1,21 +1,13 @@
 import { apiClient } from "./api";
 
-export interface areaInList {
-  name: string;
-  services: React.JSX.Element[];
-  status: string;
-  date: string;
-  url: string;
-}
-
-export interface responseAreaInList {
-  created_at: string;
-  event_type: string;
+export type AreaElement = {
   id: string;
-  owner_id: number;
-  payload: { content: string };
   service_name: string;
-}
+  event_type: string;
+  payload: unknown;
+  created_at: string;
+  owner_id: number;
+};
 
 export const getAvailableAreas = async () => {
   const response = await apiClient.get(`/area-composition/available`);

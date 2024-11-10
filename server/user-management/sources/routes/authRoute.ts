@@ -17,7 +17,6 @@ const route: Route<typeof schema> = {
         throw new Error("Service not found");
       }
       const client_type = request.headers.get("Client-Type") || "web"; // default to web
-
       const redirect = await authorizeService(service, client_type);
       if (!redirect || typeof redirect === "boolean") {
         throw Error("Redirect not found");

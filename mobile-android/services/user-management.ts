@@ -1,16 +1,16 @@
 /*
  ** EPITECH PROJECT, 2024
- ** safeArea
+ ** Area
  ** File description:
  ** user-management
  */
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { apiClient, setAuthorizationHeader } from "./api";
-import { User, UserAndServices } from "./types";
+import { apiClient, base_url, setAuthorizationHeader } from "./api";
+import { User } from "./types";
+import * as WebBrowser from "expo-web-browser";
 import { PASSWORD, TOKEN } from "@/asyncStorageLibrary/basicRequestVars";
 
-// Checked WORKING
 export const login = async (
     data: { email: string; password?: string },
     method: string
@@ -21,8 +21,6 @@ export const login = async (
             data
         );
         AsyncStorage.setItem(TOKEN, response.data.token);
-        AsyncStorage.setItem(PASSWORD, data.password || "");
-        console.log("PASSWORD: ", data.password || "HELLO WORLD");
         return true;
     } catch (error) {
         console.log("Failed to login: ", error);
@@ -30,7 +28,6 @@ export const login = async (
     }
 };
 
-// Checked WORKING
 export const register = async (
     data: { email: string; password?: string },
     method: string
@@ -41,6 +38,7 @@ export const register = async (
             data
         );
         AsyncStorage.setItem("token", response.data.token);
+        AsyncStorage.setItem(PASSWORD, data.password || "");
         return true;
     } catch (error) {
         console.log("Failed to register: ", error);
@@ -48,7 +46,6 @@ export const register = async (
     }
 };
 
-// Checked WORKING
 export const getUser = async (): Promise<User | null> => {
     try {
         await setAuthorizationHeader();
@@ -66,33 +63,6 @@ export const getUser = async (): Promise<User | null> => {
         return null;
     }
 };
-
-// Checked WORKING
-// export const updateUser = async (data: {
-//     new_password?: string;
-//     first_name?: string;
-//     last_name?: string;
-//     description?: string;
-// }): Promise<boolean> => {
-//     try {
-//         await setAuthorizationHeader();
-//         const responseUser = await apiClient.put<User>(
-//             `/user-management/update-user`,
-//             data
-//         );
-//         const responseServices = await apiClient.get<any>(
-//             `/service-management/auth/get-services-by-user`
-//         );
-//         const user = {
-//             ...responseUser.data,
-//             ...responseServices.data,
-//         };
-//         return true;
-//     } catch (error) {
-//         console.log("Failed to update user: ", error);
-//         return false;
-//     }
-// };
 
 export const updateUser = async (data: {
     new_password?: string;
@@ -113,7 +83,6 @@ export const updateUser = async (data: {
     }
 };
 
-// Checked WORKING
 export const deleteUser = async (): Promise<boolean> => {
     try {
         await setAuthorizationHeader();
@@ -125,6 +94,36 @@ export const deleteUser = async (): Promise<boolean> => {
         return true;
     } catch (error) {
         console.log("Failed to delete user: ", error);
+        return false;
+    }
+};
+
+export const oauthUser = async (service: string) => {
+    try {
+        await setAuthorizationHeader();
+        const redirectUri = `${base_url}/user-management/auth/redirect`;
+        const response = await apiClient.get(`${base_url}/user-management/auth?service=${service}`);
+        if (!response) {
+            return false;
+        }
+
+        if (typeof response.data !== "string") {
+            throw new Error(`Expected a string, got ${typeof response.data}`);
+        }
+
+        const url = response.data;
+        const result = await WebBrowser.openAuthSessionAsync(url, redirectUri);
+
+        if (result.type === 'success' && result.url) {
+            console.log('OAuth successful:', result.url);
+            return true;
+        } else {
+            console.error('OAuth failed with unexpected result:', result);
+            return false;
+        }
+
+    } catch (error) {
+        console.error('OAuth error:', error);
         return false;
     }
 };
