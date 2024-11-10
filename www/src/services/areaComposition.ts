@@ -2,10 +2,11 @@ import apiClient, { API_BASE_URL } from "./api";
 
 export type AreaElement = {
   id: string;
+  markup: string;
   service_name: string;
-  event_type: string;
-  payload: unknown;
-  created_at: string;
+  execution_endpoint: string;
+  status: string;
+  executed_at: string | null;
   owner_id: number;
 };
 

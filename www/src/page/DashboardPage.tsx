@@ -11,14 +11,14 @@ import {
   FaSpinner,
   FaTimesCircle,
 } from "react-icons/fa";
-import { API_BASE_URL } from "@/services/api";
+// import { API_BASE_URL } from "@/services/api";
 import { listAreas } from "@/services/areaComposition";
 
 type ActivityElement = {
   name: string;
   services: JSX.Element[];
   status: string;
-  date: string;
+  date: string | null;
   url: string;
 };
 
@@ -57,9 +57,9 @@ const Dashboard: React.FC = () => {
         areas.map((area) => ({
           name: area.service_name,
           services: [IconMap[area.service_name as keyof typeof IconMap]],
-          status: area.event_type,
-          date: area.created_at,
-          url: `${API_BASE_URL}/area-composition/execute?id=${area.id}`,
+          status: area.status,
+          date: area.executed_at,
+          url: `http://localhost:8000/reaction/execute?id=${area.id}`,
         }))
       )
       .then((areaData) => {

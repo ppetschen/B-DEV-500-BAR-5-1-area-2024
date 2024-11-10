@@ -14,7 +14,7 @@ const route: Route<typeof schema> = {
     const { userId } = await request.json();
 
     const { rows } = await client.query(
-      `SELECT * FROM actions WHERE owner_id = $1`,
+      `SELECT * FROM reactions WHERE owner_id = $1`,
       [userId],
     );
 

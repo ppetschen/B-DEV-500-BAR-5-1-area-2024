@@ -1,6 +1,6 @@
-import type { Route } from "../types";
+import type { Route } from "../../types";
 import { z } from "zod";
-import { host } from "../utils";
+import { host } from "../../utils";
 import jwt from "jsonwebtoken";
 
 const schema = z.any();
