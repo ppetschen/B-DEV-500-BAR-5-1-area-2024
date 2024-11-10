@@ -81,7 +81,6 @@ const route: Route<typeof schema> = {
       return new Response(await reactionRequest.text(), { status: 500 });
     }
 
-    
 
     return new Response(
       JSON.stringify({
