@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `b5f8538dafe1cbdc3a0255030fc167b5b52e0adb`.
+> GitHub actions, commit hash `8143bb8f2c50f9cc0a4938ceb19f137e84b9db36`.
 
 ## reaction
 
@@ -219,14 +219,6 @@ POST /area-composition/send-google-mail
 ```
 
 ```http
-GET /area-composition/list
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-any
-```
-
-```http
 POST /area-composition/execute
 ```
 ```ts
@@ -261,6 +253,14 @@ POST /area-composition/completions
     from: "github";
     to: "discord";
 }
+```
+
+```http
+GET /area-composition/list
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
 ```
 
 ```http
