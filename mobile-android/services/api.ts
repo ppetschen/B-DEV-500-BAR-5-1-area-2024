@@ -15,5 +15,5 @@ export const setAuthorizationHeader = async () => {
   apiClient.defaults.headers.common["Client-Type"] = "mobile";
   if (token) {
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else throw new Error(`No token found: ${token}`);
+  }
 };

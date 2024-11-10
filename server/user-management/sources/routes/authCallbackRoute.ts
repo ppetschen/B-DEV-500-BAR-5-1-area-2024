@@ -36,7 +36,6 @@ const route: Route<typeof schema> = {
           status: 500,
         });
       }
-      console.log("User email", email);
       let userRequest;
       userRequest = await fetch(
         host("DATABASE", "/user-management/get-user-by-email"),
@@ -90,11 +89,15 @@ const route: Route<typeof schema> = {
 
 const responseToClient = (client_type: string, token: string) => {
   if (client_type === "mobile") {
+    const PUBLIC_URL = process.env["PUBLIC_URL"];
+    const frontend_redirect_url = `${PUBLIC_URL}/user-management/auth/redirect?token=${token}`;
+    console.log("Redirecting to", frontend_redirect_url);
+    return Response.redirect(frontend_redirect_url);
+  }
+  else {
     const frontend_redirect_url = `http://localhost:5173/login?token=${token}`;
     return Response.redirect(frontend_redirect_url);
   }
-  const frontend_redirect_url = `http://localhost:5173/login?token=${token}`;
-  return Response.redirect(frontend_redirect_url);
 };
 
 export default route;
