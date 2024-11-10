@@ -58,7 +58,7 @@ const route: Route<typeof schema> = {
       }),
       {
         status: 201,
-      },
+      }
     );
   },
 };

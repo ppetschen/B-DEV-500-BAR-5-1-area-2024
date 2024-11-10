@@ -12,8 +12,8 @@ import { Text, Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native";
 
 export default function LoginPage() {
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
+    const [email, setEmail] = useState<string>("area1.epitech@gmail.com");
+    const [password, setPassword] = useState<string>("ThisIsAPassword123");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
