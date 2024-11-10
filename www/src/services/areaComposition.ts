@@ -9,6 +9,18 @@ export type AreaElement = {
   owner_id: number;
 };
 
+export const listAreas = async () => {
+  const response = await apiClient.get<AreaElement[]>(
+    "/area-composition/list",
+  );
+
+  if (!response || !response.data) {
+    return [];
+  }
+
+  return response.data;
+};
+
 export const getAvailableAreas = async () => {
   const response = await apiClient.get(`/area-composition/available`);
 

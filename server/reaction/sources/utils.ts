@@ -99,7 +99,7 @@ const sendDiscordWebhook = async ({
 
 const sendNotionPage = async (context: unknown): Promise<void> => {
   // const { title, content, parentPageId, userId } = context;
-  const token
+  //const token
   const title = getKey<string>(context, "title");
   const content = getKey<string>(context, "content");
   const parentPageId = getKey<string>(context, "parentPageId");
