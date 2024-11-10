@@ -18,15 +18,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.area123.area"
+      "package": "com.ppetschen03.area"
     },
     "intentFilters": [
       {
@@ -43,7 +40,12 @@
           "DEFAULT"
         ]
       }
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5e619820-1d9b-4d2a-a971-844ac3b2c8e8"
+      }
+    }
   },
   "web": {
     "bundler": "metro",
