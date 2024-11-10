@@ -22,7 +22,23 @@ type Reaction =
     message_content: string;
     webhook_url: string;
   }
-  | { app: "Google"; trigger: string; file_name: string; file_content: string };
+  | {
+      app: "Google";
+      trigger: string;
+      file_name: string;
+      file_content: string
+    }
+  | {
+    app: "Twitch";
+    trigger: "Subscription";
+    alert_message: string;
+  }
+| {
+    app: "Twitch";
+    trigger: "Clip Created";
+    clip_url: string;
+    webhook_url: string;
+  };
 
 interface Action {
   app: string;
@@ -53,25 +69,38 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
     Github: ["Issue Created", "Pull Request Created", "Commit Added"],
     Outlook: ["Email Dispatched"],
     Jira: ["Issue Created", "Issue Updated", "Issue Deleted"],
-    Twitch: ["Stream Started", "Stream Ended", "Clip Created", "Subscription"],
+    Twitch: ["Stream Started", "Clip Created", "Subscription"],
   };
 
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
       const reactionData: Reaction = reactionDestination === "Discord"
         ? {
-          app: "Discord",
-          trigger: reactionKind,
-          message_content: reactionPayload,
-          webhook_url: webhookUrl,
-        }
+            app: "Discord",
+            trigger: reactionKind,
+            message_content: reactionPayload,
+            webhook_url: webhookUrl,
+          }
+        : reactionDestination === "Google"
+        ? {
+            app: "Google",
+            trigger: reactionKind,
+            file_name: fileName,
+            file_content: fileContent,
+          }
+        : reactionDestination === "Twitch" && reactionKind === "Subscription"
+        ? {
+            app: "Twitch",
+            trigger: "Subscription",
+            alert_message: reactionPayload,
+          }
         : {
-          app: "Google",
-          trigger: reactionKind,
-          file_name: fileName,
-          file_content: fileContent,
-        };
-
+            app: "Twitch",
+            trigger: "Clip Created",
+            clip_url: reactionPayload,
+            webhook_url: webhookUrl,
+          };
+  
       onComplete(
         { app: actionSource, event_type: actionKind, payload: reactionPayload },
         reactionData,
@@ -80,7 +109,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
       setActiveStep((prevStep) => prevStep + 1);
     }
   };
-
+  
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);
   };
@@ -163,6 +192,7 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
                 >
                   <MenuItem value="Discord">Discord</MenuItem>
                   <MenuItem value="Google">Google</MenuItem>
+
                 </Select>
               </FormControl>
             </Grid>

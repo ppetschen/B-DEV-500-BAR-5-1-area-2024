@@ -228,6 +228,8 @@ POST /area-composition/compose
 }
 ```
 
+
+
 ```http
 POST /area-composition/completions
 ```
