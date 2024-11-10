@@ -113,9 +113,23 @@ const getDiscordCompletions = async (
   return { data: guilds.map(({ id }) => ({ guildId: id })) };
 };
 
+const notionCompletions = async (
+  accessToken: string,
+): Promise<Record<string, unknown>> => {
+  return { data: [{event: "create_page"}] };
+}
+
+const gmailCompletions = async (
+  accessToken: string,
+): Promise<Record<string, unknown>> => {
+  return { data: [{event: "Send Email"}] };
+}
+
 const completionsMap = {
   "github": getGitHubCompletions,
   "discord": getDiscordCompletions,
+  "notion": notionCompletions,
+  "google-mail": gmailCompletions,
 } as const;
 
 export const complete = async (

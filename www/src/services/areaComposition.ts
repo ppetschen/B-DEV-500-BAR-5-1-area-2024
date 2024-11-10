@@ -65,6 +65,7 @@ export const composeArea = async (data: {
   };
   markup: string;
 }) => {
+  console.log(data);
 
   if (data.from.type === "github") {
     const obj = data.from.context as Record<string, unknown>;
@@ -74,6 +75,7 @@ export const composeArea = async (data: {
   }
 
   const response = await apiClient.post(`/area-composition/compose`, data);
+  console.log(response);
 
   if (!response.data) {
     return {

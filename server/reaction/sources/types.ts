@@ -41,4 +41,8 @@ export type HookContext = {
   reaction_id: string;
   view: string;
   execution_endpoint: string;
+  // title: string;
+  // content: string;
+  // parentPageId: string;
+  // userId: string;
 };

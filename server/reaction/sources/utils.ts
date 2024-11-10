@@ -6,6 +6,7 @@ import {
   googleSendEmail,
 } from "./controllers/sendGoogleMail";
 import { getServiceSubscription } from "./controllers/serviceController";
+import { Client } from "@notionhq/client";
 
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
@@ -53,10 +54,17 @@ const createGoogleDriveWebhook = async (_context: unknown) => {
   };
 };
 
+const createNotion = async (_context: unknown) => {
+  return {
+    url: "",
+  };
+};
+
 export const createWebHookMap = {
   discord: createDiscordWebhook,
   "google-mail": createGoogleMailWebhook,
   "google-drive": createGoogleDriveWebhook,
+  notion: createNotion,
 } as const;
 
 export const create = async (
@@ -86,6 +94,59 @@ const sendDiscordWebhook = async ({
 
   if (!response.ok) {
     throw new Error("Failed to send webhook");
+  }
+};
+
+const sendNotionPage = async (context: unknown): Promise<void> => {
+  // const { title, content, parentPageId, userId } = context;
+  const token
+  const title = getKey<string>(context, "title");
+  const content = getKey<string>(context, "content");
+  const parentPageId = getKey<string>(context, "parentPageId");
+  const userId = getKey<string>(context, "userId");
+  let notion: Client;
+  let response;
+
+  try {
+    notion = new Client({ auth: userId });
+  } catch (error) {
+    // Handle initialization error
+    return;
+  }
+
+  try {
+    response = await notion.pages.create({
+      parent: { page_id: parentPageId },
+      properties: {
+        title: {
+          title: [
+            {
+              type: "text",
+              text: {
+                content: title,
+              },
+            },
+          ],
+        },
+      },
+      children: [
+        {
+          object: "block",
+          paragraph: {
+            rich_text: [
+              {
+                text: {
+                  content: content || "",
+                },
+              },
+            ],
+            color: "default",
+          },
+        },
+      ],
+    });
+  } catch (error) {
+    // Handle API error
   }
 };
 
@@ -151,6 +212,7 @@ const sendWebHookMap = {
   discord: sendDiscordWebhook,
   "google-mail": sendGoogleMail,
   "google-drive": createGoogleDriveFile,
+  "notion": sendNotionPage,
 } as const;
 
 export const send = async (

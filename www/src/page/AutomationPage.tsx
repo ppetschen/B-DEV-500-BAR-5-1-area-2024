@@ -33,13 +33,23 @@ export default function Workflow() {
   } | null>(null);
   const [action, setAction] = useState<string>("");
   const [reaction, setReaction] = useState<string>("");
-  const [actionContents, setActionContents] = useState<Record<string, string> | null>(null);
-  const [reactionContents, setReactionContents] = useState<Record<string, string> | null>(null);
+  const [actionContents, setActionContents] = useState<Record<
+    string,
+    string
+  > | null>(null);
+  const [reactionContents, setReactionContents] = useState<Record<
+    string,
+    string
+  > | null>(null);
   const [content, setContent] = useState<string>("");
   const navigate = useNavigate();
 
   const [activeStep, setActiveStep] = useState(0);
-  const steps = ["Select Action and Reaction", "Configure Contents", "Define Content"];
+  const steps = [
+    "Select Action and Reaction",
+    "Configure Contents",
+    "Define Content",
+  ];
 
   useEffect(() => {
     getAvailableAreas()
@@ -82,7 +92,9 @@ export default function Workflow() {
 
   const renderDynamicDropdowns = (
     data: Record<string, unknown>[],
-    setSelectedContent: React.Dispatch<React.SetStateAction<Record<string, string> | null>>,
+    setSelectedContent: React.Dispatch<
+      React.SetStateAction<Record<string, string> | null>
+    >,
     contentType: string
   ) => {
     const uniqueKeys = new Set<string>();
@@ -178,14 +190,14 @@ export default function Workflow() {
           <Step key={label}>
             <StepLabel
               sx={{
-                '& .MuiStepLabel-label': {
-                  color: '#5c1ed6',
+                "& .MuiStepLabel-label": {
+                  color: "#5c1ed6",
                 },
-                '& .Mui-completed .MuiStepLabel-label': {
-                  color: '#5c1ed6',
+                "& .Mui-completed .MuiStepLabel-label": {
+                  color: "#5c1ed6",
                 },
-                '& .Mui-active .MuiStepLabel-label': {
-                  color: '#5c1ed6',
+                "& .Mui-active .MuiStepLabel-label": {
+                  color: "#5c1ed6",
                 },
               }}
             >
