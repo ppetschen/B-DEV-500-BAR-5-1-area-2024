@@ -2,6 +2,7 @@ import process from "node:process";
 import { Octokit } from "@octokit/rest";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v10";
+import { google } from "googleapis";
 
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
@@ -119,17 +120,36 @@ const notionCompletions = async (
   return { data: [{event: "create_page"}] };
 }
 
-const gmailCompletions = async (
+const getGoogleMailCompletions = async (
   accessToken: string,
 ): Promise<Record<string, unknown>> => {
   return { data: [{event: "Send Email"}] };
+}
+
+const getGoogleDriveCOmpletions = async (
+  accessToken: string,
+): Promise<Record<string, unknown>> => {
+  return { data: [{event: "Create file"}] };
+}
+
+const getGoogleCalendarCompletions = async (
+  accessToken: string,
+): Promise<Record<string, unknown>> => {
+  const calendar = google.calendar("v3");
+  const auth = new google.auth.OAuth2();
+  auth.setCredentials({ access_token: accessToken });
+  google.options({ auth });
+
+  return { data: [{event: "Create event"}] };
 }
 
 const completionsMap = {
   "github": getGitHubCompletions,
   "discord": getDiscordCompletions,
   "notion": notionCompletions,
-  "google-mail": gmailCompletions,
+  "google-mail": getGoogleMailCompletions,
+  "google-calendar": getGoogleCalendarCompletions,
+  "google-drive": getGoogleDriveCOmpletions,
 } as const;
 
 export const complete = async (
