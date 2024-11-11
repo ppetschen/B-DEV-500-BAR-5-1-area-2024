@@ -97,6 +97,7 @@ const ServicesPage: React.FC = () => {
                   transform: "scale(1.05)",
                   boxShadow: 6,
                 },
+                height: '100%'
               }}
             >
               <Tooltip title={service.name} arrow>
