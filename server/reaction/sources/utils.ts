@@ -61,10 +61,10 @@ const createNotion = async (_context: unknown) => {
 };
 
 export const createWebHookMap = {
-  "discord": createDiscordWebhook,
+  discord: createDiscordWebhook,
   "google-mail": createGoogleMailWebhook,
   "google-drive": createGoogleDriveWebhook,
-  "notion": createNotion,
+  notion: createNotion,
 } as const;
 
 export const create = async (
@@ -117,7 +117,22 @@ const sendNotionPage = async ({ reaction_id, view }: HookContext) => {
 
   const notion = new Client({ auth: serviceSubscription.data.access_token });
 
-  const parentPageId = "1316ee16-ad77-80f2-b5b8-ccb23370cf93";
+  const pages = await notion.search({
+    filter: {
+      property: "object",
+      value: "page",
+    },
+  });
+
+  if (!pages) {
+    throw new Error("Failed to get pages");
+  }
+
+  const [curentPage] = pages.results;
+
+  const { id: parentPageId } = await notion.pages.retrieve({
+    page_id: curentPage.id,
+  });
 
   const response = await notion.pages.create({
     parent: { page_id: parentPageId },
@@ -140,7 +155,8 @@ const sendNotionPage = async ({ reaction_id, view }: HookContext) => {
           rich_text: [
             {
               text: {
-                content: "You're using AREA, an automation platform for your web applications.",
+                content:
+                  "You're using AREA, an automation platform for your web applications.",
               },
             },
           ],
@@ -214,10 +230,10 @@ const createGoogleDriveFile = async ({ reaction_id, view }: HookContext) => {
 };
 
 const sendWebHookMap = {
-  "discord": sendDiscordWebhook,
+  discord: sendDiscordWebhook,
   "google-mail": sendGoogleMail,
   "google-drive": createGoogleDriveFile,
-  "notion": sendNotionPage,
+  notion: sendNotionPage,
 } as const;
 
 export const send = async (
