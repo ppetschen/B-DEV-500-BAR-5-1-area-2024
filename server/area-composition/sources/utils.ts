@@ -117,20 +117,20 @@ const getDiscordCompletions = async (
 const notionCompletions = async (
   accessToken: string,
 ): Promise<Record<string, unknown>> => {
-  return { data: [{event: "create_page"}] };
-}
+  return { data: [{ event: "create_page" }] };
+};
 
 const getGoogleMailCompletions = async (
   accessToken: string,
 ): Promise<Record<string, unknown>> => {
-  return { data: [{event: "Send Email"}] };
-}
+  return { data: [{ event: "Send Email" }] };
+};
 
 const getGoogleDriveCOmpletions = async (
   accessToken: string,
 ): Promise<Record<string, unknown>> => {
-  return { data: [{event: "Create file"}] };
-}
+  return { data: [{ event: "Create file" }] };
+};
 
 const getGoogleCalendarCompletions = async (
   accessToken: string,
@@ -140,8 +140,8 @@ const getGoogleCalendarCompletions = async (
   auth.setCredentials({ access_token: accessToken });
   google.options({ auth });
 
-  return { data: [{event: "Create event"}] };
-}
+  return { data: [{ event: "Create event" }] };
+};
 
 const completionsMap = {
   "github": getGitHubCompletions,

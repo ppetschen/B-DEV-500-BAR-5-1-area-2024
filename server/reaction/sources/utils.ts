@@ -77,7 +77,7 @@ export const createWebHookMap = {
 
 export const create = async (
   type: keyof typeof createWebHookMap,
-  context: unknown & { _internal: InternalConfig }
+  context: unknown & { _internal: InternalConfig },
 ): Promise<{ url: string }> => createWebHookMap[type](context);
 
 export const renderEjs = async (markup: string, context: unknown) => {
@@ -119,7 +119,7 @@ const sendNotionPage = async ({ reaction_id, view }: HookContext) => {
   const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "notion",
-    user_id
+    user_id,
   );
   const serviceSubscription = findServiceSubscription;
 
@@ -177,7 +177,7 @@ const sendGoogleMail = async ({ reaction_id, view }: HookContext) => {
   const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "google-mail",
-    user_id
+    user_id,
   );
   const serviceSubscription = findServiceSubscription;
   const emailContext = {
@@ -206,7 +206,7 @@ const createGoogleDriveFile = async ({ reaction_id, view }: HookContext) => {
   const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "google-drive",
-    user_id
+    user_id,
   );
 
   const serviceSubscription = findServiceSubscription;
@@ -235,7 +235,7 @@ const sendGoogleCalendarEvent = async ({ reaction_id, view }: HookContext) => {
   const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "google-calendar",
-    user_id
+    user_id,
   );
   const serviceSubscription = findServiceSubscription;
 
@@ -245,7 +245,7 @@ const sendGoogleCalendarEvent = async ({ reaction_id, view }: HookContext) => {
       summary: `New Notification from ${reaction_id}`,
     },
   };
-  
+
   const response = await googleCreateEventInCalendar(eventContext);
 
   if (!response) {
@@ -263,5 +263,5 @@ const sendWebHookMap = {
 
 export const send = async (
   type: keyof typeof sendWebHookMap,
-  context: HookContext
+  context: HookContext,
 ): Promise<void> => sendWebHookMap[type](context);

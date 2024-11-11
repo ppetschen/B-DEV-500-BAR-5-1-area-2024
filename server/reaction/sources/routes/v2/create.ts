@@ -4,7 +4,13 @@ import jwt from "jsonwebtoken";
 import { create, host } from "../../utils";
 
 const schema = z.object({
-  type: z.enum(["discord", "google-mail", "google-drive", "notion", "google-calendar"]),
+  type: z.enum([
+    "discord",
+    "google-mail",
+    "google-drive",
+    "notion",
+    "google-calendar",
+  ]),
   context: z.unknown(),
   markup: z.string(),
 });
@@ -41,7 +47,7 @@ const route: Route<typeof schema> = {
           service: type,
           user_id: consumer,
         }),
-      }
+      },
     );
 
     if (!serviceSubscriptionRequest.ok) {
