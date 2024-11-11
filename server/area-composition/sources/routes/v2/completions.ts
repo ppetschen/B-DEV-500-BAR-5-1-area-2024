@@ -13,7 +13,6 @@ const route: Route<typeof schema> = {
   method: "POST",
   schema,
   handler: async (request, _server) => {
-    console.log("Received completion request");
     const authToken = request.headers.get("Authorization") ?? "";
     const [, token] = authToken.split("Bearer ");
 
@@ -42,7 +41,6 @@ const route: Route<typeof schema> = {
       }
     );
 
-    console.log(`Entra1 --------------------`, toServiceSubscriptionRequest);
     if (!toServiceSubscriptionRequest.ok) {
       return new Response("The user has not subscribed to the destination", {
         status: 403,
@@ -61,7 +59,6 @@ const route: Route<typeof schema> = {
       }
     );
 
-    console.log(`Entra2 --------------------`);
     if (!fromServiceSubscriptionRequest.ok) {
       return new Response("The user has not subscribed to the source", {
         status: 403,

@@ -61,10 +61,10 @@ const createNotion = async (_context: unknown) => {
 };
 
 export const createWebHookMap = {
-  discord: createDiscordWebhook,
+  "discord": createDiscordWebhook,
   "google-mail": createGoogleMailWebhook,
   "google-drive": createGoogleDriveWebhook,
-  notion: createNotion,
+  "notion": createNotion,
 } as const;
 
 export const create = async (
@@ -97,56 +97,61 @@ const sendDiscordWebhook = async ({
   }
 };
 
-const sendNotionPage = async (context: unknown): Promise<void> => {
-  // const { title, content, parentPageId, userId } = context;
-  //const token
-  const title = getKey<string>(context, "title");
-  const content = getKey<string>(context, "content");
-  const parentPageId = getKey<string>(context, "parentPageId");
-  const userId = getKey<string>(context, "userId");
-  let notion: Client;
-  let response;
+const sendNotionPage = async ({ reaction_id, view }: HookContext) => {
+  const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: reaction_id }),
+  });
 
-  try {
-    notion = new Client({ auth: userId });
-  } catch (error) {
-    // Handle initialization error
-    return;
+  if (!findRequest.ok) {
+    throw new Error("Failed to find reaction");
   }
 
-  try {
-    response = await notion.pages.create({
-      parent: { page_id: parentPageId },
-      properties: {
-        title: {
-          title: [
+  const { owner_id: user_id } = await findRequest.json();
+  const findServiceSubscription = await getServiceSubscription(
+    "notion",
+    user_id
+  );
+  const serviceSubscription = findServiceSubscription;
+
+  const notion = new Client({ auth: serviceSubscription.data.access_token });
+
+  const parentPageId = "1316ee16-ad77-80f2-b5b8-ccb23370cf93";
+
+  const response = await notion.pages.create({
+    parent: { page_id: parentPageId },
+    properties: {
+      title: {
+        title: [
+          {
+            type: "text",
+            text: {
+              content: view,
+            },
+          },
+        ],
+      },
+    },
+    children: [
+      {
+        object: "block",
+        paragraph: {
+          rich_text: [
             {
-              type: "text",
               text: {
-                content: title,
+                content: "This is a test" || "",
               },
             },
           ],
+          color: "default",
         },
       },
-      children: [
-        {
-          object: "block",
-          paragraph: {
-            rich_text: [
-              {
-                text: {
-                  content: content || "",
-                },
-              },
-            ],
-            color: "default",
-          },
-        },
-      ],
-    });
-  } catch (error) {
-    // Handle API error
+    ],
+  });
+
+  if (!response) {
+    throw new Error("Failed to create page");
   }
 };
 
@@ -209,7 +214,7 @@ const createGoogleDriveFile = async ({ reaction_id, view }: HookContext) => {
 };
 
 const sendWebHookMap = {
-  discord: sendDiscordWebhook,
+  "discord": sendDiscordWebhook,
   "google-mail": sendGoogleMail,
   "google-drive": createGoogleDriveFile,
   "notion": sendNotionPage,
