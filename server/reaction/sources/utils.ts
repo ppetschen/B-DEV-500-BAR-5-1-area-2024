@@ -140,7 +140,7 @@ const sendNotionPage = async ({ reaction_id, view }: HookContext) => {
           rich_text: [
             {
               text: {
-                content: "This is a test" || "",
+                content: "You're using AREA, an automation platform for your web applications.",
               },
             },
           ],

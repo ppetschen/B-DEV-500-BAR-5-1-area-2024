@@ -113,11 +113,12 @@ const getDiscordCompletions = async (
   return { data: guilds.map(({ id }) => ({ guildId: id })) };
 };
 
+
 const notionCompletions = async (
-  accessToken: string,
+  accessToken: string
 ): Promise<Record<string, unknown>> => {
-  return { data: [{event: "create_page"}] };
-}
+  return { data: [{event: "Create Page"}] };
+};
 
 const gmailCompletions = async (
   accessToken: string,
