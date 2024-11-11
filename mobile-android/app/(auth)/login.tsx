@@ -13,8 +13,8 @@ import { SafeAreaView } from "react-native";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function LoginPage() {
-    const [email, setEmail] = useState<string>("area1.epitech@gmail.com");
-    const [password, setPassword] = useState<string>("ThisIsAPassword123");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
