@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `8143bb8f2c50f9cc0a4938ceb19f137e84b9db36`.
+> GitHub actions, commit hash `04846eaafb91c12f059836449efdba42a54e147d`.
 
 ## reaction
 
@@ -26,7 +26,7 @@ POST /reaction/execute/create
 ```ts
 // This route is internal, won't be exposed
 {
-    type: "discord" | "google-mail" | "google-drive";
+    type: "discord" | "google-mail" | "google-drive" | "notion";
     context?: unknown;
     markup: string;
 }
@@ -237,7 +237,7 @@ POST /area-composition/compose
         context?: unknown;
     };
     to: {
-        type: "discord" | "google-mail" | "google-drive";
+        type: "discord" | "google-mail" | "google-drive" | "notion";
         context?: unknown;
     };
     markup: string;
@@ -251,7 +251,7 @@ POST /area-composition/completions
 // Authorization: Bearer $AUTH_TOKEN
 {
     from: "github";
-    to: "discord";
+    to: "discord" | "notion" | "google-mail";
 }
 ```
 
