@@ -146,6 +146,7 @@ const Dashboard: React.FC = () => {
                       transform: "scale(1.05)",
                       boxShadow: 6,
                     },
+                    height: '100%'
                   }}
                 >
                   <Box sx={{ color: "#fff", mr: 2 }}>
