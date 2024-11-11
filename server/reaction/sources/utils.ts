@@ -1,8 +1,12 @@
 import process from "node:process";
 import type { HookContext, InternalConfig } from "./types";
 import ejs from "ejs";
-import { googleCreateDriveFile, googleSendEmail } from "./controllers/sendGoogleMail";
+import {
+  googleCreateDriveFile,
+  googleSendEmail,
+} from "./controllers/sendGoogleMail";
 import { getServiceSubscription } from "./controllers/serviceController";
+import { Client } from "@notionhq/client";
 
 const HOSTS = {
   DATABASE: process.env["DATABASE_HOST"],
@@ -12,10 +16,7 @@ const HOSTS = {
 export const host = (key: keyof typeof HOSTS, path: string) =>
   `http://${HOSTS[key]}${path}`;
 
-function getKey<T>(
-  object: unknown,
-  key: string,
-): T {
+function getKey<T>(object: unknown, key: string): T {
   if (typeof object !== "object" || object === null) {
     throw new Error("Object is not an object");
   }
@@ -29,13 +30,8 @@ function getKey<T>(
   throw new Error(`Key ${key} not found in object`);
 }
 
-const createDiscordWebhook = async (
-  context: unknown,
-) => {
-  const { webhook_url } = getKey<InternalConfig>(
-    context,
-    "_internal",
-  );
+const createDiscordWebhook = async (context: unknown) => {
+  const { webhook_url } = getKey<InternalConfig>(context, "_internal");
 
   if (!webhook_url) {
     throw new Error("No webhook url provided");
@@ -46,17 +42,19 @@ const createDiscordWebhook = async (
   };
 };
 
-const createGoogleMailWebhook = async (
-  _context: unknown,
-) => {
+const createGoogleMailWebhook = async (_context: unknown) => {
   return {
     url: "",
   };
 };
 
-const createGoogleDriveWebhook = async (
-  _context: unknown,
-) => {
+const createGoogleDriveWebhook = async (_context: unknown) => {
+  return {
+    url: "",
+  };
+};
+
+const createNotion = async (_context: unknown) => {
   return {
     url: "",
   };
@@ -66,11 +64,12 @@ export const createWebHookMap = {
   "discord": createDiscordWebhook,
   "google-mail": createGoogleMailWebhook,
   "google-drive": createGoogleDriveWebhook,
+  "notion": createNotion,
 } as const;
 
 export const create = async (
   type: keyof typeof createWebHookMap,
-  context: unknown & { _internal: InternalConfig },
+  context: unknown & { _internal: InternalConfig }
 ): Promise<{ url: string }> => createWebHookMap[type](context);
 
 export const renderEjs = async (markup: string, context: unknown) => {
@@ -81,9 +80,10 @@ export const renderEjs = async (markup: string, context: unknown) => {
   return ejs.render(markup, context);
 };
 
-const sendDiscordWebhook = async (
-  { execution_endpoint, view }: HookContext,
-) => {
+const sendDiscordWebhook = async ({
+  execution_endpoint,
+  view,
+}: HookContext) => {
   const response = await fetch(execution_endpoint, {
     method: "POST",
     headers: {
@@ -97,9 +97,65 @@ const sendDiscordWebhook = async (
   }
 };
 
-const sendGoogleMail = async (
-  { reaction_id, view }: HookContext,
-) => {
+const sendNotionPage = async ({ reaction_id, view }: HookContext) => {
+  const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: reaction_id }),
+  });
+
+  if (!findRequest.ok) {
+    throw new Error("Failed to find reaction");
+  }
+
+  const { owner_id: user_id } = await findRequest.json();
+  const findServiceSubscription = await getServiceSubscription(
+    "notion",
+    user_id
+  );
+  const serviceSubscription = findServiceSubscription;
+
+  const notion = new Client({ auth: serviceSubscription.data.access_token });
+
+  const parentPageId = "1316ee16-ad77-80f2-b5b8-ccb23370cf93";
+
+  const response = await notion.pages.create({
+    parent: { page_id: parentPageId },
+    properties: {
+      title: {
+        title: [
+          {
+            type: "text",
+            text: {
+              content: view,
+            },
+          },
+        ],
+      },
+    },
+    children: [
+      {
+        object: "block",
+        paragraph: {
+          rich_text: [
+            {
+              text: {
+                content: "This is a test" || "",
+              },
+            },
+          ],
+          color: "default",
+        },
+      },
+    ],
+  });
+
+  if (!response) {
+    throw new Error("Failed to create page");
+  }
+};
+
+const sendGoogleMail = async ({ reaction_id, view }: HookContext) => {
   const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -113,7 +169,7 @@ const sendGoogleMail = async (
   const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "google-mail",
-    user_id,
+    user_id
   );
   const serviceSubscription = findServiceSubscription;
   const emailContext = {
@@ -121,16 +177,14 @@ const sendGoogleMail = async (
     subject: `New Notification from ${reaction_id}`,
     body: view,
   };
-  
+
   const response = await googleSendEmail(emailContext);
   if (!response) {
     throw new Error("Failed to send email");
   }
 };
 
-const createGoogleDriveFile = async (
-  { reaction_id, view }: HookContext,
-) => {
+const createGoogleDriveFile = async ({ reaction_id, view }: HookContext) => {
   const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -144,9 +198,9 @@ const createGoogleDriveFile = async (
   const { owner_id: user_id } = await findRequest.json();
   const findServiceSubscription = await getServiceSubscription(
     "google-drive",
-    user_id,
+    user_id
   );
-  
+
   const serviceSubscription = findServiceSubscription;
   const driveContext = {
     access_token: serviceSubscription.data.access_token,
@@ -163,9 +217,10 @@ const sendWebHookMap = {
   "discord": sendDiscordWebhook,
   "google-mail": sendGoogleMail,
   "google-drive": createGoogleDriveFile,
+  "notion": sendNotionPage,
 } as const;
 
 export const send = async (
   type: keyof typeof sendWebHookMap,
-  context: HookContext,
+  context: HookContext
 ): Promise<void> => sendWebHookMap[type](context);

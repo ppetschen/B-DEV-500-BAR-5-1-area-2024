@@ -1,0 +1,7 @@
+GOOGLE_CLIENT_ID=912325369773-gu4kejsctd3rojs734sc5du08j83t0dj.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_REDIRECT_URI=http://localhost:8000/user-management/auth/callback?service=google
+
+GITHUB_CLIENT_ID=Iv23liE1utrsX0xApFO7
+GITHUB_CLIENT_SECRET=bb30e498d5f9d538a1816e58b73bc76182d176be
+GITHUB_REDIRECT_URI=http://localhost:8000/user-management/auth/callback?service=github

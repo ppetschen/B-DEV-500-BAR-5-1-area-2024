@@ -1,12 +1,11 @@
-import apiClient, { API_BASE_URL } from "./api";
+import { apiClient } from "./api";
 
 export type AreaElement = {
   id: string;
-  markup: string;
   service_name: string;
-  execution_endpoint: string;
-  status: string;
-  executed_at: string | null;
+  event_type: string;
+  payload: unknown;
+  created_at: string;
   owner_id: number;
 };
 
@@ -22,32 +21,75 @@ export const listAreas = async () => {
   return response.data;
 };
 
-type AreaInput = {
-  from_service_name: string;
-  from_event_type: string;
-  from_payload: unknown;
-  to_service_name: string;
-  to_execution_endpoint: string;
-};
+export const getAvailableAreas = async () => {
+  const response = await apiClient.get(`/area-composition/available`);
 
-type AreaOutput = {
-  actionId: string;
-  reactionId: string;
-};
-
-export const setupArea = async (area: AreaInput) => {
-  const response = await apiClient.post<AreaOutput>(
-    "/area-composition/create",
-    area,
-  );
-
-  if (!response || !response.data) {
-    return null;
+  if (!response.data) {
+    return {
+      actions: [],
+      reactions: [],
+    };
   }
 
-  const { actionId } = response.data;
+  return response.data as {
+    actions: string[];
+    reactions: string[];
+  };
+};
 
-  return {
-    endpoint: `${API_BASE_URL}/area-composition/execute?id=${actionId}`,
+export const getCompletions = async (
+  { from, to }: { from: string; to: string },
+) => {
+  const response = await apiClient.post(
+    `/area-composition/completions`,
+    { from, to },
+  );
+
+  if (!response.data) {
+    return {
+      from: undefined,
+      to: undefined,
+    };
+  }
+
+  return response.data as {
+    from: { data: unknown[] };
+    to: { data: unknown[] };
+  };
+};
+
+export const composeArea = async (data: {
+  from: {
+    type: string;
+    context: unknown;
+  };
+  to: {
+    type: string;
+    context: unknown;
+  };
+  markup: string;
+}) => {
+  console.log(data);
+
+  if (data.from.type === "github") {
+    const obj = data.from.context as Record<string, unknown>;
+    if (!Array.isArray(obj.events)) {
+      obj.events = [obj.events];
+    }
+  }
+
+  const response = await apiClient.post(`/area-composition/compose`, data);
+  console.log(response);
+
+  if (!response.data) {
+    return {
+      action_id: undefined,
+      reaction_id: undefined,
+    };
+  }
+
+  return response.data as {
+    action_id: string;
+    reaction_id: string;
   };
 };

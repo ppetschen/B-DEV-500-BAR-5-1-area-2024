@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import { create, host } from "../../utils";
 
 const schema = z.object({
-  type: z.enum(["discord", "google-mail", "google-drive"]),
+  type: z.enum(["discord", "google-mail", "google-drive", "notion"]),
   context: z.unknown(),
   markup: z.string(),
 });
@@ -41,7 +41,7 @@ const route: Route<typeof schema> = {
           service: type,
           user_id: consumer,
         }),
-      },
+      }
     );
 
     if (!serviceSubscriptionRequest.ok) {
@@ -50,13 +50,8 @@ const route: Route<typeof schema> = {
       });
     }
 
-    const {
-      access_token,
-      refresh_token,
-      expires_in,
-      updated_at,
-      webhook_url,
-    } = await serviceSubscriptionRequest.json();
+    const { access_token, refresh_token, expires_in, updated_at, webhook_url } =
+      await serviceSubscriptionRequest.json();
 
     if (Date.now() > updated_at + expires_in) {
       return new Response("The credentials are expired", {
@@ -74,20 +69,17 @@ const route: Route<typeof schema> = {
         },
       });
 
-      const insertRequest = await fetch(
-        host("DATABASE", "/reaction/new"),
-        {
-          method: "POST",
-          headers: { ...request.headers },
-          body: JSON.stringify({
-            service_name: type,
-            execution_endpoint: url,
-            markup,
-            status: "pending",
-            owner_id: consumer,
-          }),
-        },
-      );
+      const insertRequest = await fetch(host("DATABASE", "/reaction/new"), {
+        method: "POST",
+        headers: { ...request.headers },
+        body: JSON.stringify({
+          service_name: type,
+          execution_endpoint: url,
+          markup,
+          status: "pending",
+          owner_id: consumer,
+        }),
+      });
 
       if (!insertRequest.ok) {
         return new Response("Failed to create webhook", { status: 500 });

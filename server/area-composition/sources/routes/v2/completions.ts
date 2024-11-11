@@ -5,7 +5,7 @@ import { complete, host } from "../../utils";
 
 const schema = z.object({
   from: z.enum(["github"]),
-  to: z.enum(["discord"]),
+  to: z.enum(["discord", "notion", "google-mail"]),
 });
 
 const route: Route<typeof schema> = {
@@ -38,7 +38,7 @@ const route: Route<typeof schema> = {
           service: to,
           user_id: consumer,
         }),
-      },
+      }
     );
 
     if (!toServiceSubscriptionRequest.ok) {
@@ -56,7 +56,7 @@ const route: Route<typeof schema> = {
           service: from,
           user_id: consumer,
         }),
-      },
+      }
     );
 
     if (!fromServiceSubscriptionRequest.ok) {
@@ -102,7 +102,7 @@ const route: Route<typeof schema> = {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
   },
 };
