@@ -7,31 +7,19 @@
 
 import React, { useState } from "react";
 import {
-    Text,
     View,
     FlatList,
     Pressable,
     TouchableOpacity,
     ScrollView,
-    Linking,
 } from "react-native";
-import { styled } from "nativewind";
-import IconFontAwesome from "react-native-vector-icons/FontAwesome";
-import IconMaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import IconMaterial from "react-native-vector-icons/MaterialIcons";
 import { authenticateToService } from "@/services/service-management";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as WebBrowser from "expo-web-browser";
-import * as AuthSession from "expo-auth-session";
-import {ServicesList} from "@/components/ServicesList";
-
-const StyledText = styled(Text);
-const StyledView = styled(View);
+import { ServicesList } from "@/components/ServicesList";
+import { Text } from "react-native-paper";
 
 export default function ServicesPage() {
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(
-        null
-    );
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     const services = ServicesList();
 
@@ -40,12 +28,19 @@ export default function ServicesPage() {
         : services;
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#F7F7F9" }}>
-            <StyledView className="p-6">
-                <StyledText className="text-3xl font-bold text-[#5A6ACF] mb-6 text-center">
-                    SERVICES
-                </StyledText>
-
+        <SafeAreaView style={{ flex: 1, padding: 16 }}>
+            <View style={{ padding: 6 }}>
+                <Text
+                    variant="headlineLarge"
+                    style={{
+                        color: "#5A6ACF",
+                        marginBottom: 20,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                    }}
+                >
+                    Services
+                </Text>
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -62,9 +57,7 @@ export default function ServicesPage() {
                         <Pressable
                             key={category}
                             onPress={() =>
-                                setSelectedCategory(
-                                    category === "All" ? null : category
-                                )
+                                setSelectedCategory(category === "All" ? null : category)
                             }
                             style={{
                                 paddingHorizontal: 12,
@@ -73,25 +66,24 @@ export default function ServicesPage() {
                                 marginRight: 8,
                                 backgroundColor:
                                     selectedCategory === category ||
-                                        (category === "All" &&
-                                            selectedCategory === null)
+                                    (category === "All" && selectedCategory === null)
                                         ? "#5A6ACF"
                                         : "transparent",
                             }}
                         >
-                            <StyledText
+                            <Text
+                                variant="labelMedium"
                                 style={{
-                                    fontSize: 14,
                                     color:
                                         selectedCategory === category ||
-                                            (category === "All" &&
-                                                selectedCategory === null)
+                                        (category === "All" && selectedCategory === null)
                                             ? "#fff"
                                             : "#5A6ACF",
+                                    fontSize: 14,
                                 }}
                             >
                                 {category}
-                            </StyledText>
+                            </Text>
                         </Pressable>
                     ))}
                 </ScrollView>
@@ -107,9 +99,7 @@ export default function ServicesPage() {
                                 const service = item.name.toLowerCase();
                                 const result = await authenticateToService(service);
                                 if (!result) {
-                                    console.log(
-                                        `Failed to authenticate to ${item.name}`
-                                    );
+                                    console.log(`Failed to authenticate to ${item.name}`);
                                 }
                             }}
                             style={{
@@ -126,7 +116,7 @@ export default function ServicesPage() {
                                 elevation: 4,
                             }}
                         >
-                            <StyledView
+                            <View
                                 style={{
                                     backgroundColor: "#5A6ACF",
                                     borderRadius: 100,
@@ -139,18 +129,30 @@ export default function ServicesPage() {
                                 }}
                             >
                                 {item.icon}
-                            </StyledView>
-                            <StyledText className="text-lg font-bold text-[#273240] mb-1">
+                            </View>
+                            <Text
+                                variant="labelMedium"
+                                style={{
+                                    color: "#273240",
+                                    marginBottom: 10,
+                                    fontWeight: "bold",
+                                }}
+                            >
                                 {item.name}
-                            </StyledText>
-                            <StyledText className="text-sm text-gray-600 text-center">
+                            </Text>
+                            <Text
+                                variant="labelSmall"
+                                style={{
+                                    color: "#4b5563",
+                                }}
+                            >
                                 {item.description}
-                            </StyledText>
+                            </Text>
                         </TouchableOpacity>
                     )}
                     contentContainerStyle={{ paddingBottom: 20 }}
                 />
-            </StyledView>
+            </View>
         </SafeAreaView>
     );
 }
