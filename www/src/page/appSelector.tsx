@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { getAvailableAreas } from "@/services/scripts";
 
 type Reaction =
   | {
@@ -67,38 +68,103 @@ const AppSelector: React.FC<AppSelectorProps> = ({ title, onComplete }) => {
     Twitch: ["Stream Started", "Clip Created", "Subscription"],
   };
 
+
+  useEffect(() =>{
+    const getAreas = async () => {
+      const response = await getAvailableAreas();
+      console.log(response);
+    }
+    getAreas();
+    console.log("getAreas");
+  }, [])
+
+
+  // const handleNext = () => {
+  //   if (activeStep === steps.length - 1) {
+  //     const reactionData: Reaction = reactionDestination === "Discord"
+  //       ? {
+  //           app: "Discord",
+  //           trigger: reactionKind,
+  //           message_content: reactionPayload,
+  //           webhook_url: webhookUrl,
+  //         }
+  //       : reactionDestination === "Google"
+  //       ? {
+  //           app: "Google",
+  //           trigger: reactionKind,
+  //           file_name: fileName,
+  //           file_content: fileContent,
+  //         }
+  //       : reactionDestination === "Twitch" && reactionKind === "Subscription"
+  //       ? {
+  //           app: "Twitch",
+  //           trigger: "Subscription",
+  //           message_content: reactionPayload,
+  //           webhook_url: webhookUrl,
+  //         };
+
+  //     onComplete(
+  //       { app: actionSource, event_type: actionKind, payload: reactionPayload },
+  //       reactionData,
+  //     );
+  //   } else {
+  //     setActiveStep((prevStep) => prevStep + 1);
+  //   }
+  // };
+  
+
   const handleNext = () => {
     if (activeStep === steps.length - 1) {
-      const reactionData: Reaction = reactionDestination === "Discord"
-        ? {
+      let reactionData: Reaction | undefined;
+  
+      switch (reactionDestination) {
+        case "Discord":
+          reactionData = {
             app: "Discord",
             trigger: reactionKind,
             message_content: reactionPayload,
             webhook_url: webhookUrl,
-          }
-        : reactionDestination === "Google"
-        ? {
+          };
+          break;
+  
+        case "Google":
+          reactionData = {
             app: "Google",
             trigger: reactionKind,
             file_name: fileName,
             file_content: fileContent,
-          }
-        : reactionDestination === "Twitch" && reactionKind === "Subscription"
-        ? {
-            app: "Twitch",
-            trigger: "Subscription",
-            message_content: reactionPayload,
-            webhook_url: webhookUrl,
           };
-
-      onComplete(
-        { app: actionSource, event_type: actionKind, payload: reactionPayload },
-        reactionData,
-      );
+          break;
+  
+        case "Twitch":
+          if (reactionKind === "Subscription") {
+            reactionData = {
+              app: "Twitch",
+              trigger: "Subscription",
+              message_content: reactionPayload,
+              webhook_url: webhookUrl,
+            };
+          }
+          break;
+  
+        // Add any default behavior or additional cases if needed
+        default:
+          // Handle the case where reactionDestination is none of the above
+          break;
+      }
+  
+      // Ensure reactionData is defined before calling onComplete
+      if (reactionData) {
+        onComplete(
+          { app: actionSource, event_type: actionKind, payload: reactionPayload },
+          reactionData
+        );
+      }
     } else {
       setActiveStep((prevStep) => prevStep + 1);
     }
   };
+
   
   const handleBack = () => {
     setActiveStep((prevStep) => prevStep - 1);

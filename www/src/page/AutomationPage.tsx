@@ -20,7 +20,7 @@ const createArea = async (...[action, reaction]: One) => {
           },
     to_service_name: reaction.app.toUpperCase(),
     to_execution_endpoint:
-      reaction.app === "Discord" ? reaction.webhook_url : reaction.file_name,
+      reaction.app === "Discord" ? reaction.webhook_url : "",
   };
 
   const data = await setupArea(payload);

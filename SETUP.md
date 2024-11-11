@@ -27,7 +27,7 @@ vim server/user-management/.env
 cp server/action/.env.example server/action/.env
 vim server/action/.env
 ```
-
+<!-- EXIST AND REOPEN IT PLEASE -->
 3. Fill in the `frontend` configuration file.
 
 ```sh
