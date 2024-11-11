@@ -91,7 +91,7 @@ export default function ServicesPage() {
                 <FlatList
                     data={filteredServices}
                     keyExtractor={(item) => item.name}
-                    numColumns={2}
+                    numColumns={1}
                     columnWrapperStyle={{ justifyContent: "space-between" }}
                     renderItem={({ item }) => (
                         <TouchableOpacity
@@ -106,8 +106,7 @@ export default function ServicesPage() {
                                 backgroundColor: "white",
                                 padding: 16,
                                 borderRadius: 15,
-                                margin: 8,
-                                width: 160,
+                                margin: 10,
                                 alignItems: "center",
                                 shadowColor: "#000",
                                 shadowOffset: { width: 0, height: 4 },
