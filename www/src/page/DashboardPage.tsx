@@ -18,7 +18,7 @@ type ActivityElement = {
   name: string;
   services: JSX.Element[];
   status: string;
-  date: string;
+  date: string | null;
   url: string;
 };
 
@@ -102,7 +102,6 @@ const Dashboard: React.FC = () => {
         ]);
       }).finally(() => setLoading(false));
   }, []);
-
   const statusColors: {
     [key in "Completed" | "Pending" | "Failed"]:
       | "success"
@@ -147,6 +146,7 @@ const Dashboard: React.FC = () => {
                       transform: "scale(1.05)",
                       boxShadow: 6,
                     },
+                    height: '100%'
                   }}
                 >
                   <Box sx={{ color: "#fff", mr: 2 }}>

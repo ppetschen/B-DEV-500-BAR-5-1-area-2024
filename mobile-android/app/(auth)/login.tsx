@@ -7,17 +7,21 @@
 
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
-import { login, oauthUser } from "@/services/user-management";
-import { Text, Button, TextInput } from "react-native-paper";
+import { login } from "@/services/user-management";
+import { Text, Button, TextInput, Snackbar } from "react-native-paper";
 import { SafeAreaView } from "react-native";
 import IconFontAwesome from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { REQUEST_ERROR, REQUEST_ERROR_MESSAGE } from "@/asyncStorageLibrary/basicRequestVars";
 
 export default function LoginPage() {
-    const [email, setEmail] = useState<string>("area1.epitech@gmail.com");
-    const [password, setPassword] = useState<string>("ThisIsAPassword123");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
 
     const router = useRouter();
 
@@ -36,13 +40,28 @@ export default function LoginPage() {
         }
         if (valid) {
             const response = await login({ email, password }, "credentials");
-            // const response = await oauthUser("google");
+
             if (response) {
                 router.push("/dashboard");
             } else {
-                console.log("Login failed");
+                // Check for error message
+                const errorExists = await AsyncStorage.getItem(REQUEST_ERROR);
+                if (errorExists === "true") {
+                    const errorMessage = await AsyncStorage.getItem(REQUEST_ERROR_MESSAGE);
+                    setSnackbarMessage(errorMessage || "An error occurred");
+                    setSnackbarVisible(true);
+                } else {
+                    setSnackbarMessage("Login failed");
+                    setSnackbarVisible(true);
+                }
             }
         }
+    };
+
+    const handleSnackbarDismiss = async () => {
+        setSnackbarVisible(false);
+        await AsyncStorage.setItem(REQUEST_ERROR, "false");
+        await AsyncStorage.setItem(REQUEST_ERROR_MESSAGE, "");
     };
 
     return (
@@ -54,10 +73,7 @@ export default function LoginPage() {
                 paddingHorizontal: 24,
             }}
         >
-            <Text
-                variant="headlineLarge"
-                style={{ marginBottom: 16, color: "#5A6ACF" }}
-            >
+            <Text variant="headlineLarge" style={{ marginBottom: 16, color: "#5A6ACF" }}>
                 Login
             </Text>
 
@@ -73,11 +89,7 @@ export default function LoginPage() {
                 style={{ width: "80%", marginBottom: 16 }}
                 mode="outlined"
             />
-            {emailError && (
-                <Text style={{ color: "red", marginBottom: 8 }}>
-                    {emailError}
-                </Text>
-            )}
+            {emailError && <Text style={{ color: "red", marginBottom: 8 }}>{emailError}</Text>}
 
             <TextInput
                 label="Password"
@@ -98,9 +110,7 @@ export default function LoginPage() {
                 }
             />
             {passwordError && (
-                <Text style={{ color: "red", marginBottom: 8 }}>
-                    {passwordError}
-                </Text>
+                <Text style={{ color: "red", marginBottom: 8 }}>{passwordError}</Text>
             )}
 
             <Button
@@ -126,12 +136,19 @@ export default function LoginPage() {
                     justifyContent: "center",
                     alignItems: "center",
                 }}
-                icon={() => (
-                    <IconFontAwesome name="google" size={32} color="#fff" />
-                )}
+                icon={() => <IconFontAwesome name="google" size={32} color="#fff" />}
             >
                 Login with Google
             </Button>
+
+            <Snackbar
+                visible={snackbarVisible}
+                onDismiss={handleSnackbarDismiss}
+                duration={3000}
+                style={{ backgroundColor: "red" }}
+            >
+                {snackbarMessage}
+            </Snackbar>
         </SafeAreaView>
     );
 }

@@ -1,60 +1,47 @@
+/*
+ ** EPITECH PROJECT, 2024
+ ** Area
+ ** File description:
+ ** workflow creation page
+ */
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
-import {
-    Card,
-    Menu,
-    Provider as PaperProvider,
-    Text,
-    TextInput,
-} from "react-native-paper";
-import {
-    composeArea,
-    getAvailableAreas,
-    getCompletions,
-} from "@/services/area-composition";
+import { SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Text, TextInput, Card, Divider, Snackbar } from "react-native-paper";
+import { composeArea, getAvailableAreas, getCompletions } from "@/services/area-composition";
 import { useRouter } from "expo-router";
+import DropdownSelector from "@/components/DropdownSelector";
 
 export default function Workflow() {
     const [error, setError] = useState<string | null>(null);
-    const [areas, setAreas] = useState<
-        { actions: string[]; reactions: string[] } | null
-    >(null);
-    const [completions, setCompletions] = useState<
-        {
-            from: { data: Record<string, unknown>[] };
-            to: { data: Record<string, unknown>[] };
-        } | null
-    >(null);
-    const [action, setAction] = useState<string | null>(null);
-    const [reaction, setReaction] = useState<string | null>(null);
-    const [actionMenuVisible, setActionMenuVisible] = useState(false);
-    const [reactionMenuVisible, setReactionMenuVisible] = useState(false);
-    const [actionContents, setActionContents] = useState<
-        Record<string, string> | null
-    >(null);
-    const [reactionContents, setReactionContents] = useState<
-        Record<string, string> | null
-    >(null);
-    const [dynamicMenuVisibility, setDynamicMenuVisibility] = useState<
-        Record<string, boolean>
-    >({});
+    const [areas, setAreas] = useState<{ actions: string[]; reactions: string[] } | null>(null);
+    const [completions, setCompletions] = useState<{
+        from: { data: Record<string, unknown>[] };
+        to: { data: Record<string, unknown>[] };
+    } | null>(null);
+    const [action, setAction] = useState<{ label: string; value: string } | null>(null);
+    const [reaction, setReaction] = useState<{ label: string; value: string } | null>(null);
+    const [actionModalVisible, setActionModalVisible] = useState(false);
+    const [reactionModalVisible, setReactionModalVisible] = useState(false);
+    const [actionContents, setActionContents] = useState<Record<string, string> | null>(null);
+    const [reactionContents, setReactionContents] = useState<Record<string, string> | null>(null);
+    const [dynamicMenuVisibility, setDynamicMenuVisibility] = useState<Record<string, boolean>>({});
     const [content, setContent] = useState<string | null>(null);
     const router = useRouter();
 
-    useEffect(() => {
-        getAvailableAreas()
-            .then((data) => {
-                setAreas(data);
-                setError(null);
-            })
-            .catch((err) => {
-                setError(err.message || "An error occurred");
-            });
-    }, []);
+  useEffect(() => {
+    getAvailableAreas()
+      .then((data) => {
+        setAreas(data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message || "An error occurred");
+      });
+  }, []);
 
     useEffect(() => {
         if (action && reaction) {
-            getCompletions({ from: action, to: reaction })
+            getCompletions({ from: action.value, to: reaction.value })
                 .then((data) => {
                     setCompletions({
                         from: data.from as any,
@@ -68,6 +55,9 @@ export default function Workflow() {
         }
     }, [action, reaction]);
 
+    const convertToDropdownItems = (items: string[]) =>
+        items.map((item) => ({ label: item, value: item }));
+
     const toggleDynamicMenu = (key: string) => {
         setDynamicMenuVisibility((prev) => ({
             ...prev,
@@ -77,144 +67,142 @@ export default function Workflow() {
 
     const renderDynamicDropdowns = (
         data: Record<string, unknown>[],
-        setSelectedContent: React.Dispatch<
-            React.SetStateAction<Record<string, string> | null>
-        >,
-        contentType: string,
+        setSelectedContent: React.Dispatch<React.SetStateAction<Record<string, string> | null>>,
+        contentType: string
     ) => {
         const uniqueKeys = new Set<string>();
 
-        return data.flatMap((item) => Object.keys(item))
+        return data
+            .flatMap((item) => Object.keys(item))
             .filter((key) => {
                 const isUnique = !uniqueKeys.has(key);
                 if (isUnique) uniqueKeys.add(key);
                 return isUnique;
             })
             .map((key) => (
-                <View key={key} style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownTitle}>{key}</Text>
-                    <Menu
-                        visible={dynamicMenuVisibility[key] || false}
-                        onDismiss={() => toggleDynamicMenu(key)}
-                        anchor={
-                            <Text
-                                onPress={() => toggleDynamicMenu(key)}
-                                style={styles.dropdownButton}
-                            >
-                                {contentType === "action"
+                <Card key={key} style={{ marginBottom: 16, padding: 16, marginHorizontal: 10 }}>
+                    <Text variant="titleLarge" style={{ fontWeight: "bold", marginBottom: 16 }}>
+                        {key}
+                    </Text>
+                    <Divider style={{ marginBottom: 16 }} />
+                    {/* <Text style={styles.dropdownTitle}>{key}</Text> */}
+                    <DropdownSelector
+                        title={`Select ${key}`}
+                        items={data
+                            .filter((elem) => elem[key])
+                            .map((elem) => ({
+                                label: String(elem[key]),
+                                value: String(elem[key]),
+                            }))}
+                        selectedItem={{
+                            label:
+                                contentType === "action"
                                     ? actionContents?.[key] || `Select ${key}`
-                                    : reactionContents?.[key] ||
-                                        `Select ${key}`}
-                            </Text>
-                        }
-                    >
-                        {data.filter((elem) => elem[key]).map((elem) => (
-                            <Menu.Item
-                                key={`${key}-${JSON.stringify(elem)}`}
-                                onPress={() => {
-                                    setSelectedContent((prev) => ({
-                                        ...prev,
-                                        [key]: String(elem[key]),
-                                    }));
-                                    toggleDynamicMenu(key);
-                                }}
-                                title={String(elem[key])}
-                            />
-                        ))}
-                    </Menu>
-                </View>
+                                    : reactionContents?.[key] || `Select ${key}`,
+                            value: key,
+                        }}
+                        onSelect={(item) => {
+                            setSelectedContent((prev) => ({
+                                ...prev,
+                                [key]: item.label,
+                            }));
+                        }}
+                        modalVisible={dynamicMenuVisibility[key] || false}
+                        setModalVisible={() => toggleDynamicMenu(key)}
+                    />
+                </Card>
             ));
     };
 
     return (
-        <PaperProvider>
+        <SafeAreaView style={{ flex: 1, padding: 16 }}>
+            <Text
+                variant="headlineLarge"
+                style={{
+                    color: "#5A6ACF",
+                    marginBottom: 20,
+                    fontWeight: "bold",
+                    textAlign: "center",
+                }}
+            >
+                NEW AREA
+            </Text>
+            {error && (
+                <Snackbar
+                    visible={true}
+                    style={{ backgroundColor: "red" }}
+                    onDismiss={function (): void {
+                        setError(null);
+                    }}
+                >
+                    {error}
+                </Snackbar>
+            )}
+            {/* {error && <Text style={styles.errorText}>Error: {error}</Text>} */}
             <ScrollView style={styles.container}>
-                <Text style={styles.header}>New AREA</Text>
-                {error && <Text style={styles.errorText}>Error: {error}</Text>}
+                {/* <Text style={styles.header}>New AREA</Text> */}
 
-                <View style={styles.dropdownContainer}>
-                    <Text style={styles.dropdownTitle}>Action</Text>
-                    <Menu
-                        visible={actionMenuVisible}
-                        onDismiss={() => setActionMenuVisible(false)}
-                        anchor={
-                            <Text
-                                onPress={() => setActionMenuVisible(true)}
-                                style={styles.dropdownButton}
-                            >
-                                {action || "Select Action"}
-                            </Text>
-                        }
-                    >
-                        {areas?.actions.map((actionOption) => (
-                            <Menu.Item
-                                key={actionOption}
-                                onPress={() => {
-                                    setAction(actionOption);
-                                    setActionMenuVisible(false);
-                                    setReaction(null);
-                                    setCompletions(null);
-                                }}
-                                title={actionOption}
-                            />
-                        ))}
-                    </Menu>
-
-                    <Text style={styles.dropdownTitle}>Reaction</Text>
-                    <Menu
-                        visible={reactionMenuVisible}
-                        onDismiss={() => setReactionMenuVisible(false)}
-                        anchor={
-                            <Text
-                                onPress={() => setReactionMenuVisible(true)}
-                                style={styles.dropdownButton}
-                            >
-                                {reaction || "Select Reaction"}
-                            </Text>
-                        }
-                    >
-                        {areas?.reactions.map((reactionOption) => (
-                            <Menu.Item
-                                key={reactionOption}
-                                onPress={() => {
-                                    setReaction(reactionOption);
-                                    setReactionMenuVisible(false);
-                                }}
-                                title={reactionOption}
-                            />
-                        ))}
-                    </Menu>
-                </View>
+                <Card style={{ marginBottom: 16, padding: 16, marginHorizontal: 10 }}>
+                    <Text variant="titleLarge" style={{ fontWeight: "bold", marginBottom: 16 }}>
+                        Action
+                    </Text>
+                    <Divider style={{ marginBottom: 16 }} />
+                    <DropdownSelector
+                        title="Select Action"
+                        items={convertToDropdownItems(areas?.actions || [])}
+                        selectedItem={action}
+                        onSelect={(item) => {
+                            setAction(item);
+                            setReaction(null);
+                            setCompletions(null);
+                        }}
+                        modalVisible={actionModalVisible}
+                        setModalVisible={setActionModalVisible}
+                    />
+                </Card>
+                <Card style={{ marginBottom: 16, padding: 16, marginHorizontal: 10 }}>
+                    <Text variant="titleLarge" style={{ fontWeight: "bold", marginBottom: 16 }}>
+                        Reaction
+                    </Text>
+                    <Divider style={{ marginBottom: 16 }} />
+                    <DropdownSelector
+                        title="Select Reaction"
+                        items={convertToDropdownItems(areas?.reactions || [])}
+                        selectedItem={reaction}
+                        onSelect={setReaction}
+                        modalVisible={reactionModalVisible}
+                        setModalVisible={setReactionModalVisible}
+                    />
+                </Card>
 
                 {completions && (
                     <>
-                        <Text style={styles.dropdownTitle}>Action Content</Text>
+                        {/* <Text style={styles.dropdownTitle}>Action Content</Text> */}
                         <View key={`action-content`}>
                             {renderDynamicDropdowns(
                                 completions.from.data,
                                 setActionContents,
-                                "action",
+                                "action"
                             )}
                         </View>
 
-                        <Text style={styles.dropdownTitle}>
-                            Reaction Content
-                        </Text>
+                        {/* <Text style={styles.dropdownTitle}>Reaction Content</Text> */}
                         <View key={`reaction-content`}>
                             {renderDynamicDropdowns(
                                 completions.to.data,
                                 setReactionContents,
-                                "reaction",
+                                "reaction"
                             )}
                         </View>
                     </>
                 )}
 
                 {actionContents && reactionContents && (
-                    <View style={styles.dropdownContainer}>
-                        <Text style={styles.dropdownTitle}>
+                    <Card style={{ marginBottom: 16, padding: 16, marginHorizontal: 10 }}>
+                        <Text variant="titleLarge" style={{ fontWeight: "bold", marginBottom: 16 }}>
                             Content
                         </Text>
+                        <Divider style={{ marginBottom: 16 }} />
                         <TextInput
                             onChangeText={setContent}
                             label="Supports EJS"
@@ -223,7 +211,7 @@ export default function Workflow() {
                             multiline
                             style={{ marginBottom: 20 }}
                         />
-                    </View>
+                    </Card>
                 )}
 
                 {content && (
@@ -236,50 +224,39 @@ export default function Workflow() {
                         }}
                         disabled={!action || !reaction}
                         onPress={async () => {
-                            const { reaction_id, action_id } =
-                                await composeArea({
-                                    from: {
-                                        type: action as string,
-                                        context: actionContents,
-                                    },
-                                    to: {
-                                        type: reaction as string,
-                                        context: reactionContents,
-                                    },
+                            if (action && reaction) {
+                                // Ensure action and reaction are non-null
+                                const { reaction_id, action_id } = await composeArea({
+                                    from: { type: action.value, context: actionContents },
+                                    to: { type: reaction.value, context: reactionContents },
                                     markup: content,
                                 });
 
-                            if (reaction_id && action_id) {
-                                router.push("/dashboard");
+                                if (reaction_id && action_id) {
+                                    router.push("/dashboard");
+                                } else {
+                                    setError("Failed to create AREA");
+                                    setAction(null);
+                                    setReaction(null);
+                                    setActionContents(null);
+                                    setReactionContents(null);
+                                    setContent(null);
+                                }
                             }
-
-                            setError("Failed to create AREA");
-                            setAction(null);
-                            setReaction(null);
-                            setActionContents(null);
-                            setReactionContents(null);
-                            setContent(null);
                         }}
                     >
-                        <Text
-                            style={{
-                                color: "#fff",
-                                textAlign: "center",
-                            }}
-                        >
-                            Submit
-                        </Text>
+                        <Text style={{ color: "#fff", textAlign: "center" }}>Submit</Text>
                     </TouchableOpacity>
                 )}
             </ScrollView>
-        </PaperProvider>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
         backgroundColor: "#f5f5f5",
     },
     header: {
@@ -294,21 +271,13 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         overflow: "hidden",
     },
-    dropdownTitle: {
-        fontSize: 16,
-        fontWeight: "bold",
-        color: "#333",
-        marginBottom: 8,
-        textAlign: "left",
-    },
-    dropdownButton: {
-        width: "100%",
-        marginBottom: 10,
-        paddingVertical: 10,
-        backgroundColor: "#e0e0e0",
-        borderRadius: 8,
-        textAlign: "center",
-    },
+    // dropdownTitle: {
+    //     fontSize: 16,
+    //     fontWeight: "bold",
+    //     color: "#333",
+    //     marginBottom: 8,
+    //     textAlign: "left",
+    // },
     errorText: {
         color: "red",
         marginBottom: 10,

@@ -62,7 +62,7 @@ const getGoogleCalendarStrategy = () => {
   strategy.redirect_uri = process.env.GOOGLE_CALENDAR_REDIRECT_URI!,
     strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
     strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
-    strategy.scope += "https://www.googleapis.com/auth/calendar.events";
+    strategy.scope += "https://www.googleapis.com/auth/calendar";
   return strategy;
 };
 

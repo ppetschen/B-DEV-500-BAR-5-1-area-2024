@@ -5,17 +5,18 @@ import { z } from "zod";
 const schema = z.never();
 
 const route: Route<typeof schema> = {
-    path: "/auth/redirect",
-    method: "GET",
-    schema,
-    handler: async (request, _server) => {
-        const token = new URLSearchParams(request.url.split("?")[1]).get(
-            "token",);
+  path: "/auth/redirect",
+  method: "GET",
+  schema,
+  handler: async (request, _server) => {
+    const token = new URLSearchParams(request.url.split("?")[1]).get(
+      "token",
+    );
 
-        const userRequest = await getUserByToken(token!);
+    const userRequest = await getUserByToken(token!);
 
-        return new Response(
-            `
+    return new Response(
+      `
         <html>
           <head>
             <style>
@@ -46,13 +47,13 @@ const route: Route<typeof schema> = {
           </body>
         </html>
       `,
-            {
-                headers: {
-                    "Content-Type": "text/html",
-                },
-            },
-        );
-    },
+      {
+        headers: {
+          "Content-Type": "text/html",
+        },
+      },
+    );
+  },
 };
 
 export default route;
