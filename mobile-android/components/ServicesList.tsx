@@ -84,7 +84,7 @@ export function ServicesList(): {
         {
             name: "Notion",
             description: "Notion is a versatile workspace tool",
-            icon: <NotionIcon />,
+            icon:  <IconFontAwesome name="notion" size={32} color="#fff" />,
             category: "Productivity",
         },
     ];
