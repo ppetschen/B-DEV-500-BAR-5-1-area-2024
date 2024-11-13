@@ -28,16 +28,16 @@ export default function Workflow() {
     const [content, setContent] = useState<string | null>(null);
     const router = useRouter();
 
-    useEffect(() => {
-        getAvailableAreas()
-            .then((data) => {
-                setAreas(data);
-                setError(null);
-            })
-            .catch((err) => {
-                setError(err.message || "An error occurred");
-            });
-    }, []);
+  useEffect(() => {
+    getAvailableAreas()
+      .then((data) => {
+        setAreas(data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError(err.message || "An error occurred");
+      });
+  }, []);
 
     useEffect(() => {
         if (action && reaction) {
@@ -52,16 +52,6 @@ export default function Workflow() {
                 .catch((err) => {
                     setError(err.message || "An error occurred");
                 });
-
-            if (completions) {
-                console.log("####################################################");
-                console.log("####################################################");
-                console.log("##                  COMPLETIONS                   ##");
-                console.log("####################################################");
-                console.log("####################################################");
-                console.log("Action Completions:", JSON.stringify(completions.from.data, null, 2));
-                console.log("Reaction Completions:", JSON.stringify(completions.to.data, null, 2));
-            }
         }
     }, [action, reaction]);
 

@@ -5,7 +5,13 @@ import { complete, host } from "../../utils";
 
 const schema = z.object({
   from: z.enum(["github"]),
-  to: z.enum(["discord"]),
+  to: z.enum([
+    "discord",
+    "notion",
+    "google-mail",
+    "google-calendar",
+    "google-drive",
+  ]),
 });
 
 const route: Route<typeof schema> = {

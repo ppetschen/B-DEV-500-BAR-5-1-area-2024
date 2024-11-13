@@ -97,6 +97,7 @@ export const authorizeServiceCallback = async (
       service,
       webhook_url: result.webhook ? result.webhook.url : "",
     };
+    console.log("Data: ", data);
     const storeStatus = serviceSubscription
       ? await updateServiceSubscription(data)
       : await storeServiceSubscription(data);

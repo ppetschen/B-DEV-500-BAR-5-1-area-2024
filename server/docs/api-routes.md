@@ -3,7 +3,7 @@
 
 > [!IMPORTANT]
 > This documentation was automatically generated using `Bun` version `1.1.34` on
-> GitHub actions, commit hash `b5f8538dafe1cbdc3a0255030fc167b5b52e0adb`.
+> GitHub actions, commit hash `b6f47686032aa813b94ad3b9508066558a2fde3b`.
 
 ## reaction
 
@@ -26,7 +26,7 @@ POST /reaction/execute/create
 ```ts
 // This route is internal, won't be exposed
 {
-    type: "discord" | "google-mail" | "google-drive";
+    type: "discord" | "google-mail" | "google-drive" | "notion" | "google-calendar";
     context?: unknown;
     markup: string;
 }
@@ -219,14 +219,6 @@ POST /area-composition/send-google-mail
 ```
 
 ```http
-GET /area-composition/list
-```
-```ts
-// Authorization: Bearer $AUTH_TOKEN
-any
-```
-
-```http
 POST /area-composition/execute
 ```
 ```ts
@@ -245,7 +237,7 @@ POST /area-composition/compose
         context?: unknown;
     };
     to: {
-        type: "discord" | "google-mail" | "google-drive";
+        type: "discord" | "google-mail" | "google-drive" | "notion" | "google-calendar";
         context?: unknown;
     };
     markup: string;
@@ -259,8 +251,16 @@ POST /area-composition/completions
 // Authorization: Bearer $AUTH_TOKEN
 {
     from: "github";
-    to: "discord";
+    to: "discord" | "notion" | "google-mail" | "google-calendar" | "google-drive";
 }
+```
+
+```http
+GET /area-composition/list
+```
+```ts
+// Authorization: Bearer $AUTH_TOKEN
+any
 ```
 
 ```http
