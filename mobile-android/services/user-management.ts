@@ -9,7 +9,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { apiClient, base_url, setAuthorizationHeader } from "./api";
 import { User } from "./types";
 import * as WebBrowser from "expo-web-browser";
-import { PASSWORD, TOKEN } from "@/asyncStorageLibrary/basicRequestVars";
+import {
+    PASSWORD,
+    REQUEST_ERROR,
+    REQUEST_ERROR_MESSAGE,
+    TOKEN,
+} from "@/asyncStorageLibrary/basicRequestVars";
 
 export const login = async (
     data: { email: string; password?: string },
@@ -20,6 +25,23 @@ export const login = async (
             `/user-management/login?method=${method}`,
             data
         );
+        if (response.status !== 200) {
+            AsyncStorage.setItem(REQUEST_ERROR, "true");
+            switch (response.status) {
+                case 401:
+                    AsyncStorage.setItem(REQUEST_ERROR_MESSAGE, "Invalid credentials");
+                    break;
+                case 404:
+                    AsyncStorage.setItem(REQUEST_ERROR_MESSAGE, "User not found");
+                    break;
+                case 500:
+                    AsyncStorage.setItem(REQUEST_ERROR_MESSAGE, "Server error");
+                    break;
+                default:
+                    AsyncStorage.setItem(REQUEST_ERROR_MESSAGE, "Error during login");
+            }
+            throw new Error(`LIST HTTP error! Status: ${response.status}`);
+        }
         AsyncStorage.setItem(TOKEN, response.data.token);
         return true;
     } catch (error) {
@@ -49,9 +71,7 @@ export const register = async (
 export const getUser = async (): Promise<User | null> => {
     try {
         await setAuthorizationHeader();
-        const response = await apiClient.get<User>(
-            `/user-management/get-user`
-        );
+        const response = await apiClient.get<User>(`/user-management/get-user`);
         // status 200 is OK
         if (response.status != 200) {
             throw new Error(`LIST HTTP error! Status: ${response.status}`);
@@ -72,10 +92,7 @@ export const updateUser = async (data: {
 }): Promise<boolean> => {
     try {
         await setAuthorizationHeader();
-        const response = await apiClient.put<User>(
-            `/user-management/update-user`,
-            data
-        );
+        const response = await apiClient.put<User>(`/user-management/update-user`, data);
         return response.status === 200;
     } catch (error) {
         console.log("Failed to update user: ", error);
@@ -114,16 +131,15 @@ export const oauthUser = async (service: string) => {
         const url = response.data;
         const result = await WebBrowser.openAuthSessionAsync(url, redirectUri);
 
-        if (result.type === 'success' && result.url) {
-            console.log('OAuth successful:', result.url);
+        if (result.type === "success" && result.url) {
+            console.log("OAuth successful:", result.url);
             return true;
         } else {
-            console.error('OAuth failed with unexpected result:', result);
+            console.error("OAuth failed with unexpected result:", result);
             return false;
         }
-
     } catch (error) {
-        console.error('OAuth error:', error);
+        console.error("OAuth error:", error);
         return false;
     }
 };
