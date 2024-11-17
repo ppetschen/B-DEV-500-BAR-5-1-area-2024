@@ -87,5 +87,11 @@ export function ServicesList(): {
             icon:  <IconFontAwesome name="notion" size={32} color="#fff" />,
             category: "Productivity",
         },
+        {
+            name: "Trello",
+            description: "Notion is a versatile workspace tool",
+            icon:  <IconMaterialCommunityIcons name="trello" size={32} color="#fff" />,
+            category: "Productivity",
+        },
     ];
 }

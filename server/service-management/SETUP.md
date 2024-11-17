@@ -21,7 +21,7 @@ Add correct data for spec service in the oauthStrategies file /**
 - const newServiceStrategy = {
 - issuer: new URL("https://new-service.com"),
 - redirect_uri: process.env.NEW_SERVICE_REDIRECT_URI!,
-- algorithm: "oidc" or "oauth2", // (!) depending on the service (!)
+- algorithm: "oidc", "oauth2" or "oauth1"   // (!) depending on the service (!)
 - client_id: process.env.NEW_SERVICE_CLIENT_ID!,
 - client_secret: process.env.NEW_SERVICE_CLIENT_SECRET!,
 - scope: "(!) check service documentation (!)",

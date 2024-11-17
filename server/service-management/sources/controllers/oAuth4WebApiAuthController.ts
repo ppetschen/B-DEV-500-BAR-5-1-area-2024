@@ -1,5 +1,5 @@
 import * as oauth from "oauth4webapi";
-import { getOauthStrategy } from "../oauthStrategy/oauthStrategies";
+import { getOauthStrategy, type AuthStrategy } from "../oauthStrategy/oauthStrategies";
 import { saveSession } from "./sessionController";
 
 export const authorizeService = async (
@@ -8,11 +8,34 @@ export const authorizeService = async (
   client_type: string,
 ): Promise<URL | boolean> => {
   try {
-    const strategy = getOauthStrategy(service);
+    const strategy: AuthStrategy = getOauthStrategy(service);
     if (!strategy) {
       throw Error("Failed to get strategy");
     }
 
+    if (strategy.algorithm === "oauth1") {
+      const response = await fetch(strategy.request_token_endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          oauth_callback: strategy.redirect_uri,
+          oauth_consumer_key: strategy.client_id,
+          oauth_signature: strategy.client_secret,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to obtain request token");
+      }
+
+      const data = await response.text();
+      const requestToken = new URLSearchParams(data).get("oauth_token");
+      const redirectUrl = `${strategy.authorization_endpoint}?oauth_token=${requestToken}`;
+
+      return new URL(redirectUrl);
+  }
     let authorizationUrl;
     if (strategy.algorithm == "oidc") {
       const as = await oauth

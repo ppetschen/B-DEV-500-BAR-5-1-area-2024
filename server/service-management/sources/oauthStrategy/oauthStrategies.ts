@@ -1,6 +1,32 @@
 import process from "node:process";
 
-export const getOauthStrategy = (service: string) => {
+export type OAuth1Strategy = {
+  issuer: URL;
+  redirect_uri: string;
+  algorithm: "oauth1";
+  client_id: string;
+  client_secret: string;
+  request_token_endpoint: string;
+  authorization_endpoint: string;
+  token_endpoint: string;
+  userinfo_endpoint: string;
+};
+
+export type OAuth2Strategy = {
+  issuer: URL;
+  redirect_uri: string;
+  algorithm: "oauth2" | "oidc";
+  client_id: string;
+  client_secret: string;
+  scope: string;
+  userinfo_endpoint: string;
+  token_endpoint: string;
+  client_auth_method: string;
+};
+
+export type AuthStrategy = OAuth1Strategy | OAuth2Strategy;
+
+export const getOauthStrategy = (service: string): AuthStrategy => {
   switch (service) {
     case "google":
       return getGoogleStrategy();
@@ -18,14 +44,16 @@ export const getOauthStrategy = (service: string) => {
       return getTwitchStrategy();
     case "notion":
       return getNotionStrategy();
+    case "trello":
+      return getTrelloStrategy();
     // case "new-service":
     //   return getNewServiceStrategy();
     default:
       throw new Error(`Service ${service} is not supported`);
   }
 };
-const getGoogleStrategy = () => {
-  const strategy = {
+const getGoogleStrategy = (): OAuth2Strategy => {
+  const strategy: OAuth2Strategy = {
     issuer: new URL("https://accounts.google.com"),
     redirect_uri: process.env.GOOGLE_REDIRECT_URI!,
     algorithm: "oidc",
@@ -38,8 +66,8 @@ const getGoogleStrategy = () => {
   };
   return strategy;
 };
-const getGmailStrategy = () => {
-  const strategy = getGoogleStrategy();
+const getGmailStrategy = (): OAuth2Strategy => {
+  const strategy: OAuth2Strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_MAIL_REDIRECT_URI!,
     strategy.client_id = process.env.GOOGLE_MAIL_CLIENT_ID!,
     strategy.client_secret = process.env.GOOGLE_MAIL_CLIENT_SECRET!,
@@ -48,8 +76,8 @@ const getGmailStrategy = () => {
   return strategy;
 };
 
-const getGoogleDriveStrategy = () => {
-  const strategy = getGoogleStrategy();
+const getGoogleDriveStrategy = (): OAuth2Strategy => {
+  const strategy: OAuth2Strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_DRIVE_REDIRECT_URI!,
     strategy.client_id = process.env.GOOGLE_DRIVE_CLIENT_ID!,
     strategy.client_secret = process.env.GOOGLE_DRIVE_CLIENT_SECRET!,
@@ -57,8 +85,8 @@ const getGoogleDriveStrategy = () => {
   return strategy;
 };
 
-const getGoogleCalendarStrategy = () => {
-  const strategy = getGoogleStrategy();
+const getGoogleCalendarStrategy = (): OAuth2Strategy => {
+  const strategy: OAuth2Strategy = getGoogleStrategy();
   strategy.redirect_uri = process.env.GOOGLE_CALENDAR_REDIRECT_URI!,
     strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
     strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
@@ -66,8 +94,8 @@ const getGoogleCalendarStrategy = () => {
   return strategy;
 };
 
-const getGithubStrategy = () => {
-  const githubStrategy = {
+const getGithubStrategy = (): OAuth2Strategy => {
+  const githubStrategy: OAuth2Strategy = {
     issuer: new URL("https://github.com/login/oauth/authorize"),
     redirect_uri: process.env.GITHUB_REDIRECT_URI!,
     algorithm: "oauth2",
@@ -81,8 +109,8 @@ const getGithubStrategy = () => {
   return githubStrategy;
 };
 
-const getDiscordStrategy = () => {
-  const discordStrategy = {
+const getDiscordStrategy = (): OAuth2Strategy => {
+  const discordStrategy: OAuth2Strategy = {
     issuer: new URL("https://discord.com/api/oauth2/authorize"),
     redirect_uri: process.env.DISCORD_REDIRECT_URI!,
     algorithm: "oauth2",
@@ -96,8 +124,8 @@ const getDiscordStrategy = () => {
   return discordStrategy;
 };
 
-const getTwitchStrategy = () => {
-  const twitchStrategy = {
+const getTwitchStrategy = (): OAuth2Strategy => {
+  const twitchStrategy: OAuth2Strategy = {
     issuer: new URL("https://id.twitch.tv/oauth2/authorize"),
     redirect_uri: process.env.TWITCH_REDIRECT_URI!,
     algorithm: "oauth2",
@@ -111,8 +139,8 @@ const getTwitchStrategy = () => {
   return twitchStrategy;
 };
 
-const getNotionStrategy = () => {
-  const notionStrategy = {
+const getNotionStrategy = (): OAuth2Strategy => {
+  const notionStrategy: OAuth2Strategy = {
     issuer: new URL("https://api.notion.com/v1/oauth/authorize"),
     redirect_uri: process.env.NOTION_REDIRECT_URI!,
     algorithm: "oauth2",
@@ -124,6 +152,21 @@ const getNotionStrategy = () => {
     client_auth_method: "Basic Auth",
   };
   return notionStrategy;
+};
+
+const getTrelloStrategy = (): OAuth1Strategy => {
+  const trelloStrategy: OAuth1Strategy = {
+    issuer: new URL("https://trello.com"),
+    redirect_uri: process.env.TRELLO_REDIRECT_URI!,
+    algorithm: "oauth1",
+    client_id: process.env.TRELLO_CLIENT_ID!,
+    client_secret: process.env.TRELLO_CLIENT_SECRET!,
+    request_token_endpoint: "https://trello.com/1/OAuthGetRequestToken",
+    token_endpoint: "https://trello.com/1/OAuthGetAccessToken",
+    authorization_endpoint: "https://trello.com/1/OAuthAuthorizeToken",
+    // userinfo_endpoint: "https://api.trello.com/1/members/me",
+  };
+  return trelloStrategy;
 };
 
 /**

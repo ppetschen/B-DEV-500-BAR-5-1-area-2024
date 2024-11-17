@@ -1,5 +1,5 @@
 import * as oauth from "oauth4webapi";
-import { getOauthStrategy } from "../oauthStrategy/oauthStrategies";
+import { getOauthStrategy, type AuthStrategy, } from "../oauthStrategy/oauthStrategies";
 import { getAndDeleteSession } from "./sessionController";
 import { getUserByEmail } from "./userController";
 import {
@@ -13,9 +13,158 @@ export const authorizeServiceCallback = async (
   request_url: string,
 ): Promise<boolean> => {
   try {
-    const strategy = getOauthStrategy(service);
+    const strategy: AuthStrategy = getOauthStrategy(service);
     if (!strategy) {
       throw Error("Strategy not found");
+    }
+    // // OAuth 1.0-specific logic
+    // if (strategy.algorithm === "oauth1") {
+    //   const oauthToken = new URL(request_url).searchParams.get("oauth_token");
+    //   const oauthVerifier = new URL(request_url).searchParams.get("oauth_verifier");
+
+    //   if (!oauthToken || !oauthVerifier) {
+    //     throw new Error("Missing OAuth token or verifier");
+    //   }
+
+    //   // Exchange the request token and verifier for an access token
+    //   const response = await fetch(strategy.token_endpoint, {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
+    //     body: new URLSearchParams({
+    //       oauth_token: oauthToken,
+    //       oauth_verifier: oauthVerifier,
+    //       oauth_consumer_key: strategy.client_id,
+    //       oauth_signature: strategy.client_secret,
+    //     }),
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error("Failed to obtain access token");
+    //   }
+
+    //   const data = await response.text();
+    //   const accessToken = new URLSearchParams(data).get("oauth_token");
+
+    //   if (!accessToken) {
+    //     throw new Error("Access token not found in response");
+    //   }
+
+    //   // Fetch user information from the OAuth 1.0 service
+    //   const userInfoResponse = await fetch(strategy.userinfo_endpoint, {
+    //     method: "GET",
+    //     headers: {
+    //       Authorization: `OAuth ${accessToken}`,
+    //     },
+    //   });
+
+    //   if (!userInfoResponse.ok) {
+    //     throw new Error("Failed to fetch user info");
+    //   }
+
+    //   const userInfo = await userInfoResponse.json();
+    //   const userEmail = getEmailFromUser(userInfo);
+
+    //   // Save the subscription
+    //   const user = await getUserByEmail(userEmail);
+    //   const serviceSubscription = await getServiceSubscription(service, user.id);
+
+    //   const dataToStore = {
+    //     access_token: accessToken,
+    //     refresh_token: "", // OAuth 1.0 often doesn't have refresh tokens
+    //     expires_in: "", // OAuth 1.0 tokens are often long-lived
+    //     user_id: user.id,
+    //     service,
+    //     webhook_url: "", //? Add if the service supports webhooks
+    //   };
+
+    //   const storeStatus = serviceSubscription
+    //     ? await updateServiceSubscription(dataToStore)
+    //     : await storeServiceSubscription(dataToStore);
+
+    //   if (!storeStatus.ok) {
+    //     throw new Error("Failed to store service subscription");
+    //   }
+
+    //   return true;
+    // }
+
+    if (strategy.algorithm === "oauth1") {
+      // OAuth 1.0-specific logic for Trello
+      const oauthToken = new URL(request_url).searchParams.get("oauth_token");
+      const oauthVerifier = new URL(request_url).searchParams.get("oauth_verifier");
+
+      if (!oauthToken || !oauthVerifier) {
+        throw new Error("Missing OAuth token or verifier");
+      }
+
+      // Exchange the request token and verifier for an access token
+      const response = await fetch(strategy.token_endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          oauth_token: oauthToken,
+          oauth_verifier: oauthVerifier,
+          oauth_consumer_key: strategy.client_id,
+          oauth_signature: strategy.client_secret,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to obtain access token");
+      }
+
+      const data = await response.text();
+      const accessToken = new URLSearchParams(data).get("oauth_token");
+
+      if (!accessToken) {
+        throw new Error("Access token not found in response");
+      }
+
+      // Fetch user information from Trello's API
+      const userInfoResponse = await fetch(strategy.userinfo_endpoint!, {
+        method: "GET",
+        headers: {
+          Authorization: `OAuth oauth_token="${accessToken}"`,
+        },
+      });
+
+      if (!userInfoResponse.ok) {
+        throw new Error("Failed to fetch user info");
+      }
+
+      const userInfo = await userInfoResponse.json();
+      const userEmail = getEmailFromUser(userInfo);
+
+      if (!userEmail) {
+        throw new Error("User email not found");
+      }
+
+      // Save user subscription details
+      const user = await getUserByEmail(userEmail);
+      const serviceSubscription = await getServiceSubscription(service, user.id);
+
+      const dataToStore = {
+        access_token: accessToken,
+        refresh_token: "", // OAuth 1.0 does not typically have refresh tokens
+        expires_in: "", // OAuth 1.0 tokens are often long-lived
+        user_id: user.id,
+        service,
+        webhook_url: "", //? Add webhook URL if the service supports webhooks
+      };
+
+      const storeStatus = serviceSubscription
+        ? await updateServiceSubscription(dataToStore)
+        : await storeServiceSubscription(dataToStore);
+
+      if (!storeStatus.ok) {
+        throw new Error("Failed to store service subscription");
+      }
+
+      return true;
     }
     let as;
     if (strategy.algorithm == "oidc") {
