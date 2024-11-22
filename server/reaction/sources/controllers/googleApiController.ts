@@ -74,6 +74,33 @@ export const googleCreateDriveFile = async (
   return file;
 };
 
+export const googleCreateSheetViaDrive = async (
+  sheetContext: {
+    access_token: string;
+    title: string;
+  },
+) => {
+  const drive = google.drive("v3");
+  const auth = new google.auth.OAuth2();
+  auth.setCredentials({ access_token: sheetContext.access_token });
+  google.options({ auth });
+
+  const fileMetaData = {
+    name: sheetContext.title,
+    mimeType: "application/vnd.google-apps.spreadsheet",
+  };
+
+  const file = await drive.files.create({
+    requestBody: fileMetaData,
+  });
+
+  if (!file || !file.data) {
+    throw new Error("Failed to create Google Sheet");
+  }
+
+  return file.data;
+};
+
 export const googleCreateEventInCalendar = async (
   eventContext: { access_token: string; event: any },
 ) => {
@@ -105,3 +132,4 @@ export const googleCreateEventInCalendar = async (
 
   return response;
 };
+

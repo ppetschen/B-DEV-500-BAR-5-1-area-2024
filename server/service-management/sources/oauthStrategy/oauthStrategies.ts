@@ -10,6 +10,8 @@ export const getOauthStrategy = (service: string) => {
       return getGoogleDriveStrategy();
     case "google-calendar":
       return getGoogleCalendarStrategy();
+    case "google-sheets":
+      return getGoogleSheetsStrategy();
     case "github":
       return getGithubStrategy();
     case "discord":
@@ -63,6 +65,16 @@ const getGoogleCalendarStrategy = () => {
     strategy.client_id = process.env.GOOGLE_CALENDAR_CLIENT_ID!,
     strategy.client_secret = process.env.GOOGLE_CALENDAR_CLIENT_SECRET!,
     strategy.scope += "https://www.googleapis.com/auth/calendar";
+  return strategy;
+};
+
+const getGoogleSheetsStrategy = () => {
+  const strategy = getGoogleStrategy();
+  strategy.redirect_uri = process.env.GOOGLE_SHEETS_REDIRECT_URI!;
+  strategy.client_id = process.env.GOOGLE_SHEETS_CLIENT_ID!;
+  strategy.client_secret = process.env.GOOGLE_SHEETS_CLIENT_SECRET!;
+  strategy.scope +=
+    "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive.file";
   return strategy;
 };
 

@@ -4,6 +4,7 @@ import ejs from "ejs";
 import {
   googleCreateDriveFile,
   googleCreateEventInCalendar,
+  googleCreateSheetViaDrive,
   googleSendEmail,
 } from "./controllers/googleApiController";
 import { getServiceSubscription } from "./controllers/serviceController";
@@ -60,6 +61,41 @@ const createNotion = async (_context: unknown) => {
     url: "",
   };
 };
+
+const createGoogleSheetViaDrive = async ({ reaction_id, view }: HookContext) => {
+  const findRequest = await fetch(host("DATABASE", "/reaction/find"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id: reaction_id }),
+  });
+
+  if (!findRequest.ok) {
+    throw new Error("Failed to find reaction");
+  }
+
+  const { owner_id: user_id } = await findRequest.json();
+
+  const findServiceSubscription = await getServiceSubscription(
+    "google-drive",
+    user_id
+  );
+
+  const serviceSubscription = findServiceSubscription;
+
+  const sheetContext = {
+    access_token: serviceSubscription.data.access_token,
+    title: `New Sheet from ${reaction_id}`,
+  };
+
+  const response = await googleCreateSheetViaDrive(sheetContext);
+
+  if (!response) {
+    throw new Error("Failed to create Google Sheet via Google Drive");
+  }
+
+  console.log("Google Sheet created:", response);
+};
+
 
 const createGoogleCalendar = async (_context: unknown) => {
   return {
@@ -272,7 +308,8 @@ const sendGoogleCalendarEvent = async ({ reaction_id, view }: HookContext) => {
 const sendWebHookMap = {
   discord: sendDiscordWebhook,
   "google-mail": sendGoogleMail,
-  "google-drive": createGoogleDriveFile,
+  "google-drive-create-sheet": createGoogleDriveFile,
+  "google-sheets": createGoogleSheetViaDrive,
   notion: sendNotionPage,
   "google-calendar": sendGoogleCalendarEvent,
 } as const;

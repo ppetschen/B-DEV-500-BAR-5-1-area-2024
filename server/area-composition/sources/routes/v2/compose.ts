@@ -12,6 +12,7 @@ const schema = z.object({
       "discord",
       "google-mail",
       "google-drive",
+      "google-drive-create-sheet",
       "notion",
       "google-calendar",
     ]),
